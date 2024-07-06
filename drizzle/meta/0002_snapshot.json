@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "abd44c49-7a6f-4e36-bbab-81ac90d39d94",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "90b85c9f-66d6-4e19-8e9a-9ffb272bc9c8",
+  "prevId": "4e150e08-aa85-410b-b443-6203d4c3abe0",
   "tables": {
     "account": {
       "name": "account",
@@ -356,7 +356,8 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
         },
         "created_at": {
           "name": "created_at",
@@ -934,7 +935,7 @@
         },
         "preparation_time": {
           "name": "preparation_time",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
