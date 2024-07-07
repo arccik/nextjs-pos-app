@@ -57,7 +57,8 @@ export const insertTableSchema = createInsertSchema(tables, {
 
 export type Table = z.infer<typeof selectTableSchema>;
 export type NewTable = z.infer<typeof insertTableSchema>;
-export type TableStatus = typeof tableStatusEnum;
+// export type TableStatus = typeof tableStatusEnum;
+export type TableStatus = (typeof tableStatusEnum)[number];
 
 export type TableWithReservation = Table & {
   reservations: Reservation[];

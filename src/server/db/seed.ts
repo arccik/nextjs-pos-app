@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/libsql";
 
 // import { neon } from "@neondatabase/serverless";
 // import type { NeonQueryFunction } from "@neondatabase/serverless";
-import * as schema from "./schema";
+import * as schema from "./schemas";
 import { createClient, type Client } from "@libsql/client";
 // import {
 //   storeRegularSchedule,
