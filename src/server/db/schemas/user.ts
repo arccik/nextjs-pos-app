@@ -19,10 +19,17 @@ export const userRoles = [
 ] as const;
 
 export const users = sqliteTable("user", {
-  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  // id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => sql`(cast(rowid as text))`),
   name: text("name"),
   email: text("email").unique().notNull(),
   password: text("password").notNull(),
+  image: text("image"),
+  emailVerified: int("emailVerified", {
+    mode: "timestamp",
+  }).default(sql`CURRENT_TIMESTAMP`),
   role: text("role", { enum: userRoles }).notNull().default("user"),
   updatedAt: int("updated_at", { mode: "timestamp" })
     .$onUpdate(() => sql`CURRENT_TIMESTAMP`)

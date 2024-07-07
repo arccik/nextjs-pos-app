@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "..";
 import { type User, users } from "../schemas/user";
 
-export const getOne = async (id: number) => {
+export const getOne = async (id: string) => {
   try {
     return await db.query.users.findFirst({
       where: eq(users.id, id),
@@ -22,7 +22,7 @@ export const getAll = async () => {
     return { error: "[db:getManyUser] Went wrong.." };
   }
 };
-export const update = async (id: number, body: User) => {
+export const update = async (id: string, body: User) => {
   try {
     const result = await db
       .update(users)
@@ -45,7 +45,7 @@ export const create = async (body: User) => {
   }
 };
 
-export const deleteOne = async (id: number) => {
+export const deleteOne = async (id: string) => {
   try {
     const result = await db.delete(users).where(eq(users.id, id));
     return result;

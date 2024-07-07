@@ -36,7 +36,7 @@ import { useQuery } from "@tanstack/react-query";
 import { formatCurrency } from "@/lib/utils";
 import { db } from "@/server/db";
 import { and, gte, lt } from "drizzle-orm";
-import { orders } from "@/server/db/schema";
+import { orders } from "@/server/db/schemas";
 import Link from "next/link";
 
 // import { PDFDownloadLink } from "@react-pdf/renderer";

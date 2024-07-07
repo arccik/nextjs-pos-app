@@ -41,12 +41,14 @@ CREATE TABLE `session` (
 );
 --> statement-breakpoint
 CREATE TABLE `user` (
-	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`id` text PRIMARY KEY NOT NULL,
 	`name` text,
 	`email` text NOT NULL,
 	`password` text NOT NULL,
+	`image` text,
+	`emailVerified` integer DEFAULT CURRENT_TIMESTAMP,
 	`role` text DEFAULT 'user' NOT NULL,
-	`updated_at` integer NOT NULL,
+	`updated_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
@@ -136,7 +138,7 @@ CREATE TABLE `items` (
 	`vegan` integer,
 	`gluten_free` integer,
 	`spicy` integer,
-	`preparation_time` numeric NOT NULL,
+	`preparation_time` integer NOT NULL,
 	`category_id` integer,
 	`created_at` integer DEFAULT (CURRENT_DATE),
 	`available` integer DEFAULT true,

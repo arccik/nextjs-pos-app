@@ -2,7 +2,7 @@
 
 import { and, eq, gt, gte, lt } from "drizzle-orm";
 import { db } from "@/server/db";
-import { bills } from "@/server/db/schema";
+import { bills } from "@/server/db/schemas";
 import { subDays } from "date-fns";
 
 export const paidThisWeek = async () => {
