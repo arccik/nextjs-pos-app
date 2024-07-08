@@ -117,3 +117,29 @@ export const markClean = async (id: number) => {
     return { error: "[db:markClean] Went wrong.." };
   }
 };
+
+export const setSelectedTable = (id: number, userId: number) => {
+  try {
+    return db
+      .update(tables)
+      .set({ selectedBy: userId })
+      .where(eq(tables.id, id))
+      .returning();
+  } catch (error) {
+    console.error(error);
+    return { error: "[db:setSelectedTable] Went wrong.." };
+  }
+};
+
+export const unsetSelectedTable = (id: number, userId?: number) => {
+  try {
+    return db
+      .update(tables)
+      .set({ selectedBy: null })
+      .where(eq(tables.id, id))
+      .returning();
+  } catch (error) {
+    console.error(error);
+    return { error: "[db:unsetSelectedTable] Went wrong.." };
+  }
+};

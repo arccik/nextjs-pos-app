@@ -261,18 +261,18 @@ export const reinstand = async (id: number) => {
 };
 
 export const recentCompletedOrders = async (tableId: number) => {
-  try {
-    return db.query.orders.findMany({
-      where: and(eq(orders.tableId, tableId), eq(orders.status, "Completed")),
-      with: {
-        bill: true,
-        user: { columns: { name: true, role: true, id: true } },
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:recentCompletedOrders] Went wrong.." };
-  }
+  // try {
+  return db.query.orders.findMany({
+    where: and(eq(orders.tableId, tableId), eq(orders.status, "Completed")),
+    with: {
+      bill: true,
+      user: { columns: { name: true, role: true, id: true } },
+    },
+  });
+  // } catch (error) {
+  //   console.log(error);
+  //   return { error: "[db:recentCompletedOrders] Went wrong.." };
+  // }
 };
 
 export const addSpecailRequest = async (id: number, request: string) => {

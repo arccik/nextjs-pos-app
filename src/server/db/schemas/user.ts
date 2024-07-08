@@ -9,6 +9,7 @@ import {
 import { relations, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { type AdapterAccount } from "next-auth/adapters";
+import { tables } from "./table";
 
 export const userRoles = [
   "admin",
@@ -43,6 +44,7 @@ export const users = sqliteTable("user", {
 export const usersRelations = relations(users, ({ one, many }) => ({
   profileInfo: one(profileInfo),
   accounts: many(accounts),
+  selectedTable: many(tables),
 }));
 
 export const profileInfo = sqliteTable("profile", {

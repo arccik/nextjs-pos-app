@@ -31,10 +31,11 @@ export const orders = sqliteTable("orders", {
     .notNull(),
   specialRequest: text("special_request"),
   billId: integer("bill_id"),
-  createdAt: integer("created_at", { mode: "timestamp" }).default(
-    sql`(CURRENT_DATE)`,
-  ),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(CURRENT_DATE)`)
+    .notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" })
+    .notNull()
     .default(sql`(CURRENT_DATE)`)
     .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
 });

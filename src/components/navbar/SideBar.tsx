@@ -24,18 +24,14 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { LogOut, Settings } from "lucide-react";
-import navItems from "./navItems";
-import MobileNav from "./mobileNav";
+import navItems from "./NavItems";
+import MobileNav from "./MobileNav";
 
 export default function SideBar() {
-  const { data: session } = useSession();
-  console.log("Side Bar: ", session);
-  //   const signOut = useSignOut();
 
   const handleLogOut = async () => {
     await signOut({ callbackUrl: "/login" });
   };
-  if (!session) return null;
   return (
     <>
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">

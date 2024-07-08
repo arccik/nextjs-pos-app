@@ -7,8 +7,8 @@ import {
   Ham,
   BookMarked,
 } from "lucide-react";
-import TableIcon from "./tableIcon";
-import ChefIcon from "./chefIcon";
+import TableIcon from "./TableIcon";
+import ChefIcon from "./ChefIcon";
 
 export default [
   {

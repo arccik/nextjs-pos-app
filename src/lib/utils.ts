@@ -188,3 +188,7 @@ export const combineOrderItems = (
   // Convert map back to array
   return Array.from(combinedMap.values());
 };
+
+export function formatFieldName(fieldName: string) {
+  return fieldName.replace(/([A-Z])/g, " $1").trim();
+}

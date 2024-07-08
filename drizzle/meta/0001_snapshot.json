@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "c33e5aa0-0f79-40e0-8157-e954b72358d4",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "d9e5ff7c-7fc6-4d0a-a2d6-73a37fd5fab6",
+  "prevId": "c33e5aa0-0f79-40e0-8157-e954b72358d4",
   "tables": {
     "account": {
       "name": "account",
@@ -472,6 +472,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "selected_by": {
+          "name": "selected_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "require_cleaning": {
           "name": "require_cleaning",
           "type": "integer",
@@ -515,7 +522,21 @@
           "isUnique": true
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "tables_selected_by_user_id_fk": {
+          "name": "tables_selected_by_user_id_fk",
+          "tableFrom": "tables",
+          "tableTo": "user",
+          "columnsFrom": [
+            "selected_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -850,7 +871,7 @@
           "name": "created_at",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
           "default": "(CURRENT_DATE)"
         },
@@ -858,7 +879,7 @@
           "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
           "default": "(CURRENT_DATE)"
         }

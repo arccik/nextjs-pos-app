@@ -2,7 +2,7 @@ import { text, sqliteTable, integer, unique } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { Reservation } from "./reservation";
-import { User } from "./user";
+import { type User, users } from "./user";
 import { sql } from "drizzle-orm";
 
 export const tableStatusEnum = [
@@ -19,6 +19,7 @@ export const tables = sqliteTable(
     prefix: text("prefix", { length: 5 }),
     description: text("description"),
     seats: integer("seats").notNull(),
+    selectedBy: integer("selected_by").references(() => users.id),
     requireCleaning: integer("require_cleaning", { mode: "boolean" })
       .default(false)
       .notNull(),

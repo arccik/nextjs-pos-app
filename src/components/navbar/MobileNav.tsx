@@ -14,7 +14,7 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import Link from "next/link";
-import navItems from "./navItems";
+import navItems from "./NavItems";
 
 export default function MobileNav() {
   return (
