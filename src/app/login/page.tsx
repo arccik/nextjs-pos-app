@@ -17,13 +17,10 @@ import { Input } from "@/components/ui/input";
 // import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 // import useSignIn from "react-auth-kit/hooks/useSignIn";
 // import $api from "@/api";
-// import { decodeJwt } from "jose";
 // import { toast } from "../ui/use-toast";
-// import { Navigate } from "react-router-dom";
-// import { useRouter } from "next/navigation";
 
 import { redirect } from "next/navigation";
-
+import { signIn, useSession, getSession } from "next-auth/react";
 const formSchema = z.object({
   email: z.string().email().min(5, { message: "Required" }),
   password: z.string().min(4, { message: "Password too short" }),
@@ -31,9 +28,8 @@ const formSchema = z.object({
 
 export default function Authentication() {
   //   const signIn = useSignIn();
-
-  //   const auth = useAuthUser();
-
+  const { data: session } = useSession();
+  console.log("SEsSIon ", session);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,9 +37,14 @@ export default function Authentication() {
       password: "",
     },
   });
-  //   if (auth) return redirect("/");
+  if (session) return redirect("/");
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    return redirect("/");
+    const res = await signIn("credentials", {
+      ...values,
+    });
+    console.log("sign in: ", res);
+    return null;
+    // return redirect("/");
   }
   //   async function onSubmit(values: z.infer<typeof formSchema>) {
   //     const response = await $api

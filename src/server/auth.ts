@@ -15,7 +15,7 @@ import {
   sessions,
   users,
   verificationTokens,
-} from "@/server/db/schema";
+} from "@/server/db/schemas";
 
 type UserRole = "admin" | "waiter";
 /**
