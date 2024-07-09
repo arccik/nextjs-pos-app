@@ -1,9 +1,9 @@
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card";
-import DisplayOrderItems from "@/components/pages/orders/DisplayOrderItems";
+import DisplayOrderItems from "./DisplayOrderItems";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { Badge } from "@/components/ui/badge";
-import type { OrderWithItems } from "@server/src/models/order";
+import type { OrderWithItems } from "@/server/db/models/order";
 import { PoundSterling } from "lucide-react";
 
 type tableDetailsProps = {

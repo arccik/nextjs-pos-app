@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type NewReservation, newReservationSchema } from "@server/src/schemas";
-import { create } from "@/api/reservation";
+import { type NewReservation, newReservationSchema } from "@/server/db/schemas";
+// import { create } from "@/api/reservation";
 import { toast } from "@/components/ui/use-toast";
 import { Form } from "@/components/ui/form";
 
@@ -13,22 +13,23 @@ type NewReservationProps = {
 };
 
 export default function NewResetvation({ onComplete }: NewReservationProps) {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
-  const addNewReservation = useMutation({
-    mutationFn: create,
-    onSuccess: (data) => {
-      const reservationId = data[0].id;
-      queryClient.invalidateQueries({ queryKey: ["reservations"] });
-      toast({
-        title: "Reservation has been created",
-        description: `Reservation Number is: ${reservationId}`,
-      });
-      onComplete();
-    },
-  });
+  // const addNewReservation = useMutation({
+  //   mutationFn: create,
+  //   onSuccess: (data) => {
+  //     const reservationId = data[0].id;
+  //     queryClient.invalidateQueries({ queryKey: ["reservations"] });
+  //     toast({
+  //       title: "Reservation has been created",
+  //       description: `Reservation Number is: ${reservationId}`,
+  //     });
+  //     onComplete();
+  //   },
+  // });
   const onSubmit = (values: NewReservation) => {
-    addNewReservation.mutate(values);
+    // addNewReservation.mutate(values);
+    throw new Error("Not implemented");
   };
   const form = useForm<NewReservation>({
     resolver: zodResolver(newReservationSchema),

@@ -9,13 +9,14 @@ import {
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils";
 import { type Bill } from "@/server/db/schemas";
+import type { OrderWithItems } from "@/server/db/models/order";
 
 export type Item = {
   itemId: number;
   quantity: number;
   items: {
     name: string | null;
-    price: string | null;
+    price: number | null;
     imageUrl: string | null;
   };
 };

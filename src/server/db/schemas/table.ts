@@ -63,5 +63,5 @@ export type TableStatus = (typeof tableStatusEnum)[number];
 
 export type TableWithReservation = Table & {
   reservations: Reservation[];
-  user: User;
+  // user: User;
 };

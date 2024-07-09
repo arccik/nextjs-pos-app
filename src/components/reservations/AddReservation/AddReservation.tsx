@@ -1,3 +1,4 @@
+"use client";
 import {
   Dialog,
   DialogContent,
@@ -7,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import NewResetvation from "./ResetvationForm";
+import NewResetvation from "./ReservationForm";
 import { PlusIcon } from "lucide-react";
 
 export default function AddReservation() {

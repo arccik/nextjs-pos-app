@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,36 +17,37 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Error from "@/components/layout/Error";
-import { getOneByTableId } from "@/api/orders";
-import type { OrderWithItems } from "@server/src/models/order";
+// import Error from "@/components/layout/Error";
+// import { getOneByTableId } from "@/api/orders";
+import { getOneByTableId, type OrderWithItems } from "@/server/db/models/order";
 
 import TableDetails from "./TableDetails";
 import TableButton from "./TableButton";
-import useMediaQuery from "@/hooks/useMediaQuery";
-import ActionButtons from "../pages/orders/ActionButtons";
-import EmptyTable from "./EmptyTable";
-import { summarizePrice } from "@/lib/utils";
+// import useMediaQuery from "@/hooks/useMediaQuery";
+// import ActionButtons from "../pages/orders/ActionButtons";
+import EmptyTable from "./Emptytable";
+// import { summarizePrice } from "@/lib/utils";
 import { format } from "date-fns";
-import { type TableWithReservation } from "@server/src/schemas";
+import { type TableWithReservation } from "@/server/db/schemas";
 
-export default function TableDialog({
+export default async function TableDialog({
   tableData,
 }: {
   tableData: TableWithReservation;
 }) {
-  const isDesktop = useMediaQuery();
-  const { data: orderData, isError } = useQuery<OrderWithItems>({
-    queryKey: ["table", tableData.id],
-    queryFn: () => getOneByTableId(tableData.id),
-  });
+  // const isDesktop = useMediaQuery();
+  // const { data: orderData, isError } = useQuery<OrderWithItems>({
+  //   queryKey: ["table", tableData.id],
+  //   queryFn: () => getOneByTableId(tableData.id),
+  // });
+  const orderData = await getOneByTableId(tableData.id);
+  const isDesktop = true;
+  // if (isError) return <Error message="wan't able to fetch table data" />;
 
-  if (isError) return <Error message="wan't able to fetch table data" />;
-
-  const totalAmount = Number(
-    orderData?.orderItems && summarizePrice(orderData.orderItems)?.toFixed(2),
-  );
-  if (!tableData) return null;
+  // const totalAmount = Number(
+  //   orderData?.orderItems && summarizePrice(orderData.orderItems)?.toFixed(2),
+  // );
+  if (!tableData && !orderData) return null;
   if (isDesktop) {
     return (
       <Dialog>
@@ -58,7 +59,7 @@ export default function TableDialog({
             <DialogTitle className="flex justify-between">
               Table #{tableData.number}
             </DialogTitle>
-            {orderData?.userId && (
+            {orderData?.userId && tableData.createdAt && (
               <DialogDescription className="flex justify-between">
                 <span>
                   Order {orderData.id} placed by user: {orderData?.userId}
@@ -78,7 +79,7 @@ export default function TableDialog({
           )}
 
           <DialogFooter className="flex justify-between">
-            {orderData?.id && tableData.status === "occupied" && (
+            {/* {orderData?.id && tableData.status === "occupied" && (
               <ActionButtons
                 isPaid={orderData?.isPaid}
                 orderId={orderData?.id}
@@ -86,7 +87,7 @@ export default function TableDialog({
                 tableId={tableData.id}
                 totalAmount={totalAmount}
               />
-            )}
+            )} */}
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -108,14 +109,14 @@ export default function TableDialog({
           />
         )}
         <DrawerFooter>
-          {orderData?.id && (
+          {/* {orderData?.id && (
             <ActionButtons
               isPaid={orderData?.isPaid}
               orderId={orderData?.id}
               status={orderData?.status}
               totalAmount={totalAmount}
             />
-          )}
+          )} */}
           <DrawerClose asChild>
             <Button variant="outline" className="border/40">
               Close

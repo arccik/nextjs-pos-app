@@ -103,21 +103,17 @@ export const timeSlots = async ({ tableId, date }: GetTimeSlot) => {
   }
 };
 
-export const notAssigned = () => {
+export const getUnAssignedReservations = () => {
   const date = new Date().toLocaleDateString(undefined, {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
   });
-  try {
-    return db
-      .select()
-      .from(reservations)
-      .where(
-        and(isNull(reservations.tableId), eq(reservations.scheduledAt, date)),
-      );
-  } catch (error) {
-    console.error(error);
-    return { error: "[db:notAssigned] Went wrong.." };
-  }
+
+  return db
+    .select()
+    .from(reservations)
+    .where(
+      and(isNull(reservations.tableId), eq(reservations.scheduledAt, date)),
+    );
 };

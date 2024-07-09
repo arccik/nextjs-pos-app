@@ -1,3 +1,4 @@
+"use client";
 // import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AddTable from "./AddTable";
@@ -6,7 +7,7 @@ import AddTable from "./AddTable";
 // import Error from "../layout/Error";
 import TablesDialog from "./TablesDialog";
 import { cn } from "@/lib/utils";
-import AddReservation from "./AddReservation";
+import AddReservation from "@/components/reservations/AddReservation/AddReservation";
 // import { AdminMenu } from "./AdminMenu";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useState } from "react";
@@ -14,14 +15,15 @@ import type {
   TableStatus,
   TableWithReservation,
 } from "@/server/db/schemas/table";
-import { getAll } from "@/server/db/models/table";
+import { getAll, getAllByStatus } from "@/server/db/models/table";
+import { getUnAssignedReservations } from "@/server/db/models/reservation";
 
 type TabelsGridProps = {
   standalone?: boolean;
 };
 
 export default async function TableCards({ standalone }: TabelsGridProps) {
-  const [tabStatus, setTabStatus] = useState<TableStatus>();
+  const [tabStatus, setTabStatus] = useState<TableStatus>("available");
   // const { data, isLoading, isError } = useQuery<TableWithReservation[]>({
   //   queryKey: ["tables", tabStatus],
   //   queryFn: () => getAll(tabStatus),
@@ -33,8 +35,9 @@ export default async function TableCards({ standalone }: TabelsGridProps) {
 
   // if (isLoading) return <Loading />;
   // if (isError || isReservationError) return <Error />;
-  const reservations = await getUnassignedReservations();
+  const reservations = await getUnAssignedReservations();
   const tables = await getAll();
+  const tableWithReservation = await getAllByStatus(tabStatus);
   return (
     <Card>
       <ToggleGroup
@@ -60,7 +63,7 @@ export default async function TableCards({ standalone }: TabelsGridProps) {
         {/* <AdminMenu /> */}
       </CardHeader>
       <CardContent>
-        {data && data?.length > 0 ? (
+        {tableWithReservation && tableWithReservation?.length > 0 ? (
           <div
             className={cn(
               "grid grid-flow-row grid-cols-1 gap-3 sm:grid-cols-2",
@@ -70,7 +73,7 @@ export default async function TableCards({ standalone }: TabelsGridProps) {
               },
             )}
           >
-            {data.map((table) => (
+            {tableWithReservation.map((table) => (
               <TablesDialog key={table.id} tableData={table} />
             ))}
           </div>

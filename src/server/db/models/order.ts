@@ -45,40 +45,36 @@ export const getOne = async (id: number) => {
 };
 
 export const getOneByTableId = async (tableId: number) => {
-  try {
-    const result = await db.query.orders.findFirst({
-      where: and(eq(orders.tableId, tableId), ne(orders.status, "Completed")),
-      with: {
-        orderItems: {
-          columns: {
-            orderId: false,
-          },
-          with: {
-            items: {
-              columns: {
-                price: true,
-                name: true,
-                imageUrl: true,
-              },
+  const result = await db.query.orders.findFirst({
+    where: and(eq(orders.tableId, tableId), ne(orders.status, "Completed")),
+    with: {
+      orderItems: {
+        columns: {
+          orderId: false,
+        },
+        with: {
+          items: {
+            columns: {
+              price: true,
+              name: true,
+              imageUrl: true,
             },
           },
         },
-        user: true,
       },
-    });
-    return result || null;
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:getOneOrder] Went wrong.." };
-  }
+      user: true,
+      bill: true,
+    },
+  });
+  return result;
 };
 export const getAll = async () => {
-  try {
-    return await db.query.orders.findMany();
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:getManyOrder] Went wrong.." };
-  }
+  // try {
+  return await db.query.orders.findMany();
+  // } catch (error) {
+  //   console.log(error);
+  //   return { error: "[db:getManyOrder] Went wrong.." };
+  // }
 };
 type Unpromisify<T> = T extends Promise<infer U> ? U : T;
 export type OrderWithItems = Unpromisify<
@@ -86,77 +82,77 @@ export type OrderWithItems = Unpromisify<
 >[0];
 
 export const getOrdersWithItems = async (status?: OrderStatus[number]) => {
-  try {
-    const result = await db.query.orders.findMany({
-      where: status ? eq(orders.status, status) : undefined,
-      orderBy: (orders, { asc }) => [asc(orders.id)],
-      with: {
-        bill: true,
-        orderItems: {
-          columns: {
-            orderId: false,
-          },
-          with: {
-            items: {
-              columns: {
-                price: true,
-                name: true,
-                imageUrl: true,
-              },
+  // try {
+  const result = await db.query.orders.findMany({
+    where: status ? eq(orders.status, status) : undefined,
+    orderBy: (orders, { asc }) => [asc(orders.id)],
+    with: {
+      bill: true,
+      orderItems: {
+        columns: {
+          orderId: false,
+        },
+        with: {
+          items: {
+            columns: {
+              price: true,
+              name: true,
+              imageUrl: true,
             },
           },
         },
       },
-    });
-    return result;
-  } catch (error) {
-    console.log(error);
-    throw new Error("[db:getManyOrder] Went wrong..");
-  }
+    },
+  });
+  return result;
+  // } catch (error) {
+  //   console.log(error);
+  //   throw new Error("[db:getManyOrder] Went wrong..");
+  // }
 };
 
 export const update = async (id: number, body: NewOrder) => {
-  try {
-    const result = await db.update(orders).set(body).where(eq(orders.id, id));
-    return result;
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:updateOrder] Went wrong.." };
-  }
+  // try {
+  const result = await db.update(orders).set(body).where(eq(orders.id, id));
+  return result;
+  // } catch (error) {
+  //   console.log(error);
+  //   return { error: "[db:updateOrder] Went wrong.." };
+  // }
 };
 
 export const create = async (values: NewOrderWithItems) => {
-  try {
-    const insertedOrder = await db
-      .insert(orders)
-      .values({ tableId: values.tableId, userId: values.userId })
-      .returning();
-    const orderId = insertedOrder[0]?.id;
-    if (!orderId) throw new Error("Order ID is missing");
-    await db
-      .insert(orderItems)
-      .values(values.items.map((item) => ({ ...item, orderId })));
+  // try {
+  const insertedOrder = await db
+    .insert(orders)
+    .values({ tableId: values.tableId, userId: values.userId })
+    .returning();
+  const orderId = insertedOrder[0]?.id;
+  if (!orderId) throw new Error("Order ID is missing");
+  await db
+    .insert(orderItems)
+    .values(values.items.map((item) => ({ ...item, orderId })));
 
-    return {
-      success: true,
-      orderId,
-      items: values.items,
-      tableId: values.tableId,
-    };
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:createOrder] Went wrong.." };
-  }
+  return {
+    success: true,
+    orderId,
+    items: values.items,
+    tableId: values.tableId,
+  };
+  // } catch (error) {
+  //   console.log(error);
+  //   return { error: "[db:createOrder] Went wrong.." };
+  // }
 };
 
 export const deleteOne = async (id: number) => {
-  try {
-    const result = await db.delete(orders).where(eq(orders.id, id));
-    return result;
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:deleteOrder] Went wrong.." };
-  }
+  // try {
+  const result = await db.delete(orders).where(eq(orders.id, id));
+  return result;
+  // } catch (error) {
+  //   console.log(error);
+  //   return { error: "[db:deleteOrder] Went wrong.." };
+  // }
 };
 
 export const pay = async (id: number) => {
@@ -370,20 +366,14 @@ export const ready = async ({
 };
 
 export const getRecentOrders = async () => {
-  try {
-    const today = new Date();
-    const result = await db.query.orders.findMany({
-      where: and(
-        gte(orders.createdAt, startOfToday()),
-        lt(orders.createdAt, endOfToday()),
-      ),
+  const result = await db.query.orders.findMany({
+    where: and(
+      gte(orders.createdAt, startOfToday()),
+      lt(orders.createdAt, endOfToday()),
+    ),
 
-      with: { user: { columns: { name: true, role: true } }, bill: true },
-    });
+    with: { user: { columns: { name: true, role: true } }, bill: true },
+  });
 
-    return result;
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:recentOrders] Went wrong.." };
-  }
+  return result;
 };
