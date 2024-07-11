@@ -4,10 +4,14 @@ import {
   type Reservation,
   reservations,
   GetTimeSlot,
-} from "../schemas/reservation";
-import { db } from "..";
+} from "../db/schemas/reservation";
+import { db } from "../db";
 import { and, eq, isNull } from "drizzle-orm";
-import { StoreSettings, storeRegularSchedule, storeSettings } from "../schemas";
+import {
+  StoreSettings,
+  storeRegularSchedule,
+  storeSettings,
+} from "../db/schemas";
 import { generateTimeSlots } from "@/lib/utils";
 
 export const getAll = async () => {

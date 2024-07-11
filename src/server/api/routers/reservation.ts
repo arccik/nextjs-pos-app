@@ -6,7 +6,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { reservations } from "../../db/schemas";
-import { getUnAssignedReservations } from "@/server/db/models/reservation";
+import { getUnAssignedReservations } from "@/server/models/reservation";
 
 export const reservationRouter = createTRPCRouter({
   getUnAssignedReservations: publicProcedure.query(async () => {

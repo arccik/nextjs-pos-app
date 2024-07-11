@@ -3,7 +3,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { Reservation } from "./reservation";
 import { type User, users } from "./user";
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 export const tableStatusEnum = [
   "available",
@@ -26,17 +26,26 @@ export const tables = sqliteTable(
     status: text("status", { enum: tableStatusEnum })
       .default("available")
       .notNull(),
-    createdAt: integer("created_at", { mode: "timestamp" }).default(
-      sql`(CURRENT_DATE)`,
-    ).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`(CURRENT_DATE)`)
+      .notNull(),
     updatedAt: integer("updated_at", { mode: "timestamp" })
       .default(sql`(CURRENT_DATE)`)
-      .$onUpdate(() => sql`CURRENT_TIMESTAMP`).notNull(),
+      .$onUpdate(() => sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   },
   (t) => ({
     unq: unique().on(t.number, t.prefix),
   }),
 );
+
+export const tableRelations = relations(tables, ({ one }) => ({
+  user: one(users, {
+    fields: [tables.selectedBy],
+    references: [users.id],
+  }),
+}));
+
 
 export const selectTableSchema = createSelectSchema(tables);
 export const insertTableSchema = createInsertSchema(tables, {

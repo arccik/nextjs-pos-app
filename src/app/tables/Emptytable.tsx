@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 // import { useStore } from "@/store";
 import { useRouter } from "next/router";
 import { PlusIcon } from "lucide-react";
-import { setSelectedTable } from "@/server/db/models/table";
+import { setSelectedTable } from "@/server/models/table";
 
 type EmptytableProps = { tableId: number; clean: boolean; tableNumber: number };
 

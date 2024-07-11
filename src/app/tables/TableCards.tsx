@@ -14,8 +14,8 @@ import { AdminMenu } from "./AdminMenu";
 //   TableStatus,
 //   TableWithReservation,
 // } from "@/server/db/schemas/table";
-import { getAll, getAllByStatus } from "@/server/db/models/table";
-import { getUnAssignedReservations } from "@/server/db/models/reservation";
+import { getAll, getAllByStatus } from "@/server/models/table";
+import { getUnAssignedReservations } from "@/server/models/reservation";
 import { api } from "@/trpc/server";
 import AddTable from "./AddTable";
 

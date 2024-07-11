@@ -9,7 +9,6 @@ import {
 import { relations, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { type AdapterAccount } from "next-auth/adapters";
-import { tables } from "./table";
 
 export const userRoles = [
   "admin",
@@ -44,7 +43,6 @@ export const users = sqliteTable("user", {
 export const usersRelations = relations(users, ({ one, many }) => ({
   profileInfo: one(profileInfo),
   accounts: many(accounts),
-  selectedTable: many(tables),
 }));
 
 export const profileInfo = sqliteTable("profile", {
@@ -65,24 +63,24 @@ export const profileInfoRelations = relations(profileInfo, ({ one }) => ({
   }),
 }));
 
-export const posts = sqliteTable(
-  "post",
-  {
-    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    name: text("name", { length: 256 }),
-    createdById: text("createdById", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    createdAt: int("created_at", { mode: "timestamp" })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: int("updatedAt", { mode: "timestamp" }),
-  },
-  (example) => ({
-    createdByIdIdx: index("createdById_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
-  }),
-);
+// export const posts = sqliteTable(
+//   "post",
+//   {
+//     id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+//     name: text("name", { length: 256 }),
+//     createdById: text("createdById", { length: 255 })
+//       .notNull()
+//       .references(() => users.id),
+//     createdAt: int("created_at", { mode: "timestamp" })
+//       .default(sql`CURRENT_TIMESTAMP`)
+//       .notNull(),
+//     updatedAt: int("updatedAt", { mode: "timestamp" }),
+//   },
+//   (example) => ({
+//     createdByIdIdx: index("createdById_idx").on(example.createdById),
+//     nameIndex: index("name_idx").on(example.name),
+//   }),
+// );
 
 // export const users = sqliteTable("user", {
 //   id: text("id", { length: 255 })
