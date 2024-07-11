@@ -1,55 +1,50 @@
-"use client";
 // import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import AddTable from "./AddTable";
+// import AddTable from "./AddTable";
 // import { getAll } from "@/api/tables";
 // import Loading from "../layout/Loading";
 // import Error from "../layout/Error";
 import TablesDialog from "./TablesDialog";
 import { cn } from "@/lib/utils";
-import AddReservation from "@/components/reservations/AddReservation/AddReservation";
-// import { AdminMenu } from "./AdminMenu";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useState } from "react";
-import type {
-  TableStatus,
-  TableWithReservation,
-} from "@/server/db/schemas/table";
+// import AddReservation from "@/components/reservations/AddReservation/AddReservation";
+import { AdminMenu } from "./AdminMenu";
+// import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+// import { useState } from "react";
+// import type {
+//   TableStatus,
+//   TableWithReservation,
+// } from "@/server/db/schemas/table";
 import { getAll, getAllByStatus } from "@/server/db/models/table";
 import { getUnAssignedReservations } from "@/server/db/models/reservation";
+import { api } from "@/trpc/server";
+import AddTable from "./AddTable";
 
 type TabelsGridProps = {
   standalone?: boolean;
 };
 
 export default async function TableCards({ standalone }: TabelsGridProps) {
-  const [tabStatus, setTabStatus] = useState<TableStatus>("available");
+  // const [tabStatus, setTabStatus] = useState<TableStatus>("available");
   // const { data, isLoading, isError } = useQuery<TableWithReservation[]>({
   //   queryKey: ["tables", tabStatus],
   //   queryFn: () => getAll(tabStatus),
   // });
-  // const { data: reservations, isError: isReservationError } = useQuery({
-  //   queryKey: ["reservations"],
-  //   queryFn: () => getUnassignedReservations(),
-  // });
 
-  // if (isLoading) return <Loading />;
-  // if (isError || isReservationError) return <Error />;
-  const reservations = await getUnAssignedReservations();
-  const tables = await getAll();
-  const tableWithReservation = await getAllByStatus(tabStatus);
+  const reservations = await api.reservation.getUnAssignedReservations();
+  // const tables = await getAll();
+  // const tableWithReservation = await getAllByStatus("available");
   return (
     <Card>
-      <ToggleGroup
+      {/* <ToggleGroup
         className="text-sm text-gray-500"
         type="single"
-        value={tabStatus}
-        onValueChange={(e: TableStatus) => setTabStatus(e)}
+        // value={tabStatus}
+        // onValueChange={(e: TableStatus) => setTabStatus(e)}
       >
         <ToggleGroupItem value="available">Available</ToggleGroupItem>
         <ToggleGroupItem value="occupied"> Occupied</ToggleGroupItem>
         <ToggleGroupItem value="reserved"> Reserved</ToggleGroupItem>
-      </ToggleGroup>
+      </ToggleGroup> */}
       {!!reservations?.length &&
         reservations.map((reservation) => (
           <p key={reservation.id}>{reservation.expireAt}</p>
@@ -57,12 +52,12 @@ export default async function TableCards({ standalone }: TabelsGridProps) {
       <CardHeader className="flex flex-col items-center justify-between sm:flex-row">
         <CardTitle className="text-xl font-semibold">Tables</CardTitle>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <AddReservation />
+          {/* <AddReservation /> */}
           <AddTable />
         </div>
         {/* <AdminMenu /> */}
       </CardHeader>
-      <CardContent>
+      {/* <CardContent>
         {tableWithReservation && tableWithReservation?.length > 0 ? (
           <div
             className={cn(
@@ -82,7 +77,7 @@ export default async function TableCards({ standalone }: TabelsGridProps) {
             No tables found
           </p>
         )}
-      </CardContent>
+      </CardContent> */}
     </Card>
   );
 }

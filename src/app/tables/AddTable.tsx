@@ -27,7 +27,7 @@ export default function AddTable() {
           Add Table
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" title="add new table">
         <DialogHeader>
           <DialogTitle>Add New Table</DialogTitle>
           <DialogDescription>

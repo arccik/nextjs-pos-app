@@ -15,6 +15,13 @@
       "when": 1720439432683,
       "tag": "0001_cool_thunderball",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1720538245961,
+      "tag": "0002_tidy_surge",
+      "breakpoints": true
     }
   ]
 }

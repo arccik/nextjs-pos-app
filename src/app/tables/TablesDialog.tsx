@@ -54,7 +54,7 @@ export default async function TableDialog({
         <DialogTrigger>
           <TableButton tableData={tableData} />
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent title={`Table #${tableData.number}`}>
           <DialogHeader>
             <DialogTitle className="flex justify-between">
               Table #{tableData.number}

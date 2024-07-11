@@ -28,10 +28,10 @@ export const tables = sqliteTable(
       .notNull(),
     createdAt: integer("created_at", { mode: "timestamp" }).default(
       sql`(CURRENT_DATE)`,
-    ),
+    ).notNull(),
     updatedAt: integer("updated_at", { mode: "timestamp" })
       .default(sql`(CURRENT_DATE)`)
-      .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
+      .$onUpdate(() => sql`CURRENT_TIMESTAMP`).notNull(),
   },
   (t) => ({
     unq: unique().on(t.number, t.prefix),

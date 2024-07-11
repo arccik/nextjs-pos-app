@@ -1,3 +1,4 @@
+"use server";
 import { and, eq } from "drizzle-orm";
 import { db } from "..";
 import { NewTable, reservations, Table, tables, TableStatus } from "../schemas";

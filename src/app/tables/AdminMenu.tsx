@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EllipsisVerticalIcon } from "lucide-react";
-import AddReservation from "@/components/reservations/addReservation/AddReservation";
+import AddReservation from "@/components/reservations/AddReservation/AddReservation";
 import AddTable from "./AddTable";
 
 export function AdminMenu() {

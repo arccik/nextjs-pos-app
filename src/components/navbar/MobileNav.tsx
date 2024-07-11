@@ -26,7 +26,10 @@ export default function MobileNav() {
               <TriangleDownIcon className="size-5" />
             </Button>
           </DialogTrigger>
-          <DialogContent className="h-full sm:h-max sm:max-w-[425px]">
+          <DialogContent
+            className="h-full sm:h-max sm:max-w-[425px]"
+            title="Navigation menu"
+          >
             <NavigationMenu className="mx-auto">
               <NavigationMenuList className="grid grid-cols-2 gap-1 md:grid-cols-3">
                 {navItems.map((item) => (

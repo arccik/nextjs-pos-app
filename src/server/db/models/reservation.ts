@@ -1,3 +1,4 @@
+"use server";
 import {
   NewReservation,
   type Reservation,
