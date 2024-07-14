@@ -1,84 +1,48 @@
 import { eq } from "drizzle-orm";
 
-import { db } from "..";
-import { items, NewItem, Item } from "../schemas";
+import { db } from "../db";
+import { items, NewItem, Item } from "../db/schemas";
 
 export const getOne = async (id: number) => {
-  try {
-    return await db.query.items.findFirst({
-      where: eq(items.id, id),
-    });
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:getOneitem] Went wrong.." };
-  }
+  return await db.query.items.findFirst({
+    where: eq(items.id, id),
+  });
 };
 export const getAll = async () => {
-  try {
-    return await db.query.items.findMany();
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:getManyitem] Went wrong.." };
-  }
+  return await db.query.items.findMany();
 };
 export const getStopItems = async () => {
-  try {
-    return await db.query.items.findMany({
-      where: eq(items.isAvailable, false),
-    });
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:getStopitems] Went wrong.." };
-  }
+  return await db.query.items.findMany({
+    where: eq(items.isAvailable, false),
+  });
 };
-export const update = async (id: number, body: Item) => {
-  try {
-    return await db.update(items).set(body).where(eq(items.id, id)).returning();
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:getManyitem] Went wrong.." };
-  }
+export const update = async (body: Item) => {
+  return await db
+    .update(items)
+    .set(body)
+    .where(eq(items.id, body.id))
+    .returning();
 };
 
 export const create = async (body: NewItem) => {
-  try {
-    return await db.insert(items).values(body).returning();
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:createitem] Went wrong.." };
-  }
+  return await db.insert(items).values(body).returning();
 };
 
 export const deleteOne = async (id: number) => {
-  try {
-    const result = await db.delete(items).where(eq(items.id, id));
-    return result;
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:deleteitem] Went wrong.." };
-  }
+  const result = await db.delete(items).where(eq(items.id, id));
+  return result;
 };
 
 export const addItemToStopList = async (id: string) => {
-  try {
-    return await db
-      .update(items)
-      .set({ isAvailable: false })
-      .where(eq(items.id, Number(id)));
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:additemstoplist] Went wrong.." };
-  }
+  return await db
+    .update(items)
+    .set({ isAvailable: false })
+    .where(eq(items.id, Number(id)));
 };
 
 export const removeItemFromStopList = async (id: string) => {
-  try {
-    return await db
-      .update(items)
-      .set({ isAvailable: true })
-      .where(eq(items.id, Number(id)));
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:removeitemstoplist] Went wrong.." };
-  }
+  return await db
+    .update(items)
+    .set({ isAvailable: true })
+    .where(eq(items.id, Number(id)));
 };

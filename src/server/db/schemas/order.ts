@@ -13,6 +13,7 @@ import { z } from "zod";
 import { Bill, bills } from "./bill";
 
 export const orderStatus = [
+  "Pending",
   "Ready",
   "In Progress",
   "Completed",
@@ -23,7 +24,7 @@ export const orderStatus = [
 export const orders = sqliteTable("orders", {
   id: integer("id").primaryKey({ autoIncrement: true }),
 
-  userId: integer("user_id").notNull(),
+  userId: text("userId", { length: 255 }).references(() => users.id),
   tableId: integer("table_id").references(() => tables.id),
   isPaid: integer("is_paid", { mode: "boolean" }).default(false).notNull(),
   status: text("order_status", { enum: orderStatus })

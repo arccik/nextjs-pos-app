@@ -42,8 +42,8 @@ export const venueSettingsSchema = createSelectSchema(venueSettings).extend({
   capacity: z.coerce.number(),
 });
 export const newVenueSettingsSchema = createInsertSchema(venueSettings).extend({
-  serviceFee: z.coerce.number(),
-  capacity: z.coerce.number(),
+  serviceFee: z.coerce.number().optional().nullable(),
+  capacity: z.coerce.number().optional().nullable(),
 });;
 
 export type VenueSettings = typeof venueSettings.$inferSelect;

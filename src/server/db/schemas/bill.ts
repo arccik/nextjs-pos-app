@@ -20,7 +20,7 @@ export const bills = sqliteTable(
     serviceFee: real("service_fee"),
     tax: real("tax"),
     paid: integer("paid", { mode: "boolean" }).default(false),
-    userId: integer("user_id").notNull(),
+    userId: text("userId", { length: 255 }).references(() => users.id),
     createdAt: integer("created_at", { mode: "timestamp" }).default(
       sql`(CURRENT_DATE)`,
     ),
@@ -43,7 +43,7 @@ export const payments = sqliteTable("payments", {
   paymentMethod: text("payment_method", { enum: paymentMethod }).notNull(),
   chargedAmount: real("charged_amount").notNull(),
   tipAmount: real("tip_amount"),
-  userId: integer("user_id")
+  userId: text("userId", { length: 255 })
     .notNull()
     .references(() => users.id),
   createdAt: integer("created_at", { mode: "timestamp" }).default(

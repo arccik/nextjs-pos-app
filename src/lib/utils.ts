@@ -192,3 +192,38 @@ export const combineOrderItems = (
 export function formatFieldName(fieldName: string) {
   return fieldName.replace(/([A-Z])/g, " $1").trim();
 }
+
+
+
+
+export function summarizeOrder(items: Item[], orderId?: number) {
+  const itemMap = items.reduce(
+    (acc, product) => {
+      acc[product.id] = acc[product.id] || { itemId: product.id, quantity: 0 };
+      acc[product.id]!.quantity += 1;
+      if (orderId) acc[product.id]!.orderId = orderId;
+      return acc;
+    },
+    {} as {
+      [key: number]: { itemId: number; quantity: number; orderId?: number };
+    },
+  );
+
+  return Object.values(itemMap);
+}
+export type ItemToSummerize = {
+  itemId: number;
+  quantity: number;
+  items: {
+    name: string | null;
+    price: number | null;
+    imageUrl: string | null;
+  };
+};
+export function summarizePrice(items: ItemToSummerize[]) {
+  if (!items) return null;
+  return items.reduce(
+    (total, item) => total + Number(item.items.price ?? 0),
+    0,
+  );
+}

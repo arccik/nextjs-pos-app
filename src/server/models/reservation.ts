@@ -64,48 +64,40 @@ export const update = async (body: Reservation) => {
   }
 };
 export const timeSlots = async ({ tableId, date }: GetTimeSlot) => {
-  try {
-    const settings: StoreSettings[] = await db
-      .select()
-      .from(storeSettings)
-      .where(eq(storeSettings.profileName, "default"));
+  const settings: StoreSettings[] = await db
+    .select()
+    .from(storeSettings)
+    .where(eq(storeSettings.profileName, "default"));
 
-    const bookedReservations = await db
-      .select()
-      .from(reservations)
-      .where(
-        tableId
-          ? and(
-              eq(reservations.tableId, tableId),
-              eq(reservations.scheduledAt, date),
-            )
-          : and(
-              eq(reservations.scheduledAt, date),
-              isNull(reservations.tableId),
-            ),
-      );
+  const bookedReservations = await db
+    .select()
+    .from(reservations)
+    .where(
+      tableId
+        ? and(
+            eq(reservations.tableId, tableId),
+            eq(reservations.scheduledAt, date),
+          )
+        : and(eq(reservations.scheduledAt, date), isNull(reservations.tableId)),
+    );
 
-    const regularSchedule = await db.select().from(storeRegularSchedule);
-    const { openTime, closeTime } = regularSchedule.find(
-      (item) => item.number == new Date(date).getDay(),
-    )!;
+  const regularSchedule = await db.select().from(storeRegularSchedule);
+  const { openTime, closeTime } = regularSchedule.find(
+    (item) => item.number == new Date(date).getDay(),
+  )!;
 
-    if (!settings[0] || !openTime || !closeTime) return;
+  if (!settings[0] || !openTime || !closeTime) return;
 
-    const interval = settings[0].reservationInterval!;
-    const duration = settings[0].reservationDuration!;
-    return generateTimeSlots({
-      date,
-      openTime,
-      closeTime,
-      interval,
-      duration,
-      reservations: bookedReservations,
-    });
-  } catch (error) {
-    console.error(error);
-    return { error: "[db:generateTimeSlots] Went wrong.." };
-  }
+  const interval = settings[0].reservationInterval!;
+  const duration = settings[0].reservationDuration!;
+  return generateTimeSlots({
+    date,
+    openTime,
+    closeTime,
+    interval,
+    duration,
+    reservations: bookedReservations,
+  });
 };
 
 export const getUnAssignedReservations = () => {

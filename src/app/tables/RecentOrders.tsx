@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { OrderWithUserAndBill } from "@/server/db/schemas";
+// import type { OrderWithUserAndBill } from "@/server/db/schemas";
 import {
   Card,
   CardContent,
@@ -16,13 +16,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils";
-import { recentCompletedOrders } from "@/server/db/models/order";
+// import { recentCompletedOrders } from "@/server/models/order";
+import { api } from "@/trpc/react";
+// import { api } from "@/trpc/server";
 
 type RecentOrdersProps = {
   tableId: number;
 };
-export default async function RecentOrders({ tableId }: RecentOrdersProps) {
-  const data = await recentCompletedOrders(tableId);
+export default function RecentOrders({ tableId }: RecentOrdersProps) {
+  // const data = await recentCompletedOrders(tableId);
+  const { data } = api.order.getRecentCompletedOrders.useQuery({ tableId });
   if (!data || data.length === 0) {
     return (
       <p className="text-md text-center text-gray-500">
@@ -67,7 +70,7 @@ export default async function RecentOrders({ tableId }: RecentOrdersProps) {
                   {new Date(order.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>{formatCurrency(order.bill?.totalAmount)}</TableCell>
-                <TableCell>{order.user.name}</TableCell>
+                <TableCell>{order.user?.name}</TableCell>
               </TableRow>
             ))}
           </TableBody>

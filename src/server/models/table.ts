@@ -1,32 +1,28 @@
 "use server";
 import { and, eq } from "drizzle-orm";
-import { db } from "..";
-import { NewTable, reservations, Table, tables, TableStatus } from "../schemas";
-import { format } from "date-fns";
+import { db } from "../db";
+import {
+  NewTable,
+  reservations,
+  Table,
+  tables,
+  TableStatus,
+  TableWithReservation,
+} from "../db/schemas";
 
 export const getOne = async (id: number) => {
-  try {
-    return await db.query.tables.findFirst({ where: eq(tables.id, id) });
-  } catch (error_1) {
-    console.error(error_1);
-    throw new Error("Internal [db] server error");
-  }
+  return await db.query.tables.findFirst({ where: eq(tables.id, id) });
 };
 
 export const getAllByStatus = async (status: TableStatus) => {
-  try {
-    return await db.query.tables.findMany({
-      where: eq(tables.status, status),
-      with: {
-        reservations: {
-          where: eq(reservations.tableId, tables.id),
-        },
+  return await db.query.tables.findMany({
+    where: eq(tables.status, status),
+    with: {
+      reservations: {
+        where: eq(reservations.tableId, tables.id),
       },
-    });
-  } catch (error) {
-    console.error(error);
-    throw new Error("Internal server error");
-  }
+    },
+  });
 };
 
 export const getAll = async () => {
@@ -36,111 +32,71 @@ export const getAll = async () => {
     year: "numeric",
   });
 
-  try {
-    const result = await db.query.tables.findMany({
-      with: {
-        reservations: {
-          where: and(
-            eq(reservations.tableId, tables.id),
-            eq(reservations.scheduledAt, date),
-          ),
-        },
+  const result = await db.query.tables.findMany({
+    with: {
+      reservations: {
+        where: and(
+          eq(reservations.tableId, tables.id),
+          eq(reservations.scheduledAt, date),
+        ),
       },
-    });
-
-    return result;
-  } catch (error_1) {
-    console.error(error_1);
-    throw new Error("Internal server error");
-  }
+    },
+  });
+  return result;
 };
 
 export const create = async (body: NewTable) => {
-  try {
-    const isExist = await db.query.tables.findFirst({
-      where: eq(tables.number, body.number),
-    });
-    if (isExist) return { error: "Table number already exist" };
-    return await db.insert(tables).values(body).returning();
-  } catch (error) {
-    console.error(error);
-    throw new Error("Internal server error");
-    // return { error: "[db:createTable] Went wrong.." };
-  }
+  const isExist = await db.query.tables.findFirst({
+    where: eq(tables.number, body.number),
+  });
+  if (isExist) return { error: "Table number already exist" };
+  return await db.insert(tables).values(body).returning();
 };
 
 //delete a tables
 export const deleteOne = async (id: number) => {
-  try {
-    return await db.delete(tables).where(eq(tables.id, id));
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:deleteTable] Went wrong.." };
-  }
+  return await db.delete(tables).where(eq(tables.id, id));
 };
 //update a tables record
 export const update = async (id: number, body: Table) => {
-  try {
-    return await db
-      .update(tables)
-      .set(body)
-      .where(eq(tables.id, id))
-      .returning();
-  } catch (error) {
-    console.error(error);
-    return { error: "[db:updateTable] Went wrong.." };
-  }
+  return await db.update(tables).set(body).where(eq(tables.id, id)).returning();
 };
 export const updateStatus = async (id: number, status: TableStatus) => {
-  try {
-    return await db
-      .update(tables)
-      .set({ status })
-      .where(eq(tables.id, id))
-      .returning();
-  } catch (error) {
-    console.error(error);
-    return { error: "[db:updateStatus] Went wrong.." };
-  }
+  return await db
+    .update(tables)
+    .set({ status })
+    .where(eq(tables.id, id))
+    .returning();
 };
 
 export const markClean = async (id: number) => {
-  try {
-    console.log("MARK AS CLEAN >>>> ", id);
+  console.log("MARK AS CLEAN >>>> ", id);
 
-    return await db
-      .update(tables)
-      .set({ requireCleaning: false })
-      .where(eq(tables.id, id))
-      .returning();
-  } catch (error) {
-    console.error(error);
-    return { error: "[db:markClean] Went wrong.." };
-  }
+  return await db
+    .update(tables)
+    .set({ requireCleaning: false })
+    .where(eq(tables.id, id))
+    .returning();
 };
 
-export const setSelectedTable = (id: number, userId: number) => {
-  try {
-    return db
-      .update(tables)
-      .set({ selectedBy: userId })
-      .where(eq(tables.id, id))
-      .returning();
-  } catch (error) {
-    console.error(error);
-    return { error: "[db:setSelectedTable] Went wrong.." };
-  }
+export const setSelectedTable = (id: number, userId: string) => {
+  return db
+    .update(tables)
+    .set({ selectedBy: userId })
+    .where(eq(tables.id, id))
+    .returning();
 };
 
 export const unsetSelectedTable = (id: number, userId?: number) => {
-  try {
-    return db
-      .update(tables)
-      .set({ selectedBy: null })
-      .where(eq(tables.id, id))
-      .returning();
-  } catch (error) {
-    console.error(error);
-    return { error: "[db:unsetSelectedTable] Went wrong.." };
-  }
+  return db
+    .update(tables)
+    .set({ selectedBy: null })
+    .where(eq(tables.id, id))
+    .returning();
+};
+
+export const getSelectedTable = (userId: string) => {
+  return db.query.tables.findFirst({
+    where: eq(tables.selectedBy, userId),
+  });
 };

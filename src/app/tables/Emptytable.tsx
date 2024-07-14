@@ -1,16 +1,18 @@
 "use client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+// import { useMutation, useQuery } from "@tanstack/react-query";
 import RecentOrders from "./RecentOrders";
 // import { recentCompletedOrders } from "@/api/orders";
-import { type OrderWithUserAndBill } from "@/server/db/schemas";
+// import { type OrderWithUserAndBill } from "@/server/db/schemas";
 // import Error from "../layout/Error";
 import { Button } from "@/components/ui/button";
 // import { markClean } from "@/api/tables";
-// import { useToast } from "@components/ui/use-toast";
+// import { useToast } from "@/components/ui/use-toast";
 // import { useStore } from "@/store";
-import { useRouter } from "next/router";
 import { PlusIcon } from "lucide-react";
-import { setSelectedTable } from "@/server/models/table";
+import { api } from "@/trpc/react";
+import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+// import { setSelectedTable } from "@/server/models/table";
 
 type EmptytableProps = { tableId: number; clean: boolean; tableNumber: number };
 
@@ -19,10 +21,18 @@ export default function EmptyTable({
   clean,
   tableNumber,
 }: EmptytableProps) {
+  const router = useRouter();
+
+  const setSelectedTable = api.table.setSelectedTable.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Table selected",
+      });
+    },
+  });
   //   const { toast } = useToast();
   //   const { setSelectedTable } = useStore();
   const userId = 1;
-  const router = useRouter();
 
   //   const { data, isLoading, isError } = useQuery<OrderWithUserAndBill[]>({
   //     queryKey: ["table", tableId],
@@ -39,7 +49,7 @@ export default function EmptyTable({
 
   const handleAddNewOrder = async () => {
     // setSelectedTable({ tableId, number: tableNumber });
-    await setSelectedTable(tableId, userId);
+    setSelectedTable.mutate(tableId);
     router.push(`/menu?tableId=${tableId}`);
   };
 

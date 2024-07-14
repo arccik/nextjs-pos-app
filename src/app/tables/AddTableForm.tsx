@@ -1,7 +1,6 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Form,
   FormControl,
@@ -13,10 +12,9 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// import { create } from "@/api/tables";
 import { type NewTable, insertTableSchema } from "@/server/db/schemas";
 import { Textarea } from "@/components/ui/textarea";
-// import { AxiosError } from "axios";
+import { api } from "@/trpc/react";
 
 type AddTableFormProps = {
   onClose: () => void;
@@ -25,35 +23,28 @@ type AddTableFormProps = {
 export default function AddTableForm({ onClose }: AddTableFormProps) {
   const form = useForm<NewTable>({
     resolver: zodResolver(insertTableSchema),
-    // defaultValues: {
-    //   number: undefined,
-    //   prefix: undefined,
-    //   description: undefined,
-    //   seats: 0,
-    // },
+    defaultValues: {
+      number: undefined,
+      prefix: undefined,
+      description: undefined,
+      seats: 0,
+    },
   });
-  //   const queryClient = useQueryClient();
-
-  //   const addNewTable = useMutation({
-  //     mutationFn: create,
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries({ queryKey: ["tables"] });
-  //       onClose();
-  //     },
-  //     onError: (error) => {
-  //       if (error instanceof Error) {
-  //         form.setError("number", { message: error.message });
-  //       }
-  //       if (error instanceof AxiosError) {
-  //         form.setError("number", { message: error?.response?.data });
-  //       }
-  //     },
-  //   });
+  const createTable = api.table.create.useMutation({
+    onError: (error) => {
+      if (error instanceof Error) {
+        form.setError("number", { message: error.message });
+      }
+      console.error("Error creating table", error);
+    },
+  });
 
   const onSubmit = (values: NewTable) => {
-    // addNewTable.mutate(values);
+    createTable.mutate(values);
+    onClose();
+    alert(JSON.stringify(values, null, 2));
   };
-
+  console.log(form.formState);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">

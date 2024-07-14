@@ -7,17 +7,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TablesDialog from "./TablesDialog";
 import { cn } from "@/lib/utils";
 // import AddReservation from "@/components/reservations/AddReservation/AddReservation";
-import { AdminMenu } from "./AdminMenu";
+// import { AdminMenu } from "./AdminMenu";
 // import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 // import { useState } from "react";
 // import type {
 //   TableStatus,
 //   TableWithReservation,
 // } from "@/server/db/schemas/table";
-import { getAll, getAllByStatus } from "@/server/models/table";
-import { getUnAssignedReservations } from "@/server/models/reservation";
+// import { getAll, getAllByStatus } from "@/server/models/table";
+// import { getUnAssignedReservations } from "@/server/models/reservation";
 import { api } from "@/trpc/server";
 import AddTable from "./AddTable";
+// import { TableWithReservation } from "@/server/db/schemas";
 
 type TabelsGridProps = {
   standalone?: boolean;
@@ -29,6 +30,8 @@ export default async function TableCards({ standalone }: TabelsGridProps) {
   //   queryKey: ["tables", tabStatus],
   //   queryFn: () => getAll(tabStatus),
   // });
+  const data = await api.table.getAll();
+  console.log("Table CARDS: ", data);
 
   const reservations = await api.reservation.getUnAssignedReservations();
   // const tables = await getAll();
@@ -57,8 +60,9 @@ export default async function TableCards({ standalone }: TabelsGridProps) {
         </div>
         {/* <AdminMenu /> */}
       </CardHeader>
-      {/* <CardContent>
-        {tableWithReservation && tableWithReservation?.length > 0 ? (
+
+      <CardContent>
+        {data && data?.length > 0 ? (
           <div
             className={cn(
               "grid grid-flow-row grid-cols-1 gap-3 sm:grid-cols-2",
@@ -68,7 +72,7 @@ export default async function TableCards({ standalone }: TabelsGridProps) {
               },
             )}
           >
-            {tableWithReservation.map((table) => (
+            {data.map((table) => (
               <TablesDialog key={table.id} tableData={table} />
             ))}
           </div>
@@ -77,7 +81,7 @@ export default async function TableCards({ standalone }: TabelsGridProps) {
             No tables found
           </p>
         )}
-      </CardContent> */}
+      </CardContent>
     </Card>
   );
 }

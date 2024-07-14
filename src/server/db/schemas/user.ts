@@ -19,10 +19,7 @@ export const userRoles = [
 ] as const;
 
 export const users = sqliteTable("user", {
-  // id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => sql`(cast(rowid as text))`),
+  id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name"),
   email: text("email").unique().notNull(),
   password: text("password").notNull(),
@@ -50,7 +47,7 @@ export const profileInfo = sqliteTable("profile", {
   image: text("image"),
   phone: text("phone"),
   address: text("address"),
-  userId: integer("user_id").references(() => users.id),
+  userId: text("user_id").references(() => users.id),
   createdAt: int("created_at", { mode: "timestamp" })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

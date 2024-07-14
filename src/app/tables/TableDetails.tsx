@@ -3,13 +3,13 @@ import DisplayOrderItems from "./DisplayOrderItems";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { Badge } from "@/components/ui/badge";
-import type { OrderWithItems } from "@/server/db/models/order";
+import type { OrderWithItems } from "@/server/models/order";
 import { PoundSterling } from "lucide-react";
 
 type tableDetailsProps = {
   data: OrderWithItems;
 };
-export default function TableDetails({ data }: tableDetailsProps) {
+export default async function TableDetails({ data }: tableDetailsProps) {
   return (
     <ScrollArea className="max-h-[500px] rounded-md">
       <div className="flex justify-between  p-5">

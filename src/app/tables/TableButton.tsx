@@ -37,7 +37,7 @@ export default function TableButton({ tableData }: TableButtonProps) {
       </CardHeader>
 
       <CardContent className="flex items-center justify-center gap-2 p-2">
-        {!!tableData.reservations.length && (
+        {!!tableData?.reservations?.length && (
           <div className="flex items-center">
             <Notebook />
             <p className="text-xs leading-none">
@@ -45,7 +45,7 @@ export default function TableButton({ tableData }: TableButtonProps) {
             </p>
           </div>
         )}
-        {!!tableData.reservations.length && <div className="h-8 border-l" />}
+        {!!tableData.reservations?.length && <div className="h-8 border-l" />}
         <div className="flex flex-col">
           <p className="text-xs leading-none">Seats</p>
           <p className="text-sm font-semibold leading-none">

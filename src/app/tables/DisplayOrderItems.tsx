@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils";
 import { type Bill } from "@/server/db/schemas";
-import type { OrderWithItems } from "@/server/db/models/order";
+import type { OrderWithItems } from "@/server/models/order";
 
 export type Item = {
   itemId: number;

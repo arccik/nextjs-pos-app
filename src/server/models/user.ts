@@ -1,56 +1,30 @@
 import { eq } from "drizzle-orm";
 
-import { db } from "..";
-import { type User, users } from "../schemas/user";
+import { db } from "../db";
+import { NewUser, type User, users } from "../db/schemas/user";
 
-export const getOne = async (id: string) => {
-  try {
-    return await db.query.users.findFirst({
-      where: eq(users.id, id),
-      with: { profileInfo: true },
-    });
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:getOneUser] Went wrong.." };
-  }
+export const getOne = async (id: number) => {
+  return await db.query.users.findFirst({
+    where: eq(users.id, id),
+    with: { profileInfo: true },
+  });
 };
 export const getAll = async () => {
-  try {
-    return await db.query.users.findMany();
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:getManyUser] Went wrong.." };
-  }
+  return await db.query.users.findMany();
 };
-export const update = async (id: string, body: User) => {
-  try {
-    const result = await db
-      .update(users)
-      .set(body)
-      .where(eq(users.id, id))
-      .returning();
-    return result;
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:getManyUser] Went wrong.." };
-  }
+export const update = async (body: User) => {
+  return await db
+    .update(users)
+    .set(body)
+    .where(eq(users.id, body.id))
+    .returning();
 };
 
-export const create = async (body: User) => {
-  try {
-    return await db.insert(users).values(body).returning();
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:createUser] Went wrong.." };
-  }
+export const create = async (body: NewUser) => {
+  console.log("Creating user :::: ", body);
+  return await db.insert(users).values(body).returning();
 };
 
-export const deleteOne = async (id: string) => {
-  try {
-    const result = await db.delete(users).where(eq(users.id, id));
-    return result;
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:deleteUser] Went wrong.." };
-  }
+export const deleteOne = async (id: number) => {
+  return await db.delete(users).where(eq(users.id, id));
 };

@@ -19,7 +19,7 @@ export const tables = sqliteTable(
     prefix: text("prefix", { length: 5 }),
     description: text("description"),
     seats: integer("seats").notNull(),
-    selectedBy: integer("selected_by").references(() => users.id),
+    selectedBy: text("userId", { length: 255 }).references(() => users.id),
     requireCleaning: integer("require_cleaning", { mode: "boolean" })
       .default(false)
       .notNull(),
@@ -46,7 +46,6 @@ export const tableRelations = relations(tables, ({ one }) => ({
   }),
 }));
 
-
 export const selectTableSchema = createSelectSchema(tables);
 export const insertTableSchema = createInsertSchema(tables, {
   number: z.coerce.number(),
@@ -71,6 +70,6 @@ export type NewTable = z.infer<typeof insertTableSchema>;
 export type TableStatus = (typeof tableStatusEnum)[number];
 
 export type TableWithReservation = Table & {
-  reservations: Reservation[];
+  reservations?: Reservation[];
   // user: User;
 };

@@ -29,6 +29,20 @@
       "when": 1720692367565,
       "tag": "0003_graceful_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1720972577881,
+      "tag": "0004_condemned_gamora",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1720974136106,
+      "tag": "0005_flaky_nitro",
+      "breakpoints": true
     }
   ]
 }

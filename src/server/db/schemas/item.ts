@@ -45,10 +45,10 @@ export const itemsSchema = createSelectSchema(items);
 export const newItemSchemaRaw = createInsertSchema(items);
 
 export const newItemSchema = newItemSchemaRaw.extend({
-  preparationTime: z.string().min(1, { message: "Required" }),
+  preparationTime: z.number().min(1, { message: "Required" }),
   name: z.string().min(1, { message: "Required" }),
   categoryId: z.number({ invalid_type_error: "Required" }).min(0),
-  price: z.coerce.string().min(1, { message: "Required" }),
+  price: z.coerce.number().min(1, { message: "Required" }),
 });
 export type NewItemSchemaType = z.infer<typeof newItemSchema>;
 export type Item = typeof items.$inferSelect;
