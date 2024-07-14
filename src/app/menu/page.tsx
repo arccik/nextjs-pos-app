@@ -1,6 +1,7 @@
 import { MenuList } from "./MenuList";
 
 export default async function MenuPage() {
+
   return (
     <section className="grid w-full grid-flow-row py-12 ">
       <div className="grid gap-8 px-4 md:container md:px-6">
