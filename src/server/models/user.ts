@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { NewUser, type User, users } from "../db/schemas/user";
 
-export const getOne = async (id: number) => {
+export const getOne = async (id: string) => {
   return await db.query.users.findFirst({
     where: eq(users.id, id),
     with: { profileInfo: true },
@@ -25,6 +25,12 @@ export const create = async (body: NewUser) => {
   return await db.insert(users).values(body).returning();
 };
 
-export const deleteOne = async (id: number) => {
+export const deleteOne = async (id: string) => {
   return await db.delete(users).where(eq(users.id, id));
+};
+
+export const isExist = async (email: string) => {
+  return await db.query.users.findFirst({
+    where: eq(users.email, email),
+  });
 };

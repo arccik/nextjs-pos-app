@@ -22,7 +22,9 @@ export const items = sqliteTable("items", {
   isGlutenFree: integer("gluten_free", { mode: "boolean" }),
   isSpicy: integer("spicy", { mode: "boolean" }),
   preparationTime: integer("preparation_time").notNull(),
-  categoryId: integer("category_id").references(() => categories.id),
+  categoryId: integer("category_id")
+    .notNull()
+    .references(() => categories.id),
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`(CURRENT_DATE)`,
   ),

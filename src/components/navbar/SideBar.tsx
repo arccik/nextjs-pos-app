@@ -13,7 +13,7 @@ import { LogOut, Settings } from "lucide-react";
 import navItems from "./NavItems";
 import MobileNav from "./MobileNav";
 
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,11 +28,9 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 
-
 export default function SideBar() {
   const handleLogOut = async () => {
-    // await signOut({ callbackUrl: "/login" });
-    throw new Error("Not implemented");
+    await signOut({ callbackUrl: "/login" });
   };
   return (
     <>

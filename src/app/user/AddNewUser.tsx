@@ -44,6 +44,12 @@ export function AddNewUser() {
       });
       form.reset();
     },
+    onError: (error) => {
+      console.error(error);
+      form.setError("email", {
+        message: "Email already exists",
+      });
+    },
   });
 
   function onSubmit(data: z.infer<typeof newUserSchema>) {

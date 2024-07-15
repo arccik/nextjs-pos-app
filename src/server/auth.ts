@@ -5,6 +5,7 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
+import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import { db } from "@/server/db";
@@ -14,6 +15,7 @@ import {
   users,
   verificationTokens,
 } from "@/server/db/schemas";
+import { isExist } from "./models/user";
 
 type UserRole = "admin" | "waiter";
 /**
@@ -69,27 +71,42 @@ export const authOptions: NextAuthOptions = {
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        email: {
+          label: "Email",
+          type: "text",
+          placeholder: "example@mail.com",
+        },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
-        const user = {
-          id: "1",
-          name: "J Smith XXX",
-          email: "jsmith@example.com",
+        // const user = {
+        //   id: "1",
+        //   name: "J Smith XXX",
+        //   email: "jsmith@example.com",
+        //   role: "user",
+        // };
+        // return user;
+
+        if (!credentials) return null;
+
+        const user = await isExist(credentials.email);
+        if (!user) return null;
+        const isPasswordSame = bcrypt.compareSync(
+          credentials.password,
+          user.password,
+        );
+        console.log("AUTH:LLL L>>> >> >> > > > >> > ", {
+          user,
+          isPasswordSame,
+        });
+        if (!isPasswordSame) return null;
+        return {
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          id: user.id,
         };
-
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          console.log("USER EXIST : ", user);
-          return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
-
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
-        }
       },
     }),
     /**

@@ -6,6 +6,7 @@ import {
   index,
   sqliteTable,
 } from "drizzle-orm/sqlite-core";
+import { v4 as uuid } from "uuid";
 import { relations, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { type AdapterAccount } from "next-auth/adapters";
@@ -19,7 +20,10 @@ export const userRoles = [
 ] as const;
 
 export const users = sqliteTable("user", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+  id: text("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => uuid()),
   name: text("name"),
   email: text("email").unique().notNull(),
   password: text("password").notNull(),

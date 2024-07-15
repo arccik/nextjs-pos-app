@@ -14,22 +14,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-// import useAuthUser from "react-auth-kit/hooks/useAuthUser";
-// import useSignIn from "react-auth-kit/hooks/useSignIn";
-// import $api from "@/api";
-// import { toast } from "../ui/use-toast";
 
 import { redirect } from "next/navigation";
-import { signIn, useSession, getSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 const formSchema = z.object({
   email: z.string().email().min(5, { message: "Required" }),
   password: z.string().min(4, { message: "Password too short" }),
 });
 
 export default function Authentication() {
-  //   const signIn = useSignIn();
   const { data: session } = useSession();
-  console.log("SEsSIon ", session);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,43 +33,20 @@ export default function Authentication() {
     },
   });
   if (session) return redirect("/");
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const res = await signIn("credentials", {
       ...values,
+      redirect: false,
     });
-    console.log("sign in: ", res);
-    return null;
-    // return redirect("/");
+    console.log("On Submit : /.");
+    if (res && "error" in res) {
+      form.setError("email", { message: "Invalid credentials" });
+    } else {
+      redirect("/");
+    }
   }
-  //   async function onSubmit(values: z.infer<typeof formSchema>) {
-  //     const response = await $api
-  //       .post<{ session: string }>("/auth/login", {
-  //         email: values.email,
-  //         password: values.password,
-  //       })
-  //       .catch((e) => {
-  //         toast({
-  //           title: "Something went wrong...",
-  //           description: e.response.data.message,
-  //           variant: "destructive",
-  //         });
-  //       });
 
-  //     if (!response?.data) {
-  //       return;
-  //     }
-  //     const user = decodeJwt(response.data.session);
-  //     signIn({
-  //       auth: {
-  //         token: response.data.session,
-  //         type: "Bearer",
-  //       },
-  //       userState: {
-  //         name: user.name,
-  //         id: user.id,
-  //       },
-  //     });
-  //   }
   return (
     <section>
       <div className="mx-auto flex flex-col items-center justify-center px-6 py-8">

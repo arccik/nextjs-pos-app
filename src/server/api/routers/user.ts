@@ -17,7 +17,7 @@ import {
 } from "@/server/db/schemas";
 
 export const userRouter = createTRPCRouter({
-  getOne: protectedProcedure.input(z.number()).query(async ({ input }) => {
+  getOne: protectedProcedure.input(z.string()).query(async ({ input }) => {
     return await getOne(input);
   }),
   getAll: protectedProcedure.query(async () => {
@@ -30,7 +30,7 @@ export const userRouter = createTRPCRouter({
       return await create({ ...input, password });
     }),
   deleteOne: protectedProcedure
-    .input(z.number())
+    .input(z.string())
     .mutation(async ({ input }) => {
       return await deleteOne(input);
     }),
