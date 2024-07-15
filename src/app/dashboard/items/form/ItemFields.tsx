@@ -31,6 +31,7 @@ type ItemFieldsProps = {
 
 export function ItemFields({ form }: ItemFieldsProps) {
   const { data: categories } = api.category.getAll.useQuery();
+  console.log("ItemFields CATEGORY: ", categories);
   return (
     <>
       <FormField

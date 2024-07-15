@@ -47,7 +47,7 @@ export const itemsSchema = createSelectSchema(items);
 export const newItemSchemaRaw = createInsertSchema(items);
 
 export const newItemSchema = newItemSchemaRaw.extend({
-  preparationTime: z.number().min(1, { message: "Required" }),
+  preparationTime: z.coerce.number().min(1, { message: "Required" }),
   name: z.string().min(1, { message: "Required" }),
   categoryId: z.number({ invalid_type_error: "Required" }).min(0),
   price: z.coerce.number().min(1, { message: "Required" }),

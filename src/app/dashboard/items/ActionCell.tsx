@@ -22,7 +22,7 @@ import { useRouter } from "next/router";
 
 export default function ActionCell(props: CellContext<Item, unknown>) {
   //   const navigate = useNavigate();
-  const router = useRouter();
+  //   const router = useRouter();
   const rowId = props.row.original.id;
   //   const queryClient = useQueryClient();
   //   const addToStopList = useMutation({
@@ -71,7 +71,7 @@ export default function ActionCell(props: CellContext<Item, unknown>) {
     // deleteItem.mutate(String(rowId));
     throw new Error("Not implemented");
   };
-
+  return null;
   return (
     <>
       <DropdownMenu>
@@ -99,7 +99,7 @@ export default function ActionCell(props: CellContext<Item, unknown>) {
           )}
           <DropdownMenuItem
             className="text-yellow-500 "
-            onClick={() => router.push(`/admin/items/edit?id=${rowId}`)}
+            // onClick={() => router.push(`/admin/items/edit?id=${rowId}`)}
           >
             Edit
           </DropdownMenuItem>

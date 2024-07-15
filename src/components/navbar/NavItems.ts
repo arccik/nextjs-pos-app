@@ -58,7 +58,7 @@ export default [
     id: 242,
     title: "Menu Items",
     icon: Ham,
-    link: "/admin/items",
+    link: "/dashboard/items",
   },
   {
     id: 5,
