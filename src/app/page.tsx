@@ -1,7 +1,7 @@
-import SummaryCard from "./dashboard/SummaryCard";
-import OrderTable from "./dashboard/OrderTable";
-import VenueDetails from "./dashboard/VenueDetails";
-import TopSection from "./dashboard/TopSection";
+import SummaryCard from "./(dashboard)/SummaryCard";
+import OrderTable from "./(dashboard)/OrderTable";
+import VenueDetails from "./(dashboard)/VenueDetails";
+import TopSection from "./(dashboard)/TopSection";
 
 export default function Dashboard() {
   return (

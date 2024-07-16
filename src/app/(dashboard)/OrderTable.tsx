@@ -27,7 +27,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 // import Loading from "@/components/layout/Loading";
 // import Error from "@/components/layout/Error";
 // import { recentOrders } from "@/api/orders";

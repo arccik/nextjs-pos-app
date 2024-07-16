@@ -24,7 +24,7 @@ export const items = sqliteTable("items", {
   preparationTime: integer("preparation_time").notNull(),
   categoryId: integer("category_id")
     .notNull()
-    .references(() => categories.id),
+    .references(() => categories.id, { onDelete: "cascade" }),
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`(CURRENT_DATE)`,
   ),

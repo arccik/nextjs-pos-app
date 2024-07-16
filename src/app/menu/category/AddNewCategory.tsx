@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type NewCategory, newCategoriesSchema } from "@/server/db/schemas";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,12 +15,14 @@ import { Form } from "@/components/ui/form";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 type AddNewCategoryProps = {
   onClose: () => void;
 };
 
 export default function AddNewCategory({ onClose }: AddNewCategoryProps) {
+  const router = useRouter();
   const form = useForm<NewCategory>({
     resolver: zodResolver(newCategoriesSchema),
     defaultValues: {
@@ -36,6 +37,7 @@ export default function AddNewCategory({ onClose }: AddNewCategoryProps) {
         description: "Item successfully saved",
       });
       onClose();
+      router.refresh();
     },
     onError: (error) => {
       console.error("Saving item went wrong", error);
@@ -60,26 +62,31 @@ export default function AddNewCategory({ onClose }: AddNewCategoryProps) {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="type here..." value={field.value ?? ""} />
+                  <Input
+                    {...field}
+                    placeholder="type here..."
+                    value={field.value ?? ""}
+                    required
+                  />
                 </FormControl>
-                <FormDescription>
-                  This is item public display name.
-                </FormDescription>
+
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
-            Save
-          </Button>
-          <Button
-            onClick={() => form.reset()}
-            type="reset"
-            variant="secondary"
-            className="w-full"
-          >
-            Clear
-          </Button>
+          <div className="flex gap-4">
+            <Button type="submit" className="w-full">
+              Save
+            </Button>
+            <Button
+              onClick={() => form.reset()}
+              type="reset"
+              variant="secondary"
+              className="w-full"
+            >
+              Clear
+            </Button>
+          </div>
         </form>
       </Form>
     </section>

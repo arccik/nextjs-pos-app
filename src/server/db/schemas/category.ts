@@ -5,7 +5,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const categories = sqliteTable("category", {
   id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
-  name: text("name", { length: 255 }),
+  name: text("name", { length: 255 }).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`(CURRENT_DATE)`,
   ),

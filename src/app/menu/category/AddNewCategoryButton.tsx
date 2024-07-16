@@ -16,13 +16,13 @@ export default function AddNewCategoryButton() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Add New Category</Button>
+        <Button variant="outline">Add New Category</Button>
       </DialogTrigger>
       <DialogContent className="overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Category to your menu</DialogTitle>
           <DialogDescription>
-            Here you can add new category to the menu
+            This is item public display name.
           </DialogDescription>
         </DialogHeader>
         <AddNewCategory onClose={() => setIsOpen(false)} />

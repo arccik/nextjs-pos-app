@@ -1,4 +1,5 @@
 "use client";
+
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -15,7 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 const formSchema = z.object({
   email: z.string().email().min(5, { message: "Required" }),
@@ -23,7 +25,8 @@ const formSchema = z.object({
 });
 
 export default function Authentication() {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -32,18 +35,18 @@ export default function Authentication() {
       password: "",
     },
   });
-  if (session) return redirect("/");
+  // if (session) return router.replace("/");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const res = await signIn("credentials", {
       ...values,
       redirect: false,
     });
-    console.log("On Submit : /.");
-    if (res && "error" in res) {
+    console.log("On Submit : /.", res);
+    if (res && "error" in res && res.error) {
       form.setError("email", { message: "Invalid credentials" });
     } else {
-      redirect("/");
+      router.replace("/");
     }
   }
 

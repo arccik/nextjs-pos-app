@@ -5,64 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1720420737155,
-      "tag": "0000_cynical_may_parker",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1720439432683,
-      "tag": "0001_cool_thunderball",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1720538245961,
-      "tag": "0002_tidy_surge",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1720692367565,
-      "tag": "0003_graceful_yellow_claw",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1720972577881,
-      "tag": "0004_condemned_gamora",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1720974136106,
-      "tag": "0005_flaky_nitro",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1721027689247,
-      "tag": "0006_cool_hobgoblin",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "6",
-      "when": 1721027820157,
-      "tag": "0007_needy_pretty_boy",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "6",
-      "when": 1721052590094,
-      "tag": "0008_round_shooting_star",
+      "when": 1721133957858,
+      "tag": "0000_outgoing_spirit",
       "breakpoints": true
     }
   ]

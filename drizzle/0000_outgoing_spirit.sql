@@ -14,21 +14,12 @@ CREATE TABLE `account` (
 	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE TABLE `post` (
-	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`name` text(256),
-	`createdById` text(255) NOT NULL,
-	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`updatedAt` integer,
-	FOREIGN KEY (`createdById`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
-);
---> statement-breakpoint
 CREATE TABLE `profile` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`image` text,
 	`phone` text,
 	`address` text,
-	`user_id` integer,
+	`user_id` text,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
 );
@@ -65,10 +56,12 @@ CREATE TABLE `tables` (
 	`prefix` text(5),
 	`description` text,
 	`seats` integer NOT NULL,
+	`userId` text(255),
 	`require_cleaning` integer DEFAULT false NOT NULL,
 	`status` text DEFAULT 'available' NOT NULL,
-	`created_at` integer DEFAULT (CURRENT_DATE),
-	`updated_at` integer DEFAULT (CURRENT_DATE)
+	`created_at` integer DEFAULT (CURRENT_DATE) NOT NULL,
+	`updated_at` integer DEFAULT (CURRENT_DATE) NOT NULL,
+	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `reservations` (
@@ -94,7 +87,7 @@ CREATE TABLE `allergens` (
 --> statement-breakpoint
 CREATE TABLE `category` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`name` text(255),
+	`name` text(255) NOT NULL,
 	`created_at` integer DEFAULT (CURRENT_DATE)
 );
 --> statement-breakpoint
@@ -117,14 +110,15 @@ CREATE TABLE `order_items` (
 --> statement-breakpoint
 CREATE TABLE `orders` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`user_id` integer NOT NULL,
+	`userId` text(255),
 	`table_id` integer,
 	`is_paid` integer DEFAULT false NOT NULL,
 	`order_status` text DEFAULT 'In Progress' NOT NULL,
 	`special_request` text,
 	`bill_id` integer,
-	`created_at` integer DEFAULT (CURRENT_DATE),
-	`updated_at` integer DEFAULT (CURRENT_DATE),
+	`created_at` integer DEFAULT (CURRENT_DATE) NOT NULL,
+	`updated_at` integer DEFAULT (CURRENT_DATE) NOT NULL,
+	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`table_id`) REFERENCES `tables`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
@@ -139,10 +133,10 @@ CREATE TABLE `items` (
 	`gluten_free` integer,
 	`spicy` integer,
 	`preparation_time` integer NOT NULL,
-	`category_id` integer,
+	`category_id` integer NOT NULL,
 	`created_at` integer DEFAULT (CURRENT_DATE),
 	`available` integer DEFAULT true,
-	FOREIGN KEY (`category_id`) REFERENCES `category`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`category_id`) REFERENCES `category`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `ingredients` (
@@ -187,10 +181,11 @@ CREATE TABLE `bills` (
 	`service_fee` real,
 	`tax` real,
 	`paid` integer DEFAULT false,
-	`user_id` integer NOT NULL,
+	`userId` text(255),
 	`created_at` integer DEFAULT (CURRENT_DATE),
 	`updated_at` integer DEFAULT (CURRENT_DATE),
 	`order_id` integer NOT NULL,
+	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
@@ -200,11 +195,11 @@ CREATE TABLE `payments` (
 	`payment_method` text NOT NULL,
 	`charged_amount` real NOT NULL,
 	`tip_amount` real,
-	`user_id` integer NOT NULL,
+	`userId` text(255) NOT NULL,
 	`created_at` integer DEFAULT (CURRENT_DATE),
 	`updated_at` integer DEFAULT (CURRENT_DATE),
 	FOREIGN KEY (`bill_id`) REFERENCES `bills`(`id`) ON UPDATE no action ON DELETE no action,
-	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `venue_settings` (
@@ -232,9 +227,7 @@ CREATE TABLE `venue_settings` (
 );
 --> statement-breakpoint
 CREATE INDEX `account_userId_idx` ON `account` (`userId`);--> statement-breakpoint
-CREATE INDEX `createdById_idx` ON `post` (`createdById`);--> statement-breakpoint
-CREATE INDEX `name_idx` ON `post` (`name`);--> statement-breakpoint
 CREATE INDEX `session_userId_idx` ON `session` (`userId`);--> statement-breakpoint
 CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);--> statement-breakpoint
 CREATE UNIQUE INDEX `tables_number_prefix_unique` ON `tables` (`number`,`prefix`);--> statement-breakpoint
-CREATE UNIQUE INDEX `bills_user_id_order_id_unique` ON `bills` (`user_id`,`order_id`);
+CREATE UNIQUE INDEX `bills_userId_order_id_unique` ON `bills` (`userId`,`order_id`);

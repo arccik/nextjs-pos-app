@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { MenuList } from "./MenuList";
-import AddNewCategoryButton from "./AddNewCategoryButton";
+import AddNewCategoryButton from "./category/AddNewCategoryButton";
 
 export default async function MenuPage() {
   return (
