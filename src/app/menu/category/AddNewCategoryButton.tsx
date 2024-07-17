@@ -16,7 +16,9 @@ export default function AddNewCategoryButton() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Add New Category</Button>
+        <Button variant="outline" size="sm">
+          Add New Category
+        </Button>
       </DialogTrigger>
       <DialogContent className="overflow-y-auto">
         <DialogHeader>

@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import AddItem from "./form/AddItem";
 
-
 type AddNewItemButtonProps = {
   refetch: () => void;
 };
@@ -17,7 +16,7 @@ export default function AddNewItemButton({ refetch }: AddNewItemButtonProps) {
   return (
     <Dialog onOpenChange={() => refetch()}>
       <DialogTrigger asChild>
-        <Button>Add Item</Button>
+        <Button size="sm">Add Item</Button>
       </DialogTrigger>
       <DialogContent className="h-[calc(100%-2rem)] overflow-y-auto">
         <DialogHeader>
