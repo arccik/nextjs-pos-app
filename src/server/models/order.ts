@@ -11,6 +11,7 @@ import {
   NewOrderItem,
   items,
   users,
+  Item,
 } from "../db/schemas";
 import { combineItems, combineOrderItems } from "../../lib/utils";
 import { endOfToday, startOfToday } from "date-fns";
@@ -119,6 +120,19 @@ export const create = async (values: NewOrderWithItems) => {
     items: values.items,
     tableId: values.tableId,
   };
+};
+
+export const addItem = async (data: NewItem) => {
+  const [orderId] = await db
+    .insert(orders)
+    .values({ status: "Pending" })
+    .returning();
+  if (!orderId) throw new Error("Order ID is missing");
+  const itemId = await db
+    .insert(orderItems)
+    .values({ ...data, itemId: data.id, orderId: orderId.id })
+    .returning();
+  return { orderId,  };
 };
 
 export const deleteOne = async (id: number) => {

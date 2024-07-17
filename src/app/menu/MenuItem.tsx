@@ -1,23 +1,27 @@
-// import { useStore } from "@/store";
 "use client";
 import { Button } from "@/components/ui/button";
 import { type Item } from "@/server/db/schemas/item";
-import { useToast } from "@/components/ui/use-toast";
 import { PlusIcon } from "lucide-react";
 import { cn, formatCurrency } from "@/lib/utils";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-// import { Separator } from "@/components/ui/separator";
+import { api } from "@/trpc/react";
+import { toast } from "@/components/ui/use-toast";
 
 type MenuItemProps = {
   item: Item;
 };
 
 export default function MenuItem({ item }: MenuItemProps) {
-  const { toast } = useToast();
-  //   const { addItem } = useStore();
+  const addItem = api.order.addItems.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Order created",
+      });
+    },
+  });
 
   const handleClick = () => {
-    // addItem(item);
+    addItem.mutate(item);
     console.log("Add items to order: Status take");
 
     toast({
@@ -58,7 +62,6 @@ export default function MenuItem({ item }: MenuItemProps) {
           </Button>
         </div>
       </div>
-      {/* <Separator className="mt-10" /> */}
     </div>
   );
 }

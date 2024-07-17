@@ -46,7 +46,7 @@ export default function DeleteCategory({ id, name }: DeleteCategoryProps) {
             Are you absolutely sure? This action cannot be undone. This will
             permanently delete the category and{" "}
             <b>all items associated with it.</b>
-            You will not be able to recover. servers.
+            You will not be able to recover.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

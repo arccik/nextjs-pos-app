@@ -75,9 +75,6 @@ export default function AddNewCategory({ onClose }: AddNewCategoryProps) {
             )}
           />
           <div className="flex gap-4">
-            <Button type="submit" className="w-full">
-              Save
-            </Button>
             <Button
               onClick={() => form.reset()}
               type="reset"
@@ -85,6 +82,9 @@ export default function AddNewCategory({ onClose }: AddNewCategoryProps) {
               className="w-full"
             >
               Clear
+            </Button>
+            <Button type="submit" className="w-full">
+              Save
             </Button>
           </div>
         </form>

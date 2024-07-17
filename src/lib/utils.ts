@@ -193,9 +193,6 @@ export function formatFieldName(fieldName: string) {
   return fieldName.replace(/([A-Z])/g, " $1").trim();
 }
 
-
-
-
 export function summarizeOrder(items: Item[], orderId?: number) {
   const itemMap = items.reduce(
     (acc, product) => {
@@ -208,7 +205,6 @@ export function summarizeOrder(items: Item[], orderId?: number) {
       [key: number]: { itemId: number; quantity: number; orderId?: number };
     },
   );
-
   return Object.values(itemMap);
 }
 export type ItemToSummerize = {
