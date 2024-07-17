@@ -105,7 +105,7 @@ export const columns: ColumnDef<Item>[] = [
       );
     },
     cell: ({ row }) => {
-      const categoryId: number = row.getValue("categoryId");
+      const categoryId: string = row.getValue("categoryId");
       const { data } = useQuery({
         queryKey: ["category", categoryId],
         queryFn: () => {

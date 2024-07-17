@@ -6,6 +6,7 @@ import {
   newOrderSchema,
   newOrderWithItemsSchema,
   orderItemsSchema,
+  itemsSchema,
 } from "../../db/schemas";
 import {
   addMoreItemsToOrder,
@@ -34,9 +35,9 @@ export const orderRouter = createTRPCRouter({
       return await create(input);
     }),
   addItems: protectedProcedure
-    .input(newItemSchema)
-    .mutation(async ({ input }) => {
-      return await addItem(input);
+    .input(itemsSchema.extend({ orderId: z.string().optional() }))
+    .mutation(async ({ input, ctx }) => {
+      return await addItem({ ...input, userId: ctx.session.user.id });
     }),
   getOneByTableId: protectedProcedure
     .input(z.object({ tableId: z.number() }))

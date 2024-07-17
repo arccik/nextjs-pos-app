@@ -1,33 +1,13 @@
-"use client";
-import { Button } from "@/components/ui/button";
 import { type Item } from "@/server/db/schemas/item";
-import { PlusIcon } from "lucide-react";
 import { cn, formatCurrency } from "@/lib/utils";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { api } from "@/trpc/react";
-import { toast } from "@/components/ui/use-toast";
+import AddItemToOrderButton from "./AddItemToOrderButton";
 
 type MenuItemProps = {
   item: Item;
 };
 
-export default function MenuItem({ item }: MenuItemProps) {
-  const addItem = api.order.addItems.useMutation({
-    onSuccess: () => {
-      toast({
-        title: "Order created",
-      });
-    },
-  });
-
-  const handleClick = () => {
-    addItem.mutate(item);
-    console.log("Add items to order: Status take");
-
-    toast({
-      title: `${item.name} added to selected order`,
-    });
-  };
+export default async function MenuItem({ item }: MenuItemProps) {
   return (
     <div className="grid grid-flow-col items-start gap-3">
       {item.imageUrl && (
@@ -52,14 +32,7 @@ export default function MenuItem({ item }: MenuItemProps) {
         <p className="text-sm leading-none">{item.description}</p>
         <div className="flex place-content-end items-end justify-between">
           <span className="font-semibold">{formatCurrency(item.price)}</span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleClick}
-            disabled={!item.isAvailable}
-          >
-            <PlusIcon size="1rem" className="mr-1" /> Add to Order
-          </Button>
+          <AddItemToOrderButton item={item} />
         </div>
       </div>
     </div>

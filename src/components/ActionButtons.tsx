@@ -9,10 +9,10 @@ import PaymentButton from "./payment/PaymentButton";
 // import PaymentButton from "./Payment/PaymentButton";
 
 type ActionButtonsProps = {
-  orderId: number;
+  orderId: string;
   status: OrderStatus[number];
   isPaid?: boolean | null;
-  tableId?: number | null;
+  tableId?: string | null;
   totalAmount: number;
 };
 

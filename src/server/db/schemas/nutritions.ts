@@ -1,10 +1,14 @@
-import { sqliteTable, integer, real } from "drizzle-orm/sqlite-core";
+import { sqliteTable, real, text } from "drizzle-orm/sqlite-core";
 import { ingredients } from "./ingredient";
 import { relations } from "drizzle-orm";
+import { v4 as uuid } from "uuid";
 
 // nutrion for 100gm
 export const nutritions = sqliteTable("nutrition", {
-  id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
+  id: text("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => uuid()),
   calories: real("calories"),
   carbohydrates: real("carbohydrates"),
   proteins: real("proteins"),

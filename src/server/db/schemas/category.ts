@@ -2,9 +2,13 @@
 import { sql } from "drizzle-orm";
 import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { v4 as uuid } from "uuid";
 
 export const categories = sqliteTable("category", {
-  id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
+  id: text("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => uuid()),
   name: text("name", { length: 255 }).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`(CURRENT_DATE)`,

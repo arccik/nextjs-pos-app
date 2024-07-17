@@ -21,7 +21,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { api } from "@/trpc/react";
 
 type PaymentButtonProps = {
-  orderId: number;
+  orderId: string;
   totalAmount: number;
 };
 type WhatComponentToShow = "cash" | "card" | "tip" | null;

@@ -6,7 +6,7 @@ import { useState } from "react";
 
 type TipsButtonProps = {
   setValue: (amount: number) => void;
-  orderId: number;
+  orderId: string;
 };
 export default function TipsButton({ setValue, orderId }: TipsButtonProps) {
   const [show, setShow] = useState(false);

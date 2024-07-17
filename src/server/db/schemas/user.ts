@@ -47,7 +47,10 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 }));
 
 export const profileInfo = sqliteTable("profile", {
-  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  id: text("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => uuid()),
   image: text("image"),
   phone: text("phone"),
   address: text("address"),

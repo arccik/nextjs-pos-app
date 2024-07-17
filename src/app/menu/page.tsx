@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { MenuList } from "./MenuList";
 import AddNewCategoryButton from "./category/AddNewCategoryButton";
 

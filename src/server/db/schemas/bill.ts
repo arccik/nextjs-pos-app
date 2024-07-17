@@ -6,6 +6,7 @@ import {
   unique,
   text,
 } from "drizzle-orm/sqlite-core";
+import { v4 as uuid } from "uuid";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { orders } from "./order";
 import { users } from "./user";
@@ -15,7 +16,10 @@ export const paymentMethod = ["Card", "Cash"] as const;
 export const bills = sqliteTable(
   "bills",
   {
-    id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
+    id: text("id")
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => uuid()),
     totalAmount: real("total_amount").notNull(),
     serviceFee: real("service_fee"),
     tax: real("tax"),
@@ -27,7 +31,7 @@ export const bills = sqliteTable(
     updatedAt: integer("updated_at", { mode: "timestamp" })
       .default(sql`(CURRENT_DATE)`)
       .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
-    orderId: integer("order_id")
+    orderId: text("order_id")
       .notNull()
       .references(() => orders.id),
   },
@@ -35,9 +39,12 @@ export const bills = sqliteTable(
 );
 
 export const payments = sqliteTable("payments", {
-  id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
+  id: text("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => uuid()),
 
-  billId: integer("bill_id")
+  billId: text("bill_id")
     .references(() => bills.id)
     .notNull(),
   paymentMethod: text("payment_method", { enum: paymentMethod }).notNull(),

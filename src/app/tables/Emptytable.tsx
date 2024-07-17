@@ -14,7 +14,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 // import { setSelectedTable } from "@/server/models/table";
 
-type EmptytableProps = { tableId: number; clean: boolean; tableNumber: number };
+type EmptytableProps = { tableId: string; clean: boolean; tableNumber: number };
 
 export default function EmptyTable({
   tableId,

@@ -33,7 +33,7 @@ export default function usePayments() {
       orderId,
       tipsAmount,
     }: {
-      orderId: number;
+      orderId: string;
       tipsAmount?: number | null;
     }) => generateBill(orderId, tipsAmount),
     onSuccess: (data) => {

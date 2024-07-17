@@ -49,7 +49,7 @@ export default async function StopList() {
     // addToStopList.mutate(id);
     // setSelectedItem(undefined);
   };
-  const handleRemoveItemFromStopList = (itemId: number) => {
+  const handleRemoveItemFromStopList = (itemId: string) => {
     // removeFromStopList.mutate(itemId!);
   };
   return (

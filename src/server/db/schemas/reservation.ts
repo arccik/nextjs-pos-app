@@ -1,8 +1,10 @@
 import { integer, text, sqliteTable } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { tables } from "./table";
 import { z } from "zod";
+import { v4 as uuid } from "uuid";
 import { relations, sql } from "drizzle-orm";
+
+import { tables } from "./table";
 
 export const reservationStatusEnum = [
   "Scheduled",
@@ -13,9 +15,11 @@ export const reservationStatusEnum = [
 ] as const;
 
 export const reservations = sqliteTable("reservations", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-
-  tableId: integer("table_id").references(() => tables.id),
+  id: text("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => uuid()),
+  tableId: text("table_id").references(() => tables.id),
   customerName: text("customer_name").notNull(),
   customerPhoneNumber: text("customer_phone_number"),
   customerEmail: text("customer_email"),
@@ -47,7 +51,7 @@ export type Reservation = typeof reservations.$inferSelect;
 export type NewReservation = typeof reservations.$inferInsert;
 export const reservationSchema = createSelectSchema(reservations);
 export const newReservationSchema = createInsertSchema(reservations, {
-  tableId: z.coerce.number().optional(),
+  tableId: z.coerce.string().optional(),
   customerName: z.string().min(1, "Required").max(30),
   customerEmail: z
     .string()
@@ -74,7 +78,7 @@ export const newReservationSchema = createInsertSchema(reservations, {
 });
 
 export const getTimeSlotSchema = z.object({
-  tableId: z.number().optional(),
+  tableId: z.string().optional(),
   date: z.string(),
 });
 export type GetTimeSlot = z.infer<typeof getTimeSlotSchema>;

@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "..";
 import { NewIngredient, ingredients } from "../schemas";
 
-export const getOne = async (id: number) => {
+export const getOne = async (id: string) => {
   try {
     return await db.query.ingredients.findFirst({
       where: eq(ingredients.id, id),
@@ -21,7 +21,7 @@ export const getAll = async () => {
     return { error: "[db:getManyIngredient] Went wrong.." };
   }
 };
-export const update = async (id: number, body: NewIngredient) => {
+export const update = async (id: string, body: NewIngredient) => {
   try {
     return await db
       .update(ingredients)
@@ -43,7 +43,7 @@ export const create = async (body: NewIngredient) => {
   }
 };
 
-export const deleteOne = async (id: number) => {
+export const deleteOne = async (id: string) => {
   try {
     const result = await db.delete(ingredients).where(eq(ingredients.id, id));
     return result;

@@ -23,7 +23,7 @@ export const getAll = async () => {
   }
 };
 
-export const getOne = async (id: number) => {
+export const getOne = async (id: string) => {
   try {
     return await db.select().from(reservations).where(eq(reservations.id, id));
   } catch (error_1) {
@@ -43,7 +43,7 @@ export const create = async (body: NewReservation) => {
     return { error: "[db:createReservation] Went wrong.." };
   }
 };
-export const deleteOne = async (id: number) => {
+export const deleteOne = async (id: string) => {
   try {
     return await db.delete(reservations).where(eq(reservations.id, id));
   } catch (error_1) {

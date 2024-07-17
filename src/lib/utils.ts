@@ -47,14 +47,14 @@ export function formatCurrency(
 }
 
 interface CombinedOrder {
-  orderId: number;
-  tableId: number | null;
+  orderId: string;
+  tableId: string | null;
   status: string;
-  itemId: number;
+  itemId: string;
   user: string | null;
   createdAt: Date | null | string;
   table: number | null;
-  items: { name: string; quantity: number; id: number }[];
+  items: { name: string; quantity: number; id: string }[];
 }
 export type OrderItemsWithOrderAndItems = {
   orders: Order;
@@ -67,7 +67,7 @@ export type OrderItemsWithOrderAndItems = {
 export function combinedOrders(
   data: OrderItemsWithOrderAndItems[],
 ): CombinedOrder[] {
-  const combinedOrderMap: { [orderId: number]: CombinedOrder } = {};
+  const combinedOrderMap: { [orderId: string]: CombinedOrder } = {};
 
   data.forEach((orderData) => {
     const { orders, order_items, items } = orderData;
@@ -193,7 +193,7 @@ export function formatFieldName(fieldName: string) {
   return fieldName.replace(/([A-Z])/g, " $1").trim();
 }
 
-export function summarizeOrder(items: Item[], orderId?: number) {
+export function summarizeOrder(items: Item[], orderId?: string) {
   const itemMap = items.reduce(
     (acc, product) => {
       acc[product.id] = acc[product.id] || { itemId: product.id, quantity: 0 };
@@ -202,13 +202,13 @@ export function summarizeOrder(items: Item[], orderId?: number) {
       return acc;
     },
     {} as {
-      [key: number]: { itemId: number; quantity: number; orderId?: number };
+      [key: number]: { itemId: string; quantity: number; orderId?: string };
     },
   );
   return Object.values(itemMap);
 }
 export type ItemToSummerize = {
-  itemId: number;
+  itemId: string;
   quantity: number;
   items: {
     name: string | null;

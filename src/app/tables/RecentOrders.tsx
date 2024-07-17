@@ -21,7 +21,7 @@ import { api } from "@/trpc/react";
 // import { api } from "@/trpc/server";
 
 type RecentOrdersProps = {
-  tableId: number;
+  tableId: string;
 };
 export default function RecentOrders({ tableId }: RecentOrdersProps) {
   // const data = await recentCompletedOrders(tableId);

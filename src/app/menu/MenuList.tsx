@@ -17,9 +17,8 @@ type MenuListProps = {
 export async function MenuList({ closeMenu }: MenuListProps) {
   const categories = await api.category.getAll();
   const items = await api.item.getAll();
-  console.log("Menu List: ", items);
 
-  const getByCategory = (categoryId: number) => {
+  const getByCategory = (categoryId: string) => {
     if (!items) return;
     return items.filter((item) => item.categoryId == categoryId);
   };

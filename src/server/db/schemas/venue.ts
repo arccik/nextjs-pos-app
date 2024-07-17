@@ -2,9 +2,13 @@ import { sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
+import { v4 as uuid } from "uuid";
 
 export const venueSettings = sqliteTable("venue_settings", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+  id: text("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => uuid()),
   name: text("name").notNull(),
   address: text("address").notNull(),
   phone: text("phone"),
@@ -44,7 +48,7 @@ export const venueSettingsSchema = createSelectSchema(venueSettings).extend({
 export const newVenueSettingsSchema = createInsertSchema(venueSettings).extend({
   serviceFee: z.coerce.number().optional().nullable(),
   capacity: z.coerce.number().optional().nullable(),
-});;
+});
 
 export type VenueSettings = typeof venueSettings.$inferSelect;
 export type NewVenueSettings = typeof venueSettings.$inferInsert;

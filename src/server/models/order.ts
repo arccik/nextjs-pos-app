@@ -12,11 +12,13 @@ import {
   items,
   users,
   Item,
+  type NewItem,
 } from "../db/schemas";
 import { combineItems, combineOrderItems } from "../../lib/utils";
 import { endOfToday, startOfToday } from "date-fns";
+import { StringOrTemplateHeader } from "@tanstack/react-table";
 
-export const getOne = async (id: number) => {
+export const getOne = async (id: string) => {
   const result = await db.query.orders.findFirst({
     where: and(eq(orders.id, id)),
     with: {
@@ -40,7 +42,7 @@ export const getOne = async (id: number) => {
   return result;
 };
 
-export const getOneByTableId = async (tableId: number) => {
+export const getOneByTableId = async (tableId: string) => {
   return await db.query.orders.findFirst({
     where: and(eq(orders.tableId, tableId), ne(orders.status, "Completed")),
     with: {
@@ -98,7 +100,7 @@ export const getOrdersWithItems = async (status?: OrderStatus[number]) => {
   return result;
 };
 
-export const update = async (id: number, body: NewOrder) => {
+export const update = async (id: string, body: NewOrder) => {
   const result = await db.update(orders).set(body).where(eq(orders.id, id));
   return result;
 };
@@ -122,7 +124,17 @@ export const create = async (values: NewOrderWithItems) => {
   };
 };
 
-export const addItem = async (data: NewItem) => {
+export const addItem = async (data: {
+  userId: string;
+  orderId?: string;
+  id: string;
+  quantity: number;
+}) => {
+  const selectedOrder = await db.query.orders.findFirst({
+    where: eq(orders.status, "In Progress"),
+  });
+  if (!selectedOrder) throw new Error("Order not found");
+
   const [orderId] = await db
     .insert(orders)
     .values({ status: "Pending" })
@@ -130,16 +142,16 @@ export const addItem = async (data: NewItem) => {
   if (!orderId) throw new Error("Order ID is missing");
   const itemId = await db
     .insert(orderItems)
-    .values({ ...data, itemId: data.id, orderId: orderId.id })
+    .values({ quantity: data.quantity, itemId: data.id, orderId: orderId.id })
     .returning();
-  return { orderId,  };
+  return { orderId };
 };
 
-export const deleteOne = async (id: number) => {
+export const deleteOne = async (id: string) => {
   return await db.delete(orders).where(eq(orders.id, id));
 };
 
-export const pay = async (id: number) => {
+export const pay = async (id: string) => {
   try {
     // TODO: do something ALL about this crap...
     return { id };
@@ -172,7 +184,7 @@ export const pay = async (id: number) => {
   }
 };
 
-export const complete = async (id: number) => {
+export const complete = async (id: string) => {
   const result = await db
     .update(orders)
     .set({ status: "Completed" })
@@ -182,7 +194,7 @@ export const complete = async (id: number) => {
     .where(eq(tables.id, orders.tableId));
   return result;
 };
-export const cancelOrder = async (id: number) => {
+export const cancelOrder = async (id: string) => {
   const result = await db
     .update(orders)
     .set({ status: "Cancelled" })
@@ -190,7 +202,7 @@ export const cancelOrder = async (id: number) => {
   return result;
 };
 
-export const serve = async (id: number) => {
+export const serve = async (id: string) => {
   const result = await db
     .update(orders)
     .set({ status: "Served" })
@@ -198,7 +210,7 @@ export const serve = async (id: number) => {
   return result;
 };
 
-export const leave = async (id: number) => {
+export const leave = async (id: string) => {
   const [order] = await db.select().from(orders).where(eq(orders.id, id));
   if (!order?.tableId) return;
   const result = await db
@@ -207,7 +219,7 @@ export const leave = async (id: number) => {
     .where(eq(tables.id, order.tableId));
   return result;
 };
-export const reinstand = async (id: number) => {
+export const reinstand = async (id: string) => {
   const result = await db
     .update(orders)
     .set({ status: "In Progress" })
@@ -215,7 +227,7 @@ export const reinstand = async (id: number) => {
   return result;
 };
 
-export const recentCompletedOrders = async (tableId: number) => {
+export const recentCompletedOrders = async (tableId: string) => {
   return db.query.orders.findMany({
     where: and(eq(orders.tableId, tableId), eq(orders.status, "Completed")),
     with: {
@@ -225,7 +237,7 @@ export const recentCompletedOrders = async (tableId: number) => {
   });
 };
 
-export const addSpecailRequest = async (id: number, request: string) => {
+export const addSpecailRequest = async (id: string, request: string) => {
   const result = await db
     .update(orders)
     .set({ specialRequest: request })
@@ -275,8 +287,8 @@ export const getOrderItems = async () => {
 export const ready = async ({
   orderId,
 }: {
-  orderId: number;
-  itemId: number;
+  orderId: string;
+  itemId: string;
 }) => {
   const order = await db.query.orders.findFirst({
     where: eq(orders.id, orderId),

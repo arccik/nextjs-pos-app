@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { CloseCartDialog } from "./CloseCartDialog";
 // import CartItems from "./CartItems";
 import SelectTable from "./SelectedTable";
-import { useToast } from "@/components/ui/use-toast";
+import { toast, useToast } from "@/components/ui/use-toast";
 // import { create, addMoreItems } from "@/api/orders";
 // import { useNavigate } from "react-router-dom";
 // import { summarizeOrder } from "@/lib/utils";
@@ -45,7 +45,6 @@ export default function Cart({ onComplete }: CartProps) {
   const userId = 1; // just for test now
   const { data: selectedTable } = api.table.getSelectedTable.useQuery();
   //   const { generateBill } = usePayments();
-  const { toast } = useToast();
 
   //   const {
   //     selectedTable,
@@ -94,7 +93,7 @@ export default function Cart({ onComplete }: CartProps) {
   //   });
 
   const addMoreItemsToOrder = api.order.addMoreItemsToOrder.useMutation({
-    onSuccess: ({ orderId }: { orderId: number }) => {
+    onSuccess: ({ orderId }: { orderId: string }) => {
       toast({ title: "Order successfully updated" });
       //   setActiveOrder(null);
       //   resetItems();

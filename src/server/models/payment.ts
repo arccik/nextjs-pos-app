@@ -1,6 +1,12 @@
 import { eq } from "drizzle-orm";
-import { db } from "..";
-import { type Payment, payments, NewPayment, orders, bills } from "../schemas";
+import { db } from "../db";
+import {
+  type Payment,
+  payments,
+  NewPayment,
+  orders,
+  bills,
+} from "../db/schemas";
 
 export const create = async (data: NewPayment) => {
   try {
@@ -17,7 +23,7 @@ export const create = async (data: NewPayment) => {
   }
 };
 
-export const deleteOne = async (id: number) => {
+export const deleteOne = async (id: string) => {
   try {
     return await db.delete(payments).where(eq(payments.id, id));
   } catch (error) {

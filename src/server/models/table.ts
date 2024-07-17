@@ -10,7 +10,7 @@ import {
   TableWithReservation,
 } from "../db/schemas";
 
-export const getOne = async (id: number) => {
+export const getOne = async (id: string) => {
   return await db.query.tables.findFirst({ where: eq(tables.id, id) });
 };
 
@@ -54,14 +54,14 @@ export const create = async (body: NewTable) => {
 };
 
 //delete a tables
-export const deleteOne = async (id: number) => {
+export const deleteOne = async (id: string) => {
   return await db.delete(tables).where(eq(tables.id, id));
 };
 //update a tables record
-export const update = async (id: number, body: Table) => {
+export const update = async (id: string, body: Table) => {
   return await db.update(tables).set(body).where(eq(tables.id, id)).returning();
 };
-export const updateStatus = async (id: number, status: TableStatus) => {
+export const updateStatus = async (id: string, status: TableStatus) => {
   return await db
     .update(tables)
     .set({ status })
@@ -69,7 +69,7 @@ export const updateStatus = async (id: number, status: TableStatus) => {
     .returning();
 };
 
-export const markClean = async (id: number) => {
+export const markClean = async (id: string) => {
   console.log("MARK AS CLEAN >>>> ", id);
 
   return await db
@@ -79,7 +79,7 @@ export const markClean = async (id: number) => {
     .returning();
 };
 
-export const setSelectedTable = (id: number, userId: string) => {
+export const setSelectedTable = (id: string, userId: string) => {
   return db
     .update(tables)
     .set({ selectedBy: userId })
@@ -87,7 +87,7 @@ export const setSelectedTable = (id: number, userId: string) => {
     .returning();
 };
 
-export const unsetSelectedTable = (id: number, userId?: number) => {
+export const unsetSelectedTable = (id: string, userId?: string) => {
   return db
     .update(tables)
     .set({ selectedBy: null })

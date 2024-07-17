@@ -1,18 +1,17 @@
 import { relations, sql } from "drizzle-orm";
-import {
-  integer,
-  text,
-  numeric,
-  real,
-  sqliteTable,
-} from "drizzle-orm/sqlite-core";
-import { categories } from "./category";
-import { orderItems } from "./order";
+import { integer, text, real, sqliteTable } from "drizzle-orm/sqlite-core";
+import { v4 as uuid } from "uuid";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
+import { categories } from "./category";
+import { orderItems } from "./order";
+
 export const items = sqliteTable("items", {
-  id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
+  id: text("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => uuid()),
   name: text("name", { length: 255 }).notNull(),
   description: text("description"),
   price: real("price").notNull(),
@@ -22,7 +21,7 @@ export const items = sqliteTable("items", {
   isGlutenFree: integer("gluten_free", { mode: "boolean" }),
   isSpicy: integer("spicy", { mode: "boolean" }),
   preparationTime: integer("preparation_time").notNull(),
-  categoryId: integer("category_id")
+  categoryId: text("category_id")
     .notNull()
     .references(() => categories.id, { onDelete: "cascade" }),
   createdAt: integer("created_at", { mode: "timestamp" }).default(
@@ -49,7 +48,7 @@ export const newItemSchemaRaw = createInsertSchema(items);
 export const newItemSchema = newItemSchemaRaw.extend({
   preparationTime: z.coerce.number().min(1, { message: "Required" }),
   name: z.string().min(1, { message: "Required" }),
-  categoryId: z.number({ invalid_type_error: "Required" }).min(0),
+  categoryId: z.string({ invalid_type_error: "Required" }).min(0),
   price: z.coerce.number().min(1, { message: "Required" }),
 });
 export type NewItemSchemaType = z.infer<typeof newItemSchema>;

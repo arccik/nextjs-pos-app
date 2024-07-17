@@ -5,7 +5,7 @@ import { getOne as getOneOrder } from "./order";
 import { subDays } from "date-fns";
 import { db } from "../db";
 
-export const getOneByOrderId = async (orderId: number) => {
+export const getOneByOrderId = async (orderId: string) => {
   return await db.query.bills.findFirst({
     where: eq(bills.orderId, orderId),
     with: { payments: true, user: { columns: { name: true, role: true } } },
@@ -40,11 +40,11 @@ export const create = async (data: NewBill) => {
     .where(eq(orders.id, data.orderId));
 };
 
-export const deleteOne = async (id: number) => {
+export const deleteOne = async (id: string) => {
   return await db.delete(bills).where(eq(bills.id, id));
 };
 export const generateBill = async (
-  orderId: number,
+  orderId: string,
   tipsAmount?: number | null,
 ) => {
   const order = await getOneOrder(orderId);

@@ -4,6 +4,7 @@ import {
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
+import { v4 as uuid } from "uuid";
 import { relations, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { Item, items } from "./item";
@@ -22,16 +23,18 @@ export const orderStatus = [
 ] as const;
 
 export const orders = sqliteTable("orders", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-
+  id: text("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => uuid()),
   userId: text("userId", { length: 255 }).references(() => users.id),
-  tableId: integer("table_id").references(() => tables.id),
+  tableId: text("table_id").references(() => tables.id),
   isPaid: integer("is_paid", { mode: "boolean" }).default(false).notNull(),
   status: text("order_status", { enum: orderStatus })
-    .default("In Progress")
+    .default("Pending")
     .notNull(),
   specialRequest: text("special_request"),
-  billId: integer("bill_id"),
+  billId: text("bill_id"),
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`(CURRENT_DATE)`)
     .notNull(),
@@ -44,10 +47,10 @@ export const orders = sqliteTable("orders", {
 export const orderItems = sqliteTable(
   "order_items",
   {
-    orderId: integer("order_id")
+    orderId: text("order_id")
       .notNull()
       .references(() => orders.id),
-    itemId: integer("item_id")
+    itemId: text("item_id")
       .notNull()
       .references(() => items.id),
     quantity: integer("quantity").notNull().default(1),

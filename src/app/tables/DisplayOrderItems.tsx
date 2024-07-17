@@ -9,10 +9,9 @@ import {
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils";
 import { type Bill } from "@/server/db/schemas";
-import type { OrderWithItems } from "@/server/models/order";
 
 export type Item = {
-  itemId: number;
+  itemId: string;
   quantity: number;
   items: {
     name: string | null;

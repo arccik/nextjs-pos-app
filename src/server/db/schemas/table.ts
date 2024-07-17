@@ -2,8 +2,9 @@ import { text, sqliteTable, integer, unique } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { Reservation } from "./reservation";
-import { type User, users } from "./user";
+import {  users } from "./user";
 import { relations, sql } from "drizzle-orm";
+import { v4 as uuid } from "uuid";
 
 export const tableStatusEnum = [
   "available",
@@ -14,7 +15,10 @@ export const tableStatusEnum = [
 export const tables = sqliteTable(
   "tables",
   {
-    id: integer("id").primaryKey({ autoIncrement: true }),
+    id: text("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => uuid()),
     number: integer("number").notNull(),
     prefix: text("prefix", { length: 5 }),
     description: text("description"),

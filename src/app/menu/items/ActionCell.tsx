@@ -40,11 +40,11 @@ export default function ActionCell(props: CellContext<Item, unknown>) {
   //     },
   //   });
 
-  const handleAddItemToStopList = (itemId: number) => {
+  const handleAddItemToStopList = (itemId: string) => {
     // addToStopList.mutate(itemId);
     throw new Error("Not implemented");
   };
-  const handleRemoveItemFromStopList = (itemId: number) => {
+  const handleRemoveItemFromStopList = (itemId: string) => {
     // removeFromStopList.mutate(itemId!);
     throw new Error("Not implemented");
   };

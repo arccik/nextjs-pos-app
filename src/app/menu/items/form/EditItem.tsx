@@ -23,7 +23,7 @@ export default function EditItem() {
   const router = useRouter();
 
   const { data, isLoading: isItemLoading } = api.item.getOne.useQuery(
-    { id: Number(id) },
+    { id },
     { enabled: !!id },
   );
   const { mutate: update } = api.item.update.useMutation({
