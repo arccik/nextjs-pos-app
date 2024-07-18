@@ -17,30 +17,45 @@ import {
   getOneByTableId,
   getRecentOrders,
   pay,
+  getOrderWithItems,
   recentCompletedOrders,
 } from "@/server/models/order";
 
 export const orderRouter = createTRPCRouter({
   getOne: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       return await getOne(input.id);
     }),
   getAll: protectedProcedure.query(async () => {
     return await getAll();
   }),
+  getOrderWithItems: protectedProcedure
+    .input(z.object({ id: z.string }))
+    .query(async ({ input }) => {
+      return await getOrderWithItems(input.id);
+    }),
   create: protectedProcedure
     .input(newOrderWithItemsSchema)
     .mutation(async ({ input }) => {
       return await create(input);
     }),
   addItems: protectedProcedure
-    .input(itemsSchema.extend({ orderId: z.string().optional() }))
+    .input(
+      z.object({
+        itemId: z.string(),
+        orderId: z.string().nullable(),
+        quantity: z.number().optional(),
+      }),
+    )
     .mutation(async ({ input, ctx }) => {
-      return await addItem({ ...input, userId: ctx.session.user.id });
+      return await addItem({
+        userId: ctx.session.user.id,
+        ...input,
+      });
     }),
   getOneByTableId: protectedProcedure
-    .input(z.object({ tableId: z.number() }))
+    .input(z.object({ tableId: z.string() }))
     .query(async ({ input }) => {
       return await getOneByTableId(input.tableId);
     }),
@@ -48,7 +63,7 @@ export const orderRouter = createTRPCRouter({
     return await getRecentOrders();
   }),
   getRecentCompletedOrders: protectedProcedure
-    .input(z.object({ tableId: z.number() }))
+    .input(z.object({ tableId: z.string() }))
     .query(async ({ input }) => {
       return await recentCompletedOrders(input.tableId);
     }),

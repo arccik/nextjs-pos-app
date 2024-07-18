@@ -12,7 +12,7 @@ import { newItemSchema, itemsSchema } from "@/server/db/schemas";
 
 export const itemRouter = createTRPCRouter({
   getOne: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       return await getOne(input.id);
     }),
@@ -28,7 +28,7 @@ export const itemRouter = createTRPCRouter({
     return await update(input);
   }),
   delete: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       return await deleteOne(input.id);
     }),

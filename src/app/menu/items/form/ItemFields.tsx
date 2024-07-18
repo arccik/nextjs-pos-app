@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type Category } from "@/server/db/schemas";
+import { type Category, type NewItem } from "@/server/db/schemas";
 import { UseFormReturn } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 // import { getAll } from "@/api/categories";
@@ -26,7 +26,7 @@ import UploadFile from "./UploadFile";
 import { api } from "@/trpc/react";
 
 type ItemFieldsProps = {
-  form: UseFormReturn<any>;
+  form: UseFormReturn<UseFormReturn<NewItem>>;
 };
 
 export function ItemFields({ form }: ItemFieldsProps) {
@@ -90,8 +90,9 @@ export function ItemFields({ form }: ItemFieldsProps) {
             <FormLabel>Category</FormLabel>
             <FormControl>
               <Select
-                onValueChange={(e) => field.onChange(Number(e))}
-                value={String(field.value)}
+                {...field}
+                value={field.value}
+                onValueChange={field.onChange}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a category" />

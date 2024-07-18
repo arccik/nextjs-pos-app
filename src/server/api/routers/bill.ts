@@ -6,12 +6,12 @@ import { newPaymentSchema } from "@/server/db/schemas";
 
 export const billRouter = createTRPCRouter({
   generateBill: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       return await generateBill(input.id);
     }),
   getOneByOrderId: protectedProcedure
-    .input(z.number())
+    .input(z.string())
     .query(async ({ input }) => {
       return await getOneByOrderId(input);
     }),

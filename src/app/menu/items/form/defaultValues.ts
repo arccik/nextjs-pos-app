@@ -1,7 +1,7 @@
 export const defaultValues = {
   name: "",
   description: "",
-  categoryId: 0,
+  categoryId: "",
   price: 0,
   imageUrl: null,
   isGlutenFree: false,

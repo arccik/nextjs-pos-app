@@ -24,15 +24,15 @@ export const tableRouter = createTRPCRouter({
       };
     }),
   getOne: protectedProcedure
-    .input(z.number())
+    .input(z.string())
     .query(async ({ input }) => await getOne(input)),
   getAll: protectedProcedure.query(async () => await getAll()),
   setSelectedTable: protectedProcedure
-    .input(z.number())
+    .input(z.string())
     .mutation(async ({ input, ctx }) => {
-      return await setSelectedTable(input, Number(ctx.session.user.id));
+      return await setSelectedTable(input,ctx.session.user.id);
     }),
   getSelectedTable: protectedProcedure.query(async ({ ctx }) => {
-    return await getSelectedTable(Number(ctx.session.user.id));
+    return await getSelectedTable(ctx.session.user.id);
   }),
 });

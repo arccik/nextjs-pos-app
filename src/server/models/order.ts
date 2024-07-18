@@ -126,25 +126,29 @@ export const create = async (values: NewOrderWithItems) => {
 
 export const addItem = async (data: {
   userId: string;
-  orderId?: string;
-  id: string;
-  quantity: number;
+  orderId?: string | null;
+  itemId: string;
+  quantity?: number;
 }) => {
-  const selectedOrder = await db.query.orders.findFirst({
-    where: eq(orders.status, "In Progress"),
-  });
-  if (!selectedOrder) throw new Error("Order not found");
-
-  const [orderId] = await db
-    .insert(orders)
-    .values({ status: "Pending" })
-    .returning();
-  if (!orderId) throw new Error("Order ID is missing");
-  const itemId = await db
+  let order: { id: string } | undefined;
+  if (!data.orderId) {
+    [order] = await db
+      .insert(orders)
+      .values({ status: "Pending" })
+      .returning({ id: orders.id });
+  } else {
+    [order] = await db
+      .select({ id: orders.id })
+      .from(orders)
+      .where(eq(orders.id, data.orderId));
+  }
+  console.log("ADD Items !!!!! > << order", order);
+  if (!order) throw new Error("Order ID is missing");
+  await db
     .insert(orderItems)
-    .values({ quantity: data.quantity, itemId: data.id, orderId: orderId.id })
+    .values({ quantity: data.quantity, itemId: data.itemId, orderId: order.id })
     .returning();
-  return { orderId };
+  return { id: order.id };
 };
 
 export const deleteOne = async (id: string) => {
@@ -264,6 +268,35 @@ export const addMoreItemsToOrder = async (moreItems: NewOrderItem[]) => {
 export const getPending = async () => {
   const pendingOrders = await getOrdersWithItems("In Progress");
   return pendingOrders;
+};
+
+export const getOrderWithItems = async (id: string) => {
+  // i need to return order with items: name, id, quantity, price
+  const result = await db.query.orders.findFirst({
+    where: eq(orders.id, id),
+    with: {
+      orderItems: {
+        with: {
+          items: {
+            columns: {
+              id: true,
+              name: true,
+              price: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  // Extract quantity from orderItems and add it to items
+  const orderWithItems = {
+    ...result!,
+    orderItems: result!.orderItems.map((orderItem) => ({
+      ...orderItem.items,
+      quantity: orderItem.quantity,
+    })),
+  };
+  return orderWithItems;
 };
 
 export const getOrderItems = async () => {

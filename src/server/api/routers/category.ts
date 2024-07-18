@@ -11,7 +11,7 @@ import { z } from "zod";
 
 export const categoryRouter = createTRPCRouter({
   getOne: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       return await getOne(input.id);
     }),
@@ -29,7 +29,7 @@ export const categoryRouter = createTRPCRouter({
       return await create(input);
     }),
   delete: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       return await deleteOne(input.id);
     }),

@@ -36,82 +36,44 @@ import usePayments from "@/hooks/usePayments";
 // import TableIcon from "@/components/navbar/TableIcon";
 import { api } from "@/trpc/react";
 import TableIcon from "@/components/navbar/TableIcon";
-import { ClockIcon, Edit2 } from "lucide-react";
+import { ClockIcon, Edit2, Utensils } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 type CartProps = {
   onComplete?: () => void;
 };
 export default function Cart({ onComplete }: CartProps) {
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
+  const activeOrder = params.get("orderId");
+
   const userId = 1; // just for test now
   const { data: selectedTable } = api.table.getSelectedTable.useQuery();
-  //   const { generateBill } = usePayments();
+  const { data: items } = api.order.getOrderWithItems.useQuery(
+    { id: activeOrder },
+    { enabled: !!activeOrder },
+  );
 
-  //   const {
-  //     selectedTable,
-  //     setActiveOrder,
-  //     items,
-  //     setSelectedTable,
-  //     resetItems,
-  //     activeOrder,
-  //     specialRequest,
-  //   } = useStore();
-  //   const navigate = useNavigate();
-
-  //   const queryClient = useQueryClient();
-
-  const createOrder = api.order.create.useMutation({
-    onSuccess: ({ orderId }) => {
-      toast({
-        title: `Order number ${orderId} successfully saved`,
-      });
-      // setSelectedTable(null);
-      // resetItems();
-      // navigate(`/order?id=${orderId}`);
-      // onComplete && onComplete();
-    },
-    onError: (error) => {
-      toast({ title: "Error saving order", variant: "destructive" });
-      console.error(error);
-    },
-  });
-
-  //   const saveOrder = useMutation({
-  //     mutationFn: create,
-  //     onSuccess: ({ orderId }) => {
-  //       toast({
-  //         title: `Order number ${orderId} successfully saved`,
-  //       });
-  //       setSelectedTable(null);
+  // const addMoreItemsToOrder = api.order.addMoreItemsToOrder.useMutation({
+  //   onSuccess: ({ orderId }: { orderId: string }) => {
+  //     toast({ title: "Order successfully updated" });
+  //       setActiveOrder(null);
   //       resetItems();
+  //       Promise.all([
+  //         queryClient.invalidateQueries({ queryKey: ["order"] }),
+  //         queryClient.invalidateQueries({ queryKey: ["tables"] }),
+  //         queryClient.invalidateQueries({ queryKey: ["orders"] }),
+  //       ]);
+  //       generateBill({ orderId, tipsAmount: null });
+  //       setSelectedTable(null);
   //       navigate(`/order?id=${orderId}`);
-  //       onComplete && onComplete();
-  //     },
-  //     onError: (error) => {
-  //       toast({ title: "Error saving order", variant: "destructive" });
-  //       console.error(error);
-  //     },
-  //   });
-
-  const addMoreItemsToOrder = api.order.addMoreItemsToOrder.useMutation({
-    onSuccess: ({ orderId }: { orderId: string }) => {
-      toast({ title: "Order successfully updated" });
-      //   setActiveOrder(null);
-      //   resetItems();
-      //   Promise.all([
-      //     queryClient.invalidateQueries({ queryKey: ["order"] }),
-      //     queryClient.invalidateQueries({ queryKey: ["tables"] }),
-      //     queryClient.invalidateQueries({ queryKey: ["orders"] }),
-      //   ]);
-      //   generateBill({ orderId, tipsAmount: null });
-      //   setSelectedTable(null);
-      //   navigate(`/order?id=${orderId}`);
-      onComplete && onComplete();
-    },
-    onError: (error) => {
-      toast({ title: "Error updating order", variant: "destructive" });
-      console.error(error);
-    },
-  });
+  //     onComplete && onComplete();
+  //   },
+  //   onError: (error) => {
+  //     toast({ title: "Error updating order", variant: "destructive" });
+  //     console.error(error);
+  //   },
+  // });
   //   const handleSubmitOrder = () => {
   //     if (activeOrder) {
   //       const summerize = summarizeOrder(items, activeOrder);
@@ -163,8 +125,7 @@ export default function Cart({ onComplete }: CartProps) {
   return (
     <Card className="max-w-full">
       <CardHeader>
-        active order!!!
-        {/* {activeOrder && (
+        {activeOrder && (
           <>
             <CardTitle className="flex items-center">
               <Utensils size="1rem" className="mr-2" />
@@ -174,7 +135,7 @@ export default function Cart({ onComplete }: CartProps) {
               Ready for pickup. Please deliver to the customer in 5 minutes.
             </CardDescription>
           </>
-        )} */}
+        )}
       </CardHeader>
       <CardContent className="grid gap-4">
         {selectedTable && (
