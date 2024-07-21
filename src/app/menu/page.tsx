@@ -1,4 +1,5 @@
 import { MenuList } from "./MenuList";
+import Cart from "./cart/Cart";
 import AddNewCategoryButton from "./category/AddNewCategoryButton";
 
 export default async function MenuPage() {
@@ -16,7 +17,12 @@ export default async function MenuPage() {
             </p>
           </div>
         </div>
-        <MenuList />
+        <div className="flex flex-col md:flex-row">
+          <MenuList />
+          <div className="right-5 top-20  col-span-1 md:col-span-2">
+            <Cart />
+          </div>
+        </div>
       </div>
     </section>
   );

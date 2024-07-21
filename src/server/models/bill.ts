@@ -66,6 +66,36 @@ export const generateBill = async (
   return await create({ orderId, totalAmount: total, userId: "1" });
 };
 
+export const updateBill = async ({
+  orderId,
+  userId,
+  tipsAmount,
+}: {
+  orderId: string;
+  userId: string;
+  tipsAmount?: number;
+}) => {
+  const order = await getOneOrder(orderId);
+  if (!order || !("orderItems" in order)) return { error: "Order not found" };
+
+  let totalAmount = tipsAmount ? tipsAmount : 0;
+  for (const orderItem of order.orderItems) {
+    totalAmount += orderItem.quantity * Number(orderItem.items.price);
+  }
+  const bill = await getOneByOrderId(orderId);
+  if (bill) {
+    return await db
+      .update(bills)
+      .set({ totalAmount })
+      .where(eq(bills.id, bill.id))
+      .returning();
+  }
+  return await db
+    .insert(bills)
+    .values({ totalAmount, orderId, userId })
+    .returning();
+};
+
 export const paidThisWeek = async () => {
   const today = new Date();
   const result = await db

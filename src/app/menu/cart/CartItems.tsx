@@ -8,30 +8,35 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 import type { Item } from "@/server/db/schemas/item";
-import { useVenueSettings } from "@/hooks/useVenueSettings";
+
 import { formatCurrency } from "@/lib/utils";
+import { api } from "@/trpc/react";
 
 type CartItemsProps = {
-  items: Item[];
+  activeOrderId: string;
 };
-export default function CartItems({ items }: CartItemsProps) {
-  const { venueSettings } = useVenueSettings();
-  const serviceFee = Number(venueSettings?.serviceFee || 0);
-  const totalAmount =
-    items.reduce<number>((total, item) => {
-      return (total += Number(item.price));
-    }, 0) + serviceFee;
+export default function CartItems({ activeOrderId }: CartItemsProps) {
+  const { data: orderWithItems } = api.order.getOrderWithItems.useQuery(
+    { id: activeOrderId! },
+    { enabled: !!activeOrderId },
+  );
+  console.log("CART CART CART !!! ", orderWithItems);
+  const serviceFee = 66;
+  const totalAmount = 666;
+  // orderWithItems?.orderItems.reduce<number>((total, item) => {
+  //     return (total += Number(item.price));
+  //   }, 0) + serviceFee;
 
-  type ItemWithQuantity = Item & { quantity: number };
-  const combinedItems = items.reduce((acc, item) => {
-    const existing = acc.find((i) => i.id === item.id);
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      acc.push({ ...item, quantity: 1 });
-    }
-    return acc;
-  }, [] as ItemWithQuantity[]);
+  // type ItemWithQuantity = Item & { quantity: number };
+  // const combinedItems = items.reduce((acc, item) => {
+  //   const existing = acc.find((i) => i.id === item.id);
+  //   if (existing) {
+  //     existing.quantity += 1;
+  //   } else {
+  //     acc.push({ ...item, quantity: 1 });
+  //   }
+  //   return acc;
+  // }, [] as ItemWithQuantity[]);
 
   return (
     <Table className="mb-5">
@@ -46,13 +51,13 @@ export default function CartItems({ items }: CartItemsProps) {
         </TableRow>
       </TableHeader>
       <TableBody className="mt-5">
-        {combinedItems.map((item) => (
-          <TableRow key={item.id}>
-            <TableCell className="font-medium">{item.name}</TableCell>
-            <TableCell className="font-medium">{item.quantity}</TableCell>
-            <TableCell className="font-medium">{item.price}</TableCell>
+        {orderWithItems?.orderItems.map((order) => (
+          <TableRow key={order.id}>
+            <TableCell className="font-medium">{order.name}</TableCell>
+            <TableCell className="font-medium">{order.quantity}</TableCell>
+            <TableCell className="font-medium">{order.price}</TableCell>
             <TableCell className="text-right font-medium">
-              {(item.quantity * Number(item.price))?.toFixed(2)}
+              {(order.quantity * Number(order.price))?.toFixed(2)}
             </TableCell>
           </TableRow>
         ))}

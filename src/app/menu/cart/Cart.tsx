@@ -25,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { CloseCartDialog } from "./CloseCartDialog";
-// import CartItems from "./CartItems";
+import CartItems from "./CartItems";
 import SelectTable from "./SelectedTable";
 import { toast, useToast } from "@/components/ui/use-toast";
 // import { create, addMoreItems } from "@/api/orders";
@@ -50,10 +50,11 @@ export default function Cart({ onComplete }: CartProps) {
   const userId = 1; // just for test now
   const { data: selectedTable } = api.table.getSelectedTable.useQuery();
   const { data: items } = api.order.getOrderWithItems.useQuery(
-    { id: activeOrder },
+    { id: activeOrder! },
     { enabled: !!activeOrder },
   );
-
+  console.log("CART CART CART !!! ", items);
+  if (!activeOrder || !selectedTable) return null;
   // const addMoreItemsToOrder = api.order.addMoreItemsToOrder.useMutation({
   //   onSuccess: ({ orderId }: { orderId: string }) => {
   //     toast({ title: "Order successfully updated" });
@@ -129,7 +130,7 @@ export default function Cart({ onComplete }: CartProps) {
           <>
             <CardTitle className="flex items-center">
               <Utensils size="1rem" className="mr-2" />
-              Order #{activeOrder}
+              Order #{activeOrder.slice(-9)}
             </CardTitle>
             <CardDescription>
               Ready for pickup. Please deliver to the customer in 5 minutes.
@@ -169,7 +170,7 @@ export default function Cart({ onComplete }: CartProps) {
           />
         )}
 
-        {/* <CartItems items={items} /> */}
+        {activeOrder && <CartItems activeOrderId={activeOrder} />}
       </CardContent>
       <CardFooter className="flex flex-col justify-center gap-4 p-4">
         {/* <AddSpecialRequest orderId={activeOrder} /> */}

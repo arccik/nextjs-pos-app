@@ -24,7 +24,7 @@ export async function MenuList({ closeMenu }: MenuListProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
+    <div className="grid flex-1 grid-cols-1 gap-5 md:grid-cols-4">
       <div className="col-span-2">
         <Accordion type="single" collapsible className="mb-10 w-full">
           {!!categories?.length &&
@@ -45,9 +45,6 @@ export async function MenuList({ closeMenu }: MenuListProps) {
               );
             })}
         </Accordion>
-      </div>
-      <div className="right-5 top-20  col-span-1 md:col-span-2">
-        <Cart onComplete={closeMenu} />
       </div>
     </div>
   );

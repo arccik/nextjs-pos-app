@@ -24,7 +24,9 @@ export const bills = sqliteTable(
     serviceFee: real("service_fee"),
     tax: real("tax"),
     paid: integer("paid", { mode: "boolean" }).default(false),
-    userId: text("userId", { length: 255 }).references(() => users.id),
+    userId: text("userId", { length: 255 })
+      .notNull()
+      .references(() => users.id),
     createdAt: integer("created_at", { mode: "timestamp" }).default(
       sql`(CURRENT_DATE)`,
     ),

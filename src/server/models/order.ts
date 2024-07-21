@@ -17,6 +17,7 @@ import {
 import { combineItems, combineOrderItems } from "../../lib/utils";
 import { endOfToday, startOfToday } from "date-fns";
 import { StringOrTemplateHeader } from "@tanstack/react-table";
+import { generateBill, updateBill } from "./bill";
 
 export const getOne = async (id: string) => {
   const result = await db.query.orders.findFirst({
@@ -137,17 +138,32 @@ export const addItem = async (data: {
       .values({ status: "Pending" })
       .returning({ id: orders.id });
   } else {
-    [order] = await db
-      .select({ id: orders.id })
-      .from(orders)
-      .where(eq(orders.id, data.orderId));
+    const selectOrder = await db.query.orders.findFirst({
+      where: eq(orders.id, data.orderId),
+      with: { orderItems: true },
+    });
+    if (!selectOrder) throw new Error("Order not found");
+    const itemExist = selectOrder?.orderItems.find(
+      (item) => item.itemId === data.itemId,
+    );
+    if (itemExist) {
+      itemExist.quantity = +1;
+      await db
+        .update(orderItems)
+        .set(itemExist)
+        .where(eq(orderItems.orderId, itemExist.orderId));
+    }
+    if (selectOrder && order) order["id"] = selectOrder?.id;
+    return order;
   }
+
   console.log("ADD Items !!!!! > << order", order);
   if (!order) throw new Error("Order ID is missing");
   await db
     .insert(orderItems)
     .values({ quantity: data.quantity, itemId: data.itemId, orderId: order.id })
     .returning();
+  await updateBill({ orderId: order.id, userId: data.userId });
   return { id: order.id };
 };
 
