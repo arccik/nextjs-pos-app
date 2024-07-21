@@ -30,7 +30,10 @@ export const tableRouter = createTRPCRouter({
   setSelectedTable: protectedProcedure
     .input(z.string())
     .mutation(async ({ input, ctx }) => {
-      return await setSelectedTable(input,ctx.session.user.id);
+      const userId =
+        "e15bc5fc-4cb7-4252-8a96-c2949022dfec" ?? ctx.session.user.id;
+      console.log("Set TABLE ::: ", { user: ctx.session.user.id, input });
+      return await setSelectedTable({ id: input, userId });
     }),
   getSelectedTable: protectedProcedure.query(async ({ ctx }) => {
     return await getSelectedTable(ctx.session.user.id);

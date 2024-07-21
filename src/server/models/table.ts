@@ -79,16 +79,30 @@ export const markClean = async (id: string) => {
     .returning();
 };
 
-export const setSelectedTable = (id: string, userId: string) => {
-  return db
+export const setSelectedTable = async ({
+  id,
+  userId,
+}: {
+  id: string;
+  userId: string;
+}) => {
+  console.log("SET SELECTED TABLE >>>> ", { id, userId });
+  const result = await db
     .update(tables)
     .set({ selectedBy: userId })
-    .where(eq(tables.id, id))
-    .returning();
+    .where(eq(tables.id, id));
+  console.log("RESULT", result);
+  return result;
 };
 
-export const unsetSelectedTable = (id: string, userId?: string) => {
-  return db
+export const unsetSelectedTable = async ({
+  id,
+  userId,
+}: {
+  id: string;
+  userId?: string;
+}) => {
+  return await db
     .update(tables)
     .set({ selectedBy: null })
     .where(eq(tables.id, id))

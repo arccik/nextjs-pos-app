@@ -26,6 +26,7 @@ export default function NewCustomer({ buttonTrigger }: NewCustomerProps) {
   // const { selectedTable } = useStore();
   const selectedTable = { tableId: 1 };
 
+
   // useEffect(() => {
   //   if (selectedTable?.tableId) router.push("/menu");
   // }, [selectedTable?.tableId]);

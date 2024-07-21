@@ -1,8 +1,17 @@
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
-export default function Loading() {
+type LoadingProps = {
+  fullScreen?: boolean;
+};
+export default function Loading({ fullScreen }: LoadingProps) {
   return (
-    <Card className="flex h-svh w-svw items-center justify-center p-10">
+    <Card
+      className={cn(
+        "flex  items-center justify-center p-10",
+        fullScreen && "h-svh w-svw",
+      )}
+    >
       <div role="status">
         <svg
           aria-hidden="true"

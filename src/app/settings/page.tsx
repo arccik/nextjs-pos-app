@@ -65,7 +65,7 @@ export default function SettingsPage() {
     createSettings.mutate(data);
   }
   if (isLoading) {
-    return <Loading />;
+    return <Loading fullScreen />;
   }
   return (
     <main className="container mx-auto px-4 py-8 md:px-6 lg:px-8">

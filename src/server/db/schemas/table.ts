@@ -16,9 +16,9 @@ export const tables = sqliteTable(
   "tables",
   {
     id: text("id")
-    .notNull()
-    .primaryKey()
-    .$defaultFn(() => uuid()),
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => uuid()),
     number: integer("number").notNull(),
     prefix: text("prefix", { length: 5 }),
     description: text("description"),
@@ -33,10 +33,12 @@ export const tables = sqliteTable(
     createdAt: integer("created_at", { mode: "timestamp" })
       .default(sql`(CURRENT_DATE)`)
       .notNull(),
-    updatedAt: integer("updated_at", { mode: "timestamp" })
-      .default(sql`(CURRENT_DATE)`)
-      .$onUpdate(() => sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+    updateCounter: integer("update_counter")
+      .default(sql`1`)
+      .$onUpdateFn(() => sql`update_counter + 1`),
+    updatedAt: integer("updated_at", { mode: "timestamp" }).$onUpdate(
+      () => new Date(),
+    ),
   },
   (t) => ({
     unq: unique().on(t.number, t.prefix),
@@ -44,7 +46,7 @@ export const tables = sqliteTable(
 );
 
 export const tableRelations = relations(tables, ({ one }) => ({
-  user: one(users, {
+  selectedBy: one(users, {
     fields: [tables.selectedBy],
     references: [users.id],
   }),
