@@ -37,9 +37,7 @@ export default function Waiter() {
             <Button className="h-24" size="lg" variant="outline">
               <div className="flex flex-col items-center gap-1">
                 <User2Icon className="h-6 w-6" />
-                <span className="text-sm font-medium leading-none">
-                  New Customers
-                </span>
+                <span className="text-sm font-medium leading-none">New</span>
               </div>
             </Button>
           }

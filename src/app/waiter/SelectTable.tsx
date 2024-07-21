@@ -10,7 +10,7 @@ import {
 // import { useNavigate } from "react-router-dom";
 // import { useStore } from "@/store";
 import ChooseTable from "./ChooseTable";
-import { NewCustomerButton } from "./NewCustomerButton";
+import NewCustomerButton from "./NewCustomerButton";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 

@@ -42,7 +42,6 @@ export default function AddTableForm({ onClose }: AddTableFormProps) {
   const onSubmit = (values: NewTable) => {
     createTable.mutate(values);
     onClose();
-    alert(JSON.stringify(values, null, 2));
   };
   console.log(form.formState);
   return (
