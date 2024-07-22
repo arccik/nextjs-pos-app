@@ -36,11 +36,11 @@ export const orders = sqliteTable("orders", {
   specialRequest: text("special_request"),
   billId: text("bill_id"),
   createdAt: integer("created_at", { mode: "timestamp" })
-    .default(sql`(CURRENT_DATE)`)
+    .default(sql`(CURRENT_TIMESTAMP)`)
     .notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" })
     .notNull()
-    .default(sql`(CURRENT_DATE)`)
+    .default(sql`(CURRENT_TIMESTAMP)`)
     .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
 });
 

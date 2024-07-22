@@ -364,3 +364,27 @@ export const getRecentOrders = async () => {
     with: { user: { columns: { name: true, role: true } }, bill: true },
   });
 };
+
+export const addSpecialRequest = async ({
+  request,
+  orderId,
+}: {
+  request: string;
+  orderId: string;
+}) => {
+  const result = await db
+    .update(orders)
+    .set({ specialRequest: request })
+    .where(eq(orders.id, orderId));
+  return result;
+};
+export const getSpecialRequest = async ({ orderId }: { orderId: string }) => {
+  return await db.query.orders.findFirst({
+    where: eq(orders.id, orderId),
+    columns: { specialRequest: true },
+  });
+  // return await db
+  //   .select({ specialRequest: orders.specialRequest })
+  //   .from(orders)
+  //   .where(eq(orders.id, orderId));
+};

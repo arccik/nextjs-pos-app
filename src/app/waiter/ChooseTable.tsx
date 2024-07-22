@@ -52,7 +52,7 @@ export default function ChooseTable({ close }: ChooseTableProps) {
     reserved: "🔒",
   };
 
-  if (selectedTable && selectedTable.length > 0) {
+  if (selectedTable?.length && selectedTable[0]) {
     return (
       <div className="flex items-center justify-center gap-4">
         <p>You Have selected table number {selectedTable[0].number}</p>
@@ -61,7 +61,6 @@ export default function ChooseTable({ close }: ChooseTableProps) {
           onClick={() => unselect.mutate({ tableId: selectedTable[0].id })}
         >
           <XIcon />
-          {/* Remove */}
         </Button>
       </div>
     );

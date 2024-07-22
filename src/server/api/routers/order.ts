@@ -19,6 +19,8 @@ import {
   pay,
   getOrderWithItems,
   recentCompletedOrders,
+  addSpecialRequest,
+  getSpecialRequest,
 } from "@/server/models/order";
 
 export const orderRouter = createTRPCRouter({
@@ -72,5 +74,15 @@ export const orderRouter = createTRPCRouter({
     .input(orderItemsSchema.array())
     .mutation(async ({ input }) => {
       return await addMoreItemsToOrder(input);
+    }),
+  addSpecialRequest: protectedProcedure
+    .input(z.object({ request: z.string(), orderId: z.string() }))
+    .mutation(async ({ input }) => {
+      return await addSpecialRequest(input);
+    }),
+  getSpecialRequest: protectedProcedure
+    .input(z.object({ orderId: z.string() }))
+    .query(async ({ input }) => {
+      return await getSpecialRequest({ orderId: input.orderId });
     }),
 });

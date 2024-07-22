@@ -9,7 +9,7 @@ export default function WaiterIcon() {
       width="200px"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g id="XMLID_241_">
+      <g id="XMLID_241_" transform="scale(0.048)">
         <path
           id="XMLID_246_"
           d="M404.918,269.978L335.94,118.864c-3.491-7.66-11.088-12.096-19.004-12.03

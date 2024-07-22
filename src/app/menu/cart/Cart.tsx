@@ -1,8 +1,6 @@
 "use client";
-// import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import { ClockIcon } from "@radix-ui/react-icons";
 
-// import { useStore } from "@/store";
 import {
   Card,
   CardContent,
@@ -38,6 +36,7 @@ import { api } from "@/trpc/react";
 import TableIcon from "@/components/navbar/TableIcon";
 import { ClockIcon, Edit2, Utensils } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
 
 type CartProps = {
   onComplete?: () => void;
@@ -45,16 +44,17 @@ type CartProps = {
 export default function Cart({ onComplete }: CartProps) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
-  const activeOrder = params.get("orderId");
+  const activeOrderId = params.get("orderId");
 
   const userId = 1; // just for test now
   const { data: selectedTable } = api.table.getSelectedTable.useQuery();
   const { data: items } = api.order.getOrderWithItems.useQuery(
-    { id: activeOrder! },
-    { enabled: !!activeOrder },
+    { id: activeOrderId! },
+    { enabled: !!activeOrderId },
   );
+  const specialRequest = "jaica";
   console.log("CART CART CART !!! ", items);
-  if (!activeOrder || !selectedTable) return null;
+  if (!activeOrderId || !selectedTable) return null;
   // const addMoreItemsToOrder = api.order.addMoreItemsToOrder.useMutation({
   //   onSuccess: ({ orderId }: { orderId: string }) => {
   //     toast({ title: "Order successfully updated" });
@@ -126,32 +126,32 @@ export default function Cart({ onComplete }: CartProps) {
   return (
     <Card className="max-w-full">
       <CardHeader>
-        {activeOrder && (
+        {activeOrderId && (
           <>
             <CardTitle className="flex items-center">
               <Utensils size="1rem" className="mr-2" />
-              Order #{activeOrder.slice(-9)}
+              Order #{activeOrderId.slice(-9)}
             </CardTitle>
-            <CardDescription>
-              Ready for pickup. Please deliver to the customer in 5 minutes.
-            </CardDescription>
+            <AddOrderSpecialRequest orderId={activeOrderId} />
           </>
         )}
       </CardHeader>
       <CardContent className="grid gap-4">
-        {selectedTable && (
+        {selectedTable.length > 0 && (
           <div className="flex items-center gap-4">
             <ClockIcon className="h-6 w-6" />
             <div className="grid gap-1 text-sm">
               <div className="flex items-center gap-2">
-                <p className="font-semibold">Table #{selectedTable.number}</p>
+                <p className="font-semibold">
+                  Table #{selectedTable[0].number}
+                </p>
                 <SelectTable buttonTrigger={<Edit2 size="1rem" />} />
               </div>
-              {/* {specialRequest && (
+              {specialRequest && (
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Special requests: {specialRequest}
                 </p>
-              )} */}
+              )}
             </div>
           </div>
         )}
@@ -170,7 +170,7 @@ export default function Cart({ onComplete }: CartProps) {
           />
         )}
 
-        {activeOrder && <CartItems activeOrderId={activeOrder} />}
+        {activeOrderId && <CartItems activeOrderId={activeOrderId} />}
       </CardContent>
       <CardFooter className="flex flex-col justify-center gap-4 p-4">
         {/* <AddSpecialRequest orderId={activeOrder} /> */}

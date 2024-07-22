@@ -7,6 +7,7 @@ import {
   Ham,
   BookMarked,
   Users2Icon,
+  Play,
 } from "lucide-react";
 
 import TableIcon from "./TableIcon";
@@ -42,7 +43,7 @@ export default [
   {
     id: 345345,
     title: "Waiter",
-    icon: Waiter,
+    icon: Play,
     link: "/waiter",
   },
   {
