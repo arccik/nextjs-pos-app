@@ -80,34 +80,34 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
-        const user = {
-          id: "1",
-          name: "J Smith XXX",
-          email: "jsmith@example.com",
-          role: "user",
-        };
-        return user;
+        // const user = {
+        //   id: "1",
+        //   name: "J Smith XXX",
+        //   email: "jsmith@example.com",
+        //   role: "user",
+        // };
+        // return user;
 
         if (!credentials) return null;
 
-        // const user = await isExist(credentials.email);
+        const user = await isExist(credentials.email);
         if (!user) return null;
 
-        // const isPasswordSame = bcrypt.compareSync(
-        //   credentials.password,
-        //   user.password,
-        // );
-        // console.log("AUTH:LLL L>>> >> >> > > > >> > ", {
-        //   user,
-        //   isPasswordSame,
-        // });
-        // if (!isPasswordSame) return null;
-        // return {
-        //   email: user.email,
-        //   name: user.name,
-        //   role: user.role,
-        //   id: user.id,
-        // };
+        const isPasswordSame = bcrypt.compareSync(
+          credentials.password,
+          user.password,
+        );
+        console.log("AUTH:LLL L>>> >> >> > > > >> > ", {
+          user,
+          isPasswordSame,
+        });
+        if (!isPasswordSame) return null;
+        return {
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          id: user.id,
+        };
       },
     }),
     /**

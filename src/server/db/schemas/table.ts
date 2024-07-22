@@ -2,7 +2,7 @@ import { text, sqliteTable, integer, unique } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { Reservation } from "./reservation";
-import {  users } from "./user";
+import { users } from "./user";
 import { relations, sql } from "drizzle-orm";
 import { v4 as uuid } from "uuid";
 
@@ -33,9 +33,9 @@ export const tables = sqliteTable(
     createdAt: integer("created_at", { mode: "timestamp" })
       .default(sql`(CURRENT_DATE)`)
       .notNull(),
-    updateCounter: integer("update_counter")
-      .default(sql`1`)
-      .$onUpdateFn(() => sql`update_counter + 1`),
+    // updateCounter: integer("update_counter")
+    //   .default(sql`1`)
+    //   .$onUpdateFn(() => sql`update_counter + 1`),
     updatedAt: integer("updated_at", { mode: "timestamp" }).$onUpdate(
       () => new Date(),
     ),

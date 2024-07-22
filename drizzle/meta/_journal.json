@@ -5,29 +5,15 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1721133957858,
-      "tag": "0000_outgoing_spirit",
+      "when": 1721630306055,
+      "tag": "0000_dark_phantom_reporter",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "6",
-      "when": 1721221657091,
-      "tag": "0001_violet_cerise",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1721222802585,
-      "tag": "0002_quick_mojo",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1721587191825,
-      "tag": "0003_unknown_violations",
+      "when": 1721631351855,
+      "tag": "0001_jazzy_yellowjacket",
       "breakpoints": true
     }
   ]

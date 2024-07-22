@@ -1,13 +1,11 @@
-import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
-import * as schema from "./db/schemas";
+import { db } from "@/server/db";
+import * as schema from "@/server/db/schemas";
 
-// const Client = require("@libsql/client");
-// const Drizzle = require("drizzle-orm/libsql")
-// const schema = Object.assign({}, require("./db/schemas"));
-
-const client = createClient({ url: process.env.DATABASE_URL ?? "" });
-const db = drizzle(client, { schema });
+export async function GET() {
+  console.log("Starting Seeding the Database");
+  await seedDatabase();
+  return Response.json({ message: "We start Seeding Now....." });
+}
 
 async function seedDatabase() {
   try {
@@ -28,6 +26,12 @@ async function seedDatabase() {
       password: "password",
       role: "admin",
       email: "store@example.com",
+    });
+    await db.insert(schema.users).values({
+      name: "admin",
+      password: "123456",
+      email: "arccik@gmail.com",
+      role: "admin",
     });
 
     await db.insert(schema.storeRegularSchedule).values([
@@ -127,6 +131,13 @@ async function seedDatabase() {
         { name: "Salad" },
       ]);
 
+    const categoryIds = await db
+      .select({ id: schema.categories.id })
+      .from(schema.categories);
+
+    if (!categoryIds.some((category) => category.id)) {
+      return console.log("Category Ids not created ");
+    }
     await db.insert(schema.items).values([
       {
         imageUrl: "/img/food.png",
@@ -138,7 +149,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 10,
-        categoryId: 1,
+        categoryId: categoryIds[0]?.id,
       },
       {
         imageUrl: "/img/food.png",
@@ -151,7 +162,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 20,
-        categoryId: 2,
+        categoryId: categoryIds[1].id!,
       },
       {
         imageUrl: "/img/food.png",
@@ -164,7 +175,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: 2,
+        categoryId: categoryIds[2].id!,
       },
       {
         name: "Pad Thai",
@@ -177,7 +188,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 25,
-        categoryId: 3,
+        categoryId: categoryIds[2].id,
       },
       {
         imageUrl: "/img/food.png",
@@ -190,7 +201,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 30,
-        categoryId: 3,
+        categoryId: categoryIds[3].id,
       },
       {
         imageUrl: "/img/food.png",
@@ -203,7 +214,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: false,
         preparationTime: 25,
-        categoryId: 4,
+        categoryId: categoryIds[3].id,
       },
       {
         imageUrl: "/img/food.png",
@@ -216,7 +227,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: 5,
+        categoryId: categoryIds[4].id,
       },
       {
         imageUrl: "/img/food.png",
@@ -229,7 +240,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 20,
-        categoryId: 5,
+        categoryId: categoryIds[4].id,
       },
       {
         imageUrl: "/img/food.png",
@@ -242,7 +253,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: false,
         preparationTime: 35,
-        categoryId: 4,
+        categoryId: categoryIds[4].id,
       },
       {
         imageUrl: "/img/food.png",
@@ -255,7 +266,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: 4,
+        categoryId: categoryIds[4].id,
       },
     ]);
 
@@ -277,4 +288,3 @@ async function seedDatabase() {
     console.log("Database connection closed");
   }
 }
-seedDatabase();

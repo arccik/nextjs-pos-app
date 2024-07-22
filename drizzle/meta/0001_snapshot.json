@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "2d07d1e1-e0fb-45ed-bc36-94ff8c76a423",
-  "prevId": "c0042b15-eb9b-4c14-8a4e-b23c2669f066",
+  "id": "4995f3f4-812a-444b-8445-105b747042c7",
+  "prevId": "2f88a4ff-4834-43d3-9c30-8b3142f75638",
   "tables": {
     "account": {
       "name": "account",
@@ -365,10 +365,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
         "number": {
           "name": "number",
@@ -433,9 +433,8 @@
           "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "(CURRENT_DATE)"
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {
@@ -478,7 +477,7 @@
         },
         "table_id": {
           "name": "table_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -758,7 +757,7 @@
         },
         "table_id": {
           "name": "table_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -788,7 +787,7 @@
         },
         "bill_id": {
           "name": "bill_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -917,7 +916,7 @@
         },
         "category_id": {
           "name": "category_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -993,7 +992,7 @@
         },
         "nutrition_id": {
           "name": "nutrition_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1221,7 +1220,7 @@
           "name": "userId",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "created_at": {
@@ -1242,7 +1241,7 @@
         },
         "order_id": {
           "name": "order_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1301,7 +1300,7 @@
         },
         "bill_id": {
           "name": "bill_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

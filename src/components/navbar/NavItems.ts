@@ -6,9 +6,12 @@ import {
   ConciergeBell,
   Ham,
   BookMarked,
+  Users2Icon,
 } from "lucide-react";
+
 import TableIcon from "./TableIcon";
 import ChefIcon from "./ChefIcon";
+import Waiter from "./WaiterIcon";
 
 export default [
   {
@@ -39,7 +42,7 @@ export default [
   {
     id: 345345,
     title: "Waiter",
-    icon: PersonStanding,
+    icon: Waiter,
     link: "/waiter",
   },
   {
@@ -65,5 +68,11 @@ export default [
     title: "Analytics",
     icon: LineChart,
     link: "/reports",
+  },
+  {
+    id: 1255,
+    title: "Users",
+    icon: Users2Icon,
+    link: "/user",
   },
 ];

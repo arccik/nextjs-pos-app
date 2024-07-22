@@ -24,7 +24,7 @@ type PendingOrderProps = {
   order: OrderWithItems;
 };
 
-export async function PendingOrder({ order }: PendingOrderProps) {
+export function PendingOrder({ order }: PendingOrderProps) {
   //   const { venueSettings, venueTables } = useVenueSettings();
   //   const serviceFee = Number(venueSettings?.serviceFee);
   //   const total = summarizePrice(order.orderItems) ?? 0 + serviceFee;

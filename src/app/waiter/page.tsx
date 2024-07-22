@@ -31,7 +31,7 @@ export default function Waiter() {
         Welcome back <b>user {userId}</b>
       </p> */}
 
-      <div className="grid w-full grid-cols-2 place-content-center items-center justify-center gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-2 place-content-center items-center justify-center gap-4 md:grid-cols-4">
         <NewCustomerButton
           buttonTrigger={
             <Button className="h-24" size="lg" variant="outline">

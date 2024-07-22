@@ -109,8 +109,17 @@ export const unsetSelectedTable = async ({
     .returning();
 };
 
-export const getSelectedTable = (userId: string) => {
-  return db.query.tables.findFirst({
-    where: eq(tables.selectedBy, userId),
-  });
+export const getSelectedTable = async (userId: string) => {
+  // return await db.query.tables.findFirst({
+  //   where: eq(tables.selectedBy, userId),
+  // });
+  return await db.select().from(tables).where(eq(tables.selectedBy, userId));
+};
+
+export const unselectTable = async (tableId: string) => {
+  return await db
+    .update(tables)
+    .set({ selectedBy: null })
+    .where(eq(tables.id, tableId))
+    .returning();
 };
