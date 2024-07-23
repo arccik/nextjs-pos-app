@@ -1,5 +1,6 @@
 import { db } from "@/server/db";
 import * as schema from "@/server/db/schemas";
+import bcrypt from "bcryptjs";
 
 export async function GET() {
   console.log("Starting Seeding the Database");
@@ -21,15 +22,18 @@ async function seedDatabase() {
       tableNumberLeadingZeros: false,
       leadingZerosQuantity: 2,
     });
+
+    const password = async (pass: string) => await bcrypt.hash(pass, 10);
+
     await db.insert(schema.users).values({
       name: "Store Manger",
-      password: "password",
+      password: await password("password"),
       role: "admin",
       email: "store@example.com",
     });
     await db.insert(schema.users).values({
       name: "admin",
-      password: "123456",
+      password: await password("arccik@gmail.com"),
       email: "arccik@gmail.com",
       role: "admin",
     });
@@ -149,7 +153,8 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 10,
-        categoryId: categoryIds[0]?.id,
+        categoryId: categoryIds[0].id,
+        isAvailable: true,
       },
       {
         imageUrl: "/img/food.png",
@@ -162,7 +167,8 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 20,
-        categoryId: categoryIds[1].id!,
+        categoryId: categoryIds[1]?.id,
+        isAvailable: true,
       },
       {
         imageUrl: "/img/food.png",
@@ -175,7 +181,8 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryIds[2].id!,
+        categoryId: categoryIds[2]?.id,
+        isAvailable: true,
       },
       {
         name: "Pad Thai",
@@ -188,7 +195,8 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 25,
-        categoryId: categoryIds[2].id,
+        categoryId: categoryIds[2]?.id,
+        isAvailable: true,
       },
       {
         imageUrl: "/img/food.png",
@@ -201,7 +209,8 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 30,
-        categoryId: categoryIds[3].id,
+        categoryId: categoryIds[3]?.id,
+        isAvailable: true,
       },
       {
         imageUrl: "/img/food.png",
@@ -214,7 +223,8 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: false,
         preparationTime: 25,
-        categoryId: categoryIds[3].id,
+        categoryId: categoryIds[3]?.id,
+        isAvailable: true,
       },
       {
         imageUrl: "/img/food.png",
@@ -227,7 +237,8 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryIds[4].id,
+        categoryId: categoryIds[4]?.id,
+        isAvailable: true,
       },
       {
         imageUrl: "/img/food.png",
@@ -240,7 +251,8 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 20,
-        categoryId: categoryIds[4].id,
+        categoryId: categoryIds[4]?.id,
+        isAvailable: true,
       },
       {
         imageUrl: "/img/food.png",
@@ -253,7 +265,8 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: false,
         preparationTime: 35,
-        categoryId: categoryIds[4].id,
+        categoryId: categoryIds[4]?.id,
+        isAvailable: true,
       },
       {
         imageUrl: "/img/food.png",
@@ -266,7 +279,8 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryIds[4].id,
+        categoryId: categoryIds[4]?.id,
+        isAvailable: true,
       },
     ]);
 

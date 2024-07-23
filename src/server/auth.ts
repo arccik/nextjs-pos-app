@@ -79,15 +79,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        // Add logic here to look up the user from the credentials supplied
-        // const user = {
-        //   id: "1",
-        //   name: "J Smith XXX",
-        //   email: "jsmith@example.com",
-        //   role: "user",
-        // };
-        // return user;
-
         if (!credentials) return null;
 
         const user = await isExist(credentials.email);
@@ -97,10 +88,7 @@ export const authOptions: NextAuthOptions = {
           credentials.password,
           user.password,
         );
-        console.log("AUTH:LLL L>>> >> >> > > > >> > ", {
-          user,
-          isPasswordSame,
-        });
+
         if (!isPasswordSame) return null;
         return {
           email: user.email,
@@ -110,26 +98,15 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
   ],
   session: {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: true,
+  // pages: {
+  //   signIn: "/login",
+  // },
 };
 
-/**
- * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
- *
- * @see https://next-auth.js.org/configuration/nextjs
- */
 export const getServerAuthSession = () => getServerSession(authOptions);

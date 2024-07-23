@@ -44,7 +44,7 @@ export const getOne = async (id: string) => {
 };
 
 export const getOneByTableId = async (tableId: string) => {
-  return await db.query.orders.findFirst({
+  const order = await db.query.orders.findFirst({
     where: and(eq(orders.tableId, tableId), ne(orders.status, "Completed")),
     with: {
       orderItems: {
@@ -65,6 +65,7 @@ export const getOneByTableId = async (tableId: string) => {
       bill: true,
     },
   });
+  return order ?? null;
 };
 export const getAll = async () => {
   return await db.query.orders.findMany({

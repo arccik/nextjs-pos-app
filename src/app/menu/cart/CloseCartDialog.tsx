@@ -11,17 +11,36 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
 import { Cross1Icon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 // import { useStore } from "@/store";
 
-export function CloseCartDialog() {
+export function CloseCartDialog({
+  orderId,
+  tableId,
+}: {
+  orderId: string | null;
+  tableId: string;
+}) {
+  const router = useRouter();
   //   const { setSelectedTable, resetItems, addSpecialRequest } = useStore();
+  const unselectTable = api.table.unselectTable.useMutation({
+    onSuccess: () => toast({ title: "Table Unselected" }),
+  });
+  const deleteOrder = api.order.deleteOne.useMutation({
+    onSuccess: () => toast({ title: "Order Deleted!" }),
+  });
 
-  //   const handleCloseDialog = () => {
-  //     setSelectedTable(null);
-  //     resetItems();
-  //     addSpecialRequest("");
-  //   };
+  const handleCloseDialog = () => {
+    if (orderId) {
+      deleteOrder.mutate({ id: orderId });
+    } else {
+      unselectTable.mutate({ tableId });
+    }
+    router.refresh();
+  };
 
   return (
     <AlertDialog>
@@ -41,8 +60,9 @@ export function CloseCartDialog() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          {/* <AlertDialogAction onClick={handleCloseDialog}> */}
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={handleCloseDialog}>
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

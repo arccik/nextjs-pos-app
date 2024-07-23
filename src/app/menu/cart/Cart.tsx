@@ -30,7 +30,7 @@ import { toast, useToast } from "@/components/ui/use-toast";
 // import { useNavigate } from "react-router-dom";
 // import { summarizeOrder } from "@/lib/utils";
 // import { Edit2, Trash2Icon, Utensils } from "lucide-react";
-import usePayments from "@/hooks/usePayments";
+// import usePayments from "@/hooks/usePayments";
 // import TableIcon from "@/components/navbar/TableIcon";
 import { api } from "@/trpc/react";
 import TableIcon from "@/components/navbar/TableIcon";
@@ -46,7 +46,6 @@ export default function Cart({ onComplete }: CartProps) {
   const params = new URLSearchParams(searchParams.toString());
   const activeOrderId = params.get("orderId");
 
-  const userId = 1; // just for test now
   const { data: selectedTable } = api.table.getSelectedTable.useQuery();
   const { data: items } = api.order.getOrderWithItems.useQuery(
     { id: activeOrderId! },
@@ -54,7 +53,7 @@ export default function Cart({ onComplete }: CartProps) {
   );
   const specialRequest = "jaica";
   console.log("CART CART CART !!! ", items);
-  if (!activeOrderId || !selectedTable) return null;
+  if (!activeOrderId && !selectedTable) return null;
   // const addMoreItemsToOrder = api.order.addMoreItemsToOrder.useMutation({
   //   onSuccess: ({ orderId }: { orderId: string }) => {
   //     toast({ title: "Order successfully updated" });
@@ -137,14 +136,12 @@ export default function Cart({ onComplete }: CartProps) {
         )}
       </CardHeader>
       <CardContent className="grid gap-4">
-        {selectedTable.length > 0 && (
+        {selectedTable && (
           <div className="flex items-center gap-4">
             <ClockIcon className="h-6 w-6" />
             <div className="grid gap-1 text-sm">
               <div className="flex items-center gap-2">
-                <p className="font-semibold">
-                  Table #{selectedTable[0].number}
-                </p>
+                <p className="font-semibold">Table #{selectedTable.number}</p>
                 <SelectTable buttonTrigger={<Edit2 size="1rem" />} />
               </div>
               {specialRequest && (
@@ -175,7 +172,10 @@ export default function Cart({ onComplete }: CartProps) {
       <CardFooter className="flex flex-col justify-center gap-4 p-4">
         {/* <AddSpecialRequest orderId={activeOrder} /> */}
         <div className="flex w-full gap-5">
-          <CloseCartDialog />
+          <CloseCartDialog
+            orderId={activeOrderId}
+            tableId={selectedTable?.id}
+          />
           <Button
             // onClick={handleSubmitOrder}
             // disabled={saveOrder.isPending || addMoreItemsToOrder.isPending}

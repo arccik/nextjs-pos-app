@@ -29,6 +29,7 @@ export default function ChooseTable({ close }: ChooseTableProps) {
       toast({ title: `Table Selected` });
       refetchSelectedTable();
       refetchTables();
+      router.push("/menu");
     },
   });
 
@@ -52,13 +53,13 @@ export default function ChooseTable({ close }: ChooseTableProps) {
     reserved: "🔒",
   };
 
-  if (selectedTable?.length && selectedTable[0]) {
+  if (selectedTable) {
     return (
       <div className="flex items-center justify-center gap-4">
-        <p>You Have selected table number {selectedTable[0].number}</p>
+        <p>You Have selected table number {selectedTable.number}</p>
         <Button
           size="icon"
-          onClick={() => unselect.mutate({ tableId: selectedTable[0].id })}
+          onClick={() => unselect.mutate({ tableId: selectedTable.id })}
         >
           <XIcon />
         </Button>

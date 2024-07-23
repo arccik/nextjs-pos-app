@@ -21,6 +21,7 @@ import {
   recentCompletedOrders,
   addSpecialRequest,
   getSpecialRequest,
+  deleteOne,
 } from "@/server/models/order";
 
 export const orderRouter = createTRPCRouter({
@@ -84,5 +85,10 @@ export const orderRouter = createTRPCRouter({
     .input(z.object({ orderId: z.string() }))
     .query(async ({ input }) => {
       return await getSpecialRequest({ orderId: input.orderId });
+    }),
+  deleteOne: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      return await deleteOne(input.id);
     }),
 });

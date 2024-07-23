@@ -38,9 +38,12 @@ export default function TableDialog({
     data: orderData,
     isLoading,
     isError,
-  } = api.order.getOneByTableId.useQuery({
-    tableId: tableData.id,
-  });
+  } = api.order.getOneByTableId.useQuery(
+    {
+      tableId: tableData.id,
+    },
+    { enabled: !!tableData.id },
+  );
   // console.log("orderData: ", data);
   // const isDesktop = useMediaQuery();
   // const { data: orderData, isError } = useQuery<OrderWithItems>({
