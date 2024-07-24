@@ -34,11 +34,7 @@ type TableDIalogProps = {
 };
 
 export default function TableDialog({ tableData }: TableDIalogProps) {
-  const {
-    data: orderData,
-    isLoading,
-    isError,
-  } = api.order.getOneByTableId.useQuery(
+  const { data: orderData, isLoading } = api.order.getOneByTableId.useQuery(
     {
       tableId: tableData.id,
     },

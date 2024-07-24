@@ -7,15 +7,11 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import TablesDialog from "./TablesDialog";
 import AddTable from "./AddTable";
-import type {
-  TableStatus,
-  TableWithReservation,
-} from "@/server/db/schemas/table";
+import type { TableStatus } from "@/server/db/schemas/table";
 import Loading from "@/components/Loading";
 
-// import AddReservation from "@/components/reservations/AddReservation/AddReservation";
+import AddReservation from "@/components/reservations/AddReservation/AddReservation";
 // import { AdminMenu } from "./AdminMenu";
-// import { getAll, getAllByStatus } from "@/server/models/table";
 // import { getUnAssignedReservations } from "@/server/models/reservation";
 
 type TabelsGridProps = {
@@ -25,9 +21,11 @@ type TabelsGridProps = {
 export default function TableCards({ standalone }: TabelsGridProps) {
   const [status, setStatus] = useState<TableStatus>("available");
 
-  const { data, refetch, isLoading } =
-    api.table.getAllByStatus.useQuery(status);
-  console.log("Table CARDS: ", data);
+  const {
+    data: tables,
+    refetch,
+    isLoading,
+  } = api.table.getAllByStatus.useQuery(status);
 
   const { data: reservations } =
     api.reservation.getUnAssignedReservations.useQuery();
@@ -51,14 +49,14 @@ export default function TableCards({ standalone }: TabelsGridProps) {
       <CardHeader className="flex flex-col items-center justify-between sm:flex-row">
         <CardTitle className="text-xl font-semibold">Tables</CardTitle>
         <div className="flex flex-col gap-3 sm:flex-row">
-          {/* <AddReservation /> */}
+          <AddReservation />
           <AddTable onComplete={refetch} />
         </div>
         {/* <AdminMenu /> */}
       </CardHeader>
 
       <CardContent>
-        {data && data?.length > 0 ? (
+        {tables && tables?.length > 0 ? (
           <div
             className={cn(
               "grid grid-flow-row grid-cols-1 gap-3 sm:grid-cols-2",
@@ -68,7 +66,7 @@ export default function TableCards({ standalone }: TabelsGridProps) {
               },
             )}
           >
-            {data.map((table) => (
+            {tables.map((table) => (
               <TablesDialog key={table.id} tableData={table} />
             ))}
           </div>

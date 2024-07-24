@@ -21,6 +21,12 @@ export const getAllByStatus = async (status: TableStatus) => {
       reservations: {
         where: eq(reservations.tableId, tables.id),
       },
+      selectedBy: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
 };

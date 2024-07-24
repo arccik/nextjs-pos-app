@@ -82,8 +82,7 @@ export default function ChooseTable({ close }: ChooseTableProps) {
             className={cn(
               "grid size-32 cursor-pointer place-content-center gap-2 rounded-xl border-2 p-2",
               {
-                "border-4 border-green-500":
-                  table.selectedBy === "d9a4b19f-a619-4013-b40f-8af693cd2bf2",
+                "border-4 border-green-500": !!table.selectedBy,
               },
             )}
           >

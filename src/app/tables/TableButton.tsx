@@ -2,17 +2,22 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Notebook } from "lucide-react";
 import { type TableWithReservation } from "@/server/db/schemas";
+import { useSession } from "next-auth/react";
 
 type TableButtonProps = {
   tableData: TableWithReservation;
 };
 
 export default function TableButton({ tableData }: TableButtonProps) {
+  const { data: session } = useSession();
+  const isSelected = !!tableData.selectedBy;
+
   return (
     <Card
       className={cn("rounded-xl transition-all", {
         "border-spacing-x-1.5 border-gray-400": tableData.status === "occupied",
         "border-red-700": tableData.status === "reserved",
+        "border-blue-700": isSelected,
       })}
     >
       <CardHeader className="grid grid-cols-2 items-center rounded-t-xl border-b p-4">
@@ -33,6 +38,11 @@ export default function TableButton({ tableData }: TableButtonProps) {
           >
             {tableData.status}
           </p>
+          {tableData.selectedBy && (
+            <p className="text-xs leading-none">
+              Selected By: {tableData.selectedBy?.name}
+            </p>
+          )}
         </div>
       </CardHeader>
 
