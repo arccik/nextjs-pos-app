@@ -8,6 +8,7 @@ export default function CountDownOpenOrder({ date }: { date: Date }) {
   console.log("CoUNT DOwn: ", date);
 
   useEffect(() => {
+    if (!date) return;
     const intervalId = setInterval(() => {
       const newMinutes = formatDistanceToNowStrict(date, {
         addSuffix: true,
