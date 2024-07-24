@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-// import { getOneByTableId, type OrderWithItems } from "@/server/models/order";
+
 
 import TableDetails from "./TableDetails";
 import TableButton from "./TableButton";
@@ -29,11 +29,13 @@ import { type TableWithReservation } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import ActionButtons from "@/components/ActionButtons";
 
+type TableDIalogProps = {
+  tableData: TableWithReservation;
+}
+
 export default function TableDialog({
   tableData,
-}: {
-  tableData: TableWithReservation;
-}) {
+}: TableDIalogProps) {
   const {
     data: orderData,
     isLoading,

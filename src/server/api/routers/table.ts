@@ -1,5 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { insertTableSchema, tables } from "../../db/schemas";
+import { insertTableSchema, tableStatusEnum, tables } from "../../db/schemas";
 import { eq } from "drizzle-orm";
 import {
   getAll,
@@ -7,6 +7,7 @@ import {
   getSelectedTable,
   setSelectedTable,
   unselectTable,
+  getAllByStatus,
 } from "@/server/models/table";
 import { z } from "zod";
 
@@ -42,4 +43,7 @@ export const tableRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return await unselectTable(input.tableId);
     }),
+  getAllByStatus: protectedProcedure
+    .input(z.enum(tableStatusEnum))
+    .query(async ({ input }) => await getAllByStatus(input)),
 });

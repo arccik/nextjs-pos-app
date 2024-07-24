@@ -31,6 +31,7 @@ export default function AddTableForm({ onClose }: AddTableFormProps) {
     },
   });
   const createTable = api.table.create.useMutation({
+    onSuccess: onClose,
     onError: (error) => {
       if (error instanceof Error) {
         form.setError("number", { message: error.message });

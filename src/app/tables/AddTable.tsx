@@ -13,8 +13,17 @@ import AddTableForm from "./AddTableForm";
 import { useState } from "react";
 import { PlusIcon } from "lucide-react";
 
-export default function AddTable() {
+type AddTableProps = {
+  onComplete: () => void;
+};
+
+export default function AddTable({ onComplete }: AddTableProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleFormClose = () => {
+    onComplete();
+    setIsOpen(false);
+  };
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -34,7 +43,7 @@ export default function AddTable() {
             Fill all required fields to create a new table
           </DialogDescription>
         </DialogHeader>
-        <AddTableForm onClose={() => setIsOpen(false)} />
+        <AddTableForm onClose={handleFormClose} />
       </DialogContent>
     </Dialog>
   );
