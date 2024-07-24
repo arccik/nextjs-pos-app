@@ -11,8 +11,7 @@ import {
 // import { useStore } from "@/store";
 import ChooseTable from "./ChooseTable";
 import NewCustomerButton from "./NewCustomerButton";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useState } from "react";
 
 type NewCustomerProps = {
   buttonTrigger?: React.ReactNode;
@@ -20,16 +19,6 @@ type NewCustomerProps = {
 
 export default function NewCustomer({ buttonTrigger }: NewCustomerProps) {
   const [show, setShow] = useState(false);
-  // const navigate = useNavigate();
-
-  // const router = useRouter();
-  // const { selectedTable } = useStore();
-  const selectedTable = { tableId: 1 };
-
-
-  // useEffect(() => {
-  //   if (selectedTable?.tableId) router.push("/menu");
-  // }, [selectedTable?.tableId]);
 
   return (
     <Dialog open={show} onOpenChange={setShow}>

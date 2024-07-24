@@ -25,12 +25,12 @@ export default function AddItemToOrderButton({
   console.log("AddITem ButTOn : ", orderId);
   const addItem = api.order.addItems.useMutation({
     onSuccess: (res) => {
-      console.log("Success. Response: ", res?.id);
-      // params.set("orderId", res.id);
+      console.log("Success. Response: ", res);
+      // res && params.set("orderId", res?.id);
       router.push(pathname + "?" + `orderId=${res?.id}`);
-      toast({
-        title: "Order created",
-      });
+      // toast({
+      //   title: "Order created",
+      // });
     },
   });
 

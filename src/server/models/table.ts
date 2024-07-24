@@ -113,11 +113,6 @@ export const getSelectedTable = async (userId: string) => {
   const result = await db.query.tables.findFirst({
     where: eq(tables.selectedBy, userId),
   });
-  console.log("getSe lectedT ableget ", result);
-  // const [result] = await db
-  //   .select()
-  //   .from(tables)
-  //   .where(eq(tables.selectedBy, userId));
   return result !== undefined ? result : null;
 };
 

@@ -17,7 +17,7 @@ export default function ChooseTable({ close }: ChooseTableProps) {
   const router = useRouter();
   const {
     data: tables,
-    isLoading: tablesLoading,
+    isLoading: isTablesLoading,
     refetch: refetchTables,
   } = api.table.getAll.useQuery();
 
@@ -38,6 +38,7 @@ export default function ChooseTable({ close }: ChooseTableProps) {
       toast({ title: "Table Unselected" });
       refetchSelectedTable();
       refetchTables();
+      router.refresh();
     },
   });
 
@@ -62,6 +63,7 @@ export default function ChooseTable({ close }: ChooseTableProps) {
           onClick={() => unselect.mutate({ tableId: selectedTable.id })}
         >
           <XIcon />
+          {unselect.isPending && <Loading />}
         </Button>
       </div>
     );
@@ -70,6 +72,7 @@ export default function ChooseTable({ close }: ChooseTableProps) {
   return (
     <section className="mx-auto">
       <div className="flex flex-wrap place-content-between gap-4">
+        {isTablesLoading && <Loading />}
         {tables?.map((table) => (
           <Button
             variant="outline"

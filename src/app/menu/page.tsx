@@ -1,8 +1,11 @@
+import { api } from "@/trpc/server";
 import { MenuList } from "./MenuList";
 import Cart from "./cart/Cart";
 import AddNewCategoryButton from "./category/AddNewCategoryButton";
 
 export default async function MenuPage() {
+  const orderId = await api.order.getPendingOrder();
+  console.log("Panding Order :>>>> ", orderId);
   return (
     <section className="grid w-full grid-flow-row py-12 ">
       <div className="grid gap-8 px-4 md:container md:px-6">

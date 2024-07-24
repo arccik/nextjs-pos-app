@@ -16,12 +16,13 @@ import {
   getOne,
   getOneByTableId,
   getRecentOrders,
-  pay,
+  // pay,
   getOrderWithItems,
   recentCompletedOrders,
   addSpecialRequest,
   getSpecialRequest,
   deleteOne,
+  getPendingOrder,
 } from "@/server/models/order";
 
 export const orderRouter = createTRPCRouter({
@@ -91,4 +92,7 @@ export const orderRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return await deleteOne(input.id);
     }),
+  getPendingOrder: protectedProcedure.query(async ({ ctx }) => {
+    return await getPendingOrder(ctx.session.user.id);
+  }),
 });

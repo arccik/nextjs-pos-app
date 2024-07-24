@@ -389,3 +389,9 @@ export const getSpecialRequest = async ({ orderId }: { orderId: string }) => {
   //   .from(orders)
   //   .where(eq(orders.id, orderId));
 };
+
+export const getPendingOrder = async (userId: string) => {
+  return await db.query.orders.findFirst({
+    where: and(eq(orders.userId, userId), eq(orders.status, "Pending")),
+  });
+};

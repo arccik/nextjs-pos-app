@@ -8,7 +8,7 @@ import {
   ShoppingBasket,
   TableIcon,
 } from "lucide-react";
-import NewCustomerButton from "./SelectTable";
+import SelectTableDialog from "./SelectTable";
 import { useSearchParams } from "next/navigation";
 // import TableIcon from "@/components/layout/navigation/TableIcon";
 // import TablesCards from "@/components/tables/TableCards";
@@ -32,7 +32,7 @@ export default function Waiter() {
       </p> */}
 
       <div className="grid grid-cols-2 place-content-center items-center justify-center gap-4 md:grid-cols-4">
-        <NewCustomerButton
+        <SelectTableDialog
           buttonTrigger={
             <Button className="h-24" size="lg" variant="outline">
               <div className="flex flex-col items-center gap-1">
