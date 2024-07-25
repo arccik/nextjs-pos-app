@@ -22,7 +22,7 @@ export function CloseCartDialog({
   tableId,
 }: {
   orderId: string | null;
-  tableId: string;
+  tableId?: string;
 }) {
   const router = useRouter();
   //   const { setSelectedTable, resetItems, addSpecialRequest } = useStore();

@@ -1,11 +1,13 @@
 "use client";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
+
 import { type Item } from "@/server/db/schemas/item";
-import { PlusIcon } from "lucide-react";
+import { ChevronRight, ChevronLeft, PlusIcon } from "lucide-react";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 type AddItemToOrderButtonProps = {
   item: Item;
@@ -14,6 +16,7 @@ type AddItemToOrderButtonProps = {
 export default function AddItemToOrderButton({
   item,
 }: AddItemToOrderButtonProps) {
+  const [quantity, setQuantity] = useState(1);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -27,15 +30,22 @@ export default function AddItemToOrderButton({
     onSuccess: (res) => {
       console.log("Success. Response: ", res);
       // res && params.set("orderId", res?.id);
-      router.push(pathname + "?" + `orderId=${res?.id}`);
+      if (!orderId) router.push(pathname + "?" + `orderId=${res?.id}`);
       // toast({
       //   title: "Order created",
       // });
     },
   });
+  const createOrder = api.order.create.useMutation({
+    onSuccess: () => console.log("Order Created!"),
+  });
 
   const handleClick = () => {
-    addItem.mutate({ orderId, itemId: item.id });
+    if (orderId) {
+      addItem.mutate({ orderId, itemId: item.id, quantity });
+    } else {
+      createOrder.mutate({ items: [{ itemId: item.id, quantity }] });
+    }
     console.log("Add items to order: Status take");
 
     toast({
@@ -43,13 +53,40 @@ export default function AddItemToOrderButton({
     });
   };
   return (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={handleClick}
-      disabled={!item.isAvailable}
-    >
-      <PlusIcon size="1rem" className="mr-1" /> Add to Order
-    </Button>
+    <div className="flex gap-2">
+      <div className="flex">
+        <Button
+          variant="outline"
+          size="icon"
+          disabled={quantity <= 1}
+          onClick={() => setQuantity((prev) => prev - 1)}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        <Input
+          className="w-12 text-center [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          type="number"
+          value={quantity}
+          disabled
+          onChange={(e) => setQuantity(Number(e.target.value))}
+        />
+        <Button
+          variant="outline"
+          size="icon"
+          disabled={quantity > 90}
+          onClick={() => setQuantity((prev) => prev + 1)}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleClick}
+        disabled={!item.isAvailable}
+      >
+        <PlusIcon size="1rem" className="mr-1" /> Add to Order
+      </Button>
+    </div>
   );
 }

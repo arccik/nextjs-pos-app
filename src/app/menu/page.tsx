@@ -2,6 +2,7 @@ import { api } from "@/trpc/server";
 import { MenuList } from "./MenuList";
 import Cart from "./cart/Cart";
 import AddNewCategoryButton from "./category/AddNewCategoryButton";
+import MenuGrid from "./grid/MenuGrid";
 
 export default async function MenuPage() {
   const orderId = await api.order.getPendingOrder();
@@ -23,6 +24,7 @@ export default async function MenuPage() {
         <div className="flex flex-col md:flex-row">
           <MenuList />
           <div className="right-5 top-20  col-span-1 md:col-span-2">
+            <pre>{JSON.stringify(orderId, undefined, 2)}</pre>
             <Cart />
           </div>
         </div>

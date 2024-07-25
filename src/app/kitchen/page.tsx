@@ -10,6 +10,7 @@ import KitchenOrderDisplay from "./KitchenOrderDisplay";
 import { db } from "@/server/db";
 import { items, orderItems, orders, tables, users } from "@/server/db/schemas";
 import { getTableColumns, eq } from "drizzle-orm";
+import { api } from "@/trpc/server";
 
 export default async function KitchenPage() {
   //   const { data, isLoading, isError } = useQuery({
@@ -31,6 +32,7 @@ export default async function KitchenPage() {
     .leftJoin(items, eq(orderItems.itemId, items.id))
     .leftJoin(users, eq(orders.userId, users.id))
     .leftJoin(tables, eq(orders.tableId, tables.id));
+  // const data = await api.order.getAll("Pending");
   console.log("Must be server compoonenntS:: >>> >> .> .> >>>>> ..>> ", data);
   return (
     <main className="md:p-2">
@@ -47,7 +49,8 @@ export default async function KitchenPage() {
             No orders to display
           </p>
         ) : (
-          <KitchenOrderDisplay data={data} />
+          // <KitchenOrderDisplay data={data} />
+          <pre>{JSON.stringify(data, undefined, 2)}</pre>
         )}
       </Card>
     </main>

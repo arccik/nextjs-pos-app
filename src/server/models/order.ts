@@ -150,7 +150,7 @@ export const addItem = async (data: {
   if (!data.orderId) {
     [order] = await db
       .insert(orders)
-      .values({ status: "Pending" })
+      .values({ status: "Pending", userId: data.userId })
       .returning({ id: orders.id });
   } else {
     const selectOrder = await db.query.orders.findFirst({
