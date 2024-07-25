@@ -89,8 +89,8 @@ export default function ItemFields({ form }: ItemFieldsProps) {
             <FormLabel>Category</FormLabel>
             <FormControl>
               <Select
-                onValueChange={(e) => field.onChange(Number(e))}
-                value={String(field.value)}
+                onValueChange={(e) => field.onChange(e)}
+                value={field.value}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a category" />
@@ -100,7 +100,7 @@ export default function ItemFields({ form }: ItemFieldsProps) {
                   <SelectGroup>
                     <SelectLabel>Categories</SelectLabel>
                     {categories?.map((category) => (
-                      <SelectItem key={category.id} value={String(category.id)}>
+                      <SelectItem key={category.id} value={category.id}>
                         {category.name}
                       </SelectItem>
                     ))}

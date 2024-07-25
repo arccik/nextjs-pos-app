@@ -16,10 +16,10 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 //   removeItemFromStopList,
 // } from "@/api/items";
 import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function ActionCell(props: CellContext<Item, unknown>) {
-  //   const router = useRouter();
+  const router = useRouter();
   const rowId = props.row.original.id;
   //   const addToStopList = useMutation({
   //     mutationFn: addItemToStopList,
@@ -67,7 +67,7 @@ export default function ActionCell(props: CellContext<Item, unknown>) {
     // deleteItem.mutate(String(rowId));
     throw new Error("Not implemented");
   };
-  return null;
+  // return null;
   return (
     <>
       <DropdownMenu>
@@ -95,7 +95,7 @@ export default function ActionCell(props: CellContext<Item, unknown>) {
           )}
           <DropdownMenuItem
             className="text-yellow-500 "
-            // onClick={() => router.push(`/admin/items/edit?id=${rowId}`)}
+            onClick={() => router.push(`/menu/items/edit?id=${rowId}`)}
           >
             Edit
           </DropdownMenuItem>
