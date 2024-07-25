@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import {
 //   addItemToStopList,
 //   deleteOne,
@@ -18,13 +17,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 // } from "@/api/items";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/router";
-// import { useNavigate } from "react-router-dom";
 
 export default function ActionCell(props: CellContext<Item, unknown>) {
-  //   const navigate = useNavigate();
   //   const router = useRouter();
   const rowId = props.row.original.id;
-  //   const queryClient = useQueryClient();
   //   const addToStopList = useMutation({
   //     mutationFn: addItemToStopList,
   //     onSuccess: () => {

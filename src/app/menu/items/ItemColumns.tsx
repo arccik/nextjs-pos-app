@@ -6,19 +6,8 @@ import { Button } from "@/components/ui/button";
 import { CaretSortIcon, CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 
 import { useQuery } from "@tanstack/react-query";
-// import { getOne } from "@/api/categories";
 import ActionCell from "./ActionCell";
 import { api } from "@/trpc/react";
-
-// export const columns = itemFields.map((field): ColumnDef<Item> => {
-//   return {
-//     accessorKey: field,
-//     header: field,
-//     cell: ({ row }) => {
-//       return <div className="capitalize">{row.getValue(field) + ""}</div>;
-//     },
-//   };
-// });
 
 export const columns: ColumnDef<Item>[] = [
   {
@@ -168,7 +157,6 @@ export const columns: ColumnDef<Item>[] = [
       </div>
     ),
   },
-
   {
     id: "actions",
     enableHiding: false,
