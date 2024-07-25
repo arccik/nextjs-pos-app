@@ -11,7 +11,7 @@ import { type OrderWithItems } from "@/server/models/order";
 
 import DisplayOrderItems from "./DisplayOrderItems";
 import CountDownOpenOrder from "./CountDownOpenOrder";
-import { formatCurrency, summarizePrice } from "@/lib/utils";
+import { formatCurrency, readableId, summarizePrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
 // import ActionButtons from "@/components/ActionButtons";
@@ -20,11 +20,11 @@ import TableIcon from "@/components/navbar/TableIcon";
 // import { useVenueSettings } from "@/hooks/useVenueSettings";
 import Link from "next/link";
 
-type PendingOrderProps = {
+type OrderCardProps = {
   order: OrderWithItems;
 };
 
-export function PendingOrder({ order }: PendingOrderProps) {
+export default function OrderCard({ order }: OrderCardProps) {
   //   const { venueSettings, venueTables } = useVenueSettings();
   //   const serviceFee = Number(venueSettings?.serviceFee);
   //   const total = summarizePrice(order.orderItems) ?? 0 + serviceFee;
@@ -39,7 +39,7 @@ export function PendingOrder({ order }: PendingOrderProps) {
       <CardHeader className="pb-5">
         <CardTitle className="flex justify-between">
           <Link href={`/order?id=${order.id}`}>
-            <span>Order #{order.id}</span>
+            <span>Order #{readableId(order.id)}</span>
           </Link>
           <span className="flex gap-2">
             <Badge>{order.status}</Badge>
@@ -53,9 +53,7 @@ export function PendingOrder({ order }: PendingOrderProps) {
             )}
           </span>
         </CardTitle>
-        <CardDescription>
-          Ready for pickup. Please deliver to the customer in 5 minutes.
-        </CardDescription>
+        <CardDescription>{order.specialRequest}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="flex items-center justify-between  gap-4">

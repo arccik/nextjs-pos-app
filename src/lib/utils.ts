@@ -223,3 +223,7 @@ export function summarizePrice(items: ItemToSummerize[]) {
     0,
   );
 }
+
+export function readableId(id: string) {
+  return id.slice(-4);
+}

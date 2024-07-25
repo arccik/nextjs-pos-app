@@ -7,6 +7,7 @@ import {
   newOrderWithItemsSchema,
   orderItemsSchema,
   itemsSchema,
+  orderStatus,
 } from "../../db/schemas";
 import {
   addMoreItemsToOrder,
@@ -23,6 +24,7 @@ import {
   getSpecialRequest,
   deleteOne,
   getPendingOrder,
+  getAllByStatus,
 } from "@/server/models/order";
 
 export const orderRouter = createTRPCRouter({
@@ -31,9 +33,12 @@ export const orderRouter = createTRPCRouter({
     .query(async ({ input }) => {
       return await getOne(input.id);
     }),
-  getAll: protectedProcedure.query(async () => {
-    return await getAll();
-  }),
+  getAll: protectedProcedure
+    .input(z.enum(orderStatus).optional())
+    .query(async ({ input }) => {
+      if (input) return await getAllByStatus(input);
+      return await getAll();
+    }),
   getOrderWithItems: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {

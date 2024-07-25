@@ -1,14 +1,7 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { useQuery } from "@tanstack/react-query";
-// import { getAll } from "@/api/orders";
-// import Loading from "../../layout/Loading";
-// import Error from "../../layout/Error";
-import { PendingOrder } from "./PendingOrder";
-import { cn } from "@/lib/utils";
+import OrderCard from "./OrderCard";
 import { type OrderStatus } from "@/server/db/schemas";
-// import { type OrderWithItems } from "@server/src/models/order";
-// import { Button } from "../../ui/button";
 import { useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import AddNewOrderButton from "./AddNewOrderButton";
@@ -24,9 +17,7 @@ export default function Orders({ orderStatus }: OrderProps) {
   );
   //TODO: make api requiest with limit and offset
 
-  const { data, isLoading } = api.order.getAll.useQuery();
-
-  if (isLoading) return <Loading />;
+  const { data, isLoading } = api.order.getAll.useQuery(status);
 
   const total = data?.length;
   return (
@@ -41,6 +32,9 @@ export default function Orders({ orderStatus }: OrderProps) {
           <ToggleGroupItem value="In Progress"> In Progress</ToggleGroupItem>
           <ToggleGroupItem value="Served"> Served</ToggleGroupItem>
           <ToggleGroupItem value="Completed"> Completed</ToggleGroupItem>
+          <ToggleGroupItem value="Pending" className="border border-red-700/40">
+            Pending
+          </ToggleGroupItem>
         </ToggleGroup>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xl font-semibold">
@@ -61,9 +55,11 @@ export default function Orders({ orderStatus }: OrderProps) {
             {data ? (
               <div className="grid  gap-4 md:grid-cols-2 lg:justify-between xl:grid-cols-3">
                 {data.map((order) => (
-                  <PendingOrder key={order.id} order={order} />
+                  <OrderCard key={order.id} order={order} />
                 ))}
               </div>
+            ) : isLoading ? (
+              <Loading />
             ) : (
               <p className="my-10 text-center font-sans text-gray-600">
                 No orders found

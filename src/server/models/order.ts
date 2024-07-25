@@ -1,4 +1,4 @@
-import { and, eq, getTableColumns, gte, ne, lt } from "drizzle-orm";
+import { and, eq, getTableColumns, gte, ne, lt, SQL } from "drizzle-orm";
 
 import { db } from "../db";
 import {
@@ -13,11 +13,16 @@ import {
   users,
   Item,
   type NewItem,
+  Order,
 } from "../db/schemas";
 import { combineItems, combineOrderItems } from "../../lib/utils";
 import { endOfToday, startOfToday } from "date-fns";
 import { StringOrTemplateHeader } from "@tanstack/react-table";
 import { generateBill, updateBill } from "./bill";
+import {
+  SQLiteSelect,
+  SQLiteSelectQueryBuilder,
+} from "drizzle-orm/sqlite-core";
 
 export const getOne = async (id: string) => {
   const result = await db.query.orders.findFirst({
@@ -67,7 +72,16 @@ export const getOneByTableId = async (tableId: string) => {
   });
   return order ?? null;
 };
+export const getAllByStatus = async (status: OrderStatus[number]) => {
+  return await db.query.orders.findMany({
+    where: eq(orders.status, status),
+    with: { user: true, bill: true, orderItems: { with: { items: true } } },
+  });
+};
+
 export const getAll = async () => {
+  // const options: Record<string, SQL<unknown>> = {};
+
   return await db.query.orders.findMany({
     with: { user: true, bill: true, orderItems: { with: { items: true } } },
   });

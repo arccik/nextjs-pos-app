@@ -12,18 +12,17 @@ import SelectTableDialog from "./SelectTable";
 import { useSearchParams } from "next/navigation";
 // import TableIcon from "@/components/layout/navigation/TableIcon";
 // import TablesCards from "@/components/tables/TableCards";
-// import { useSearchParams } from "next/navigation";
 
 export default function Waiter() {
-  // const searchParams = useSearchParams();
-  // const params = new URLSearchParams(searchParams.toString());
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
 
   // const selectedTab = params.get("tab");
   // const userId = 1;
 
-  // const handleTabClick = (value: string) => {
-  //   params.set("tab", value);
-  // };
+  const handleTabClick = (value: string) => {
+    params.set("tab", value);
+  };
 
   return (
     <main className="space-y-5 p-4">
@@ -43,7 +42,7 @@ export default function Waiter() {
           }
         />
         <Button
-          // onClick={() => handleTabClick("orders")}
+          onClick={() => handleTabClick("orders")}
           className="h-24"
           size="lg"
           variant="outline"
@@ -54,7 +53,7 @@ export default function Waiter() {
           </div>
         </Button>
         <Button
-          // onClick={() => handleTabClick("completedOrders")}
+          onClick={() => handleTabClick("completedOrders")}
           className="h-24"
           size="lg"
           variant="outline"
@@ -67,7 +66,7 @@ export default function Waiter() {
           </div>
         </Button>
         <Button
-          // onClick={() => handleTabClick("tables")}
+          onClick={() => handleTabClick("tables")}
           className="h-24"
           size="lg"
           variant="outline"
