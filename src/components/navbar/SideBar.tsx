@@ -6,35 +6,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-// import { Settings } from "lucide-react";
 import Link from "next/link";
 import { LogOut, Settings } from "lucide-react";
 
 import navItems from "./NavItems";
 import MobileNav from "./MobileNav";
 
-import { signOut } from "next-auth/react";
-
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { TriangleDownIcon } from "@radix-ui/react-icons";
-import {
-  NavigationMenu,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
+import { signOut, useSession } from "next-auth/react";
 
 export default function SideBar() {
+  const { data: session } = useSession();
   const handleLogOut = async () => {
     await signOut({ callbackUrl: "/login" });
   };
   return (
     <>
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-20 flex-col border-r bg-background sm:flex">
+      <aside className="fixed inset-y-0 left-0 z-10 hidden flex-col border-r bg-background sm:flex md:w-20">
         <TooltipProvider>
           <nav className="flex flex-col items-center gap-4 px-2 sm:py-4">
             {navItems.map((navItem) => (
@@ -51,6 +38,11 @@ export default function SideBar() {
                 <TooltipContent side="right">{navItem.title}</TooltipContent>
               </Tooltip>
             ))}
+          </nav>
+          <nav className="mt-auto flex rotate-180 flex-col items-center gap-4 px-2 sm:py-4">
+            <p className="text-xl font-bold uppercase [writing-mode:vertical-rl]">
+              {session?.user.name}
+            </p>
           </nav>
           <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-4">
             <Tooltip>

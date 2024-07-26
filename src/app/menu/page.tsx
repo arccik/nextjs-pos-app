@@ -23,8 +23,8 @@ export default async function MenuPage() {
         </div>
         <div className="flex flex-col md:flex-row">
           <MenuList />
-          <div className="right-5 top-20  col-span-1 md:col-span-2">
-            <pre>{JSON.stringify(orderId, undefined, 2)}</pre>
+          <div className="right-5 top-20  col-span-1 m-4 md:col-span-2">
+            {/* <pre>{JSON.stringify(orderId, undefined, 2)}</pre> */}
             <Cart />
           </div>
         </div>

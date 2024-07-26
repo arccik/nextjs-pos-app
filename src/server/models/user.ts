@@ -4,20 +4,19 @@ import { db } from "../db";
 import { NewUser, type User, users } from "../db/schemas/user";
 
 export const getOne = async (id: string) => {
-  return await db.query.users.findFirst({
+  let response = await db.query.users.findFirst({
     where: eq(users.id, id),
     with: { profileInfo: true },
   });
+  if (!response) return null;
+  const { password, ...user } = response;
+  return user;
 };
 export const getAll = async () => {
   return await db.query.users.findMany();
 };
-export const update = async (body: User) => {
-  return await db
-    .update(users)
-    .set(body)
-    .where(eq(users.id, body.id))
-    .returning();
+export const update = async ({ id, body }: { id: string; body: NewUser }) => {
+  return await db.update(users).set(body).where(eq(users.id, id)).returning();
 };
 
 export const create = async (body: NewUser) => {

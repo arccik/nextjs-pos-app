@@ -27,15 +27,13 @@ export default async function UserPage() {
           </div>
         </div>
         <CardContent>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Similique
-          hic magni soluta dolorem nulla. Accusamus beatae ex cum numquam
-          necessitatibus esse assumenda consequatur totam aliquid facilis et
-          labore corrupti mollitia itaque alias, perspiciatis architecto
-          adipisci a. Corporis incidunt porro impedit.
+          <p className="mb-4 text-sm text-slate-500">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Similique
+            hic magni soluta dolorem nulla.
+          </p>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead className="text-center">Image</TableHead>
@@ -47,12 +45,11 @@ export default async function UserPage() {
                   <TableCell>
                     <Link
                       className="font-medium underline"
-                      href={`/user?id=${user.id}`}
+                      href={`/user/edit?id=${user.id}`}
                     >
-                      #{user.id}
+                      {user.name}
                     </Link>
                   </TableCell>
-                  <TableCell>{user.name}</TableCell>
                   <TableCell>{user.role}</TableCell>
                   {user.image && (
                     <TableCell className="flex justify-center">

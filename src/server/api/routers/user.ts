@@ -34,7 +34,10 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return await deleteOne(input);
     }),
-  update: protectedProcedure.input(userSchema).mutation(async ({ input }) => {
-    return await update(input);
-  }),
+  update: protectedProcedure
+    .input(newUserSchema.extend({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      console.log("UPDATE USER: ?? !!! ", input);
+      return await update({ id: input.id, body: { ...input } });
+    }),
 });
