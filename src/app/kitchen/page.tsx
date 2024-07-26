@@ -18,24 +18,24 @@ export default async function KitchenPage() {
   //     queryFn: getOrderItems,
   //   });
   const { password, ...rest } = getTableColumns(users);
-  const data = await db
-    .select({
-      order_items: orderItems,
-      orders: orders,
-      items: items,
-      users: rest,
-      tables: tables,
-    })
-    .from(orderItems)
-    .where(eq(orders.status, "In Progress"))
-    .leftJoin(orders, eq(orderItems.orderId, orders.id))
-    .leftJoin(items, eq(orderItems.itemId, items.id))
-    .leftJoin(users, eq(orders.userId, users.id))
-    .leftJoin(tables, eq(orders.tableId, tables.id));
-  // const data = await api.order.getAll("Pending");
+  // const data = await db
+  //   .select({
+  //     order_items: orderItems,
+  //     orders: orders,
+  //     items: items,
+  //     users: rest,
+  //     tables: tables,
+  //   })
+  //   .from(orderItems)
+  //   .where(eq(orders.status, "In Progress"))
+  //   .leftJoin(orders, eq(orderItems.orderId, orders.id))
+  //   .leftJoin(items, eq(orderItems.itemId, items.id))
+  //   .leftJoin(users, eq(orders.userId, users.id))
+  //   .leftJoin(tables, eq(orders.tableId, tables.id));
+  const data = await api.order.getAll("Pending");
   console.log("Must be server compoonenntS:: >>> >> .> .> >>>>> ..>> ", data);
   return (
-    <main className="md:p-2">
+    <main className="sm:p-2">
       <Card className="p-5">
         <h1 className="text-4xl font-bold">Kitchen</h1>
         <p className="mt-2 text-gray-400">This is the kitchen page.</p>
