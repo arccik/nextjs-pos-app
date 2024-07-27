@@ -33,28 +33,30 @@ import {
 // import { recentOrders } from "@/api/orders";
 // import type { OrderWithUserAndBill } from "@server/src/schemas";
 // import { useNavigate } from "react-router-dom";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatId } from "@/lib/utils";
 import { db } from "@/server/db";
 import { and, gte, lt } from "drizzle-orm";
 import { orders } from "@/server/db/schemas";
 import Link from "next/link";
+import { api } from "@/trpc/server";
 
 // import { PDFDownloadLink } from "@react-pdf/renderer";
 // import TablePDF from "./TablePDF";
 
 export default async function OrderTable() {
-  const today = new Date();
-  const startOfToday = startOfDay(today);
-  const endOfToday = endOfDay(today);
+  // const today = new Date();
+  // const startOfToday = startOfDay(today);
+  // const endOfToday = endOfDay(today);
+  const data = await api.order.getAll();
 
-  const data = await db.query.orders.findMany({
-    where: and(
-      gte(orders.createdAt, startOfToday),
-      lt(orders.createdAt, endOfToday),
-    ),
+  // const data = await db.query.orders.findMany({
+  //   where: and(
+  //     gte(orders.createdAt, startOfToday),
+  //     lt(orders.createdAt, endOfToday),
+  //   ),
 
-    with: { user: { columns: { name: true, role: true } }, bill: true },
-  });
+  //   with: { user: { columns: { name: true, role: true } }, bill: true },
+  // });
 
   // const navigate = useNavigate();
   // const { data, isLoading, isError } = useQuery<OrderWithUserAndBill[]>({
@@ -111,54 +113,58 @@ export default async function OrderTable() {
             <CardDescription>Recent orders from your store.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Employee</TableHead>
-                  <TableHead className="hidden sm:table-cell">Status</TableHead>
-                  <TableHead className="hidden sm:table-cell">Paid</TableHead>
-                  <TableHead className="hidden md:table-cell">Date</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {!!data?.length &&
-                  data.map((order) => (
-                    <Link href={`/order?id=${order.id}`}>
-                      <TableRow
-                        // onClick={() => redirect(`/order?id=${order.id}`)}
-                        key={order.id}
-                        className="cursor-pointer"
-                      >
-                        <TableCell>
-                          <div className="font-medium">{order.id}</div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="font-medium">{order.user?.name}</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            {order.user?.role}
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="secondary">
-                            {order.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          {order.isPaid ? "YEs" : "No"}
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          {order.createdAt?.toDateString()}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {formatCurrency(order.bill?.totalAmount)}
-                        </TableCell>
-                      </TableRow>
-                    </Link>
+            {data && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Employee</TableHead>
+                    <TableHead className="hidden sm:table-cell">
+                      Status
+                    </TableHead>
+                    <TableHead className="hidden sm:table-cell">Role</TableHead>
+                    <TableHead className="hidden sm:table-cell">Paid</TableHead>
+                    <TableHead className="hidden md:table-cell">Date</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.map((order) => (
+                    // <Link href={`/order?id=${order.id}`} prefetch={false}>
+                    <TableRow
+                      // onClick={() => redirect(`/order?id=${order.id}`)}
+                      key={order.id}
+                      className="cursor-pointer"
+                    >
+                      <TableCell>
+                        <div className="font-medium">{formatId(order.id)}</div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-medium">{order.user?.name}</div>
+                        <div className="hidden text-sm text-muted-foreground md:inline">
+                          {order.user?.role}
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        <Badge className="text-xs" variant="secondary">
+                          {order.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {order.isPaid ? "Yes" : "No"}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {order.createdAt?.toDateString()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {formatCurrency(order.bill?.totalAmount)}
+                      </TableCell>
+                    </TableRow>
                   ))}
-              </TableBody>
-            </Table>
+                  {/* </Link> */}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </TabsContent>

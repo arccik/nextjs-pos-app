@@ -2,11 +2,8 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import {
-  newItemSchema,
-  newOrderSchema,
   newOrderWithItemsSchema,
   orderItemsSchema,
-  itemsSchema,
   orderStatus,
 } from "../../db/schemas";
 import {
@@ -17,7 +14,6 @@ import {
   getOne,
   getOneByTableId,
   getRecentOrders,
-  // pay,
   getOrderWithItems,
   recentCompletedOrders,
   addSpecialRequest,

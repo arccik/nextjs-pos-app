@@ -4,24 +4,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import {
-  type Item,
-  newItemSchema,
-  type NewItem,
-  itemsSchema,
-  userSchema,
-  User,
-  newUserSchema,
-  NewUser,
-} from "@/server/db/schemas";
+// import { updateUserSchema, type NewUser } from "@/server/db/schemas";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import Loading from "@/components/Loading";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import Fields from "./Fields";
+import { z } from "zod";
 
-export default function EditItem() {
+const updateUserSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  image: z.string().optional(),
+  role: z.enum(["admin", "user", "waiter", "chef", "manager"]),
+  password: z.string().optional(),
+});
+type NewUser = z.infer<typeof updateUserSchema>;
+export default function EditUserPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -31,18 +31,23 @@ export default function EditItem() {
   });
 
   const form = useForm<NewUser>({
-    resolver: zodResolver(newUserSchema),
+    resolver: zodResolver(updateUserSchema),
     defaultValues: {
       name: "",
       email: "",
       image: "",
+      role: "user",
     },
   });
-  console.log("Edit Item >>>> ", { id, user }, form.formState.errors);
 
   useEffect(() => {
     if (user) {
-      form.reset(user);
+      form.reset({
+        email: user.email,
+        name: user.name!,
+        role: user.role,
+        image: user.image ?? "",
+      });
     }
   }, [user]);
 

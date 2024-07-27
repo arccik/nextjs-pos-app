@@ -224,6 +224,6 @@ export function summarizePrice(items: ItemToSummerize[]) {
   );
 }
 
-export function readableId(id: string) {
+export function formatId(id: string) {
   return id.slice(-4);
 }

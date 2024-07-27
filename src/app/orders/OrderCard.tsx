@@ -11,7 +11,7 @@ import { type OrderWithItems } from "@/server/models/order";
 
 import DisplayOrderItems from "./DisplayOrderItems";
 import CountDownOpenOrder from "./CountDownOpenOrder";
-import { formatCurrency, readableId, summarizePrice } from "@/lib/utils";
+import { formatCurrency, formatId, summarizePrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
 // import ActionButtons from "@/components/ActionButtons";
@@ -39,7 +39,7 @@ export default function OrderCard({ order }: OrderCardProps) {
       <CardHeader className="pb-5">
         <CardTitle className="flex justify-between">
           <Link href={`/order?id=${order.id}`}>
-            <span>Order #{readableId(order.id)}</span>
+            <span>Order #{formatId(order.id)}</span>
           </Link>
           <span className="flex gap-2">
             <Badge>{order.status}</Badge>

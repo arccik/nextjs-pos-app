@@ -9,9 +9,9 @@ type MenuItemProps = {
 
 export default async function MenuItem({ item }: MenuItemProps) {
   return (
-    <div className="grid grid-flow-col items-start gap-3">
+    <div className="mb-8 grid grid-cols-4 gap-4">
       {item.imageUrl && (
-        <div className="flex h-full items-center">
+        <div className="col-span-1">
           <img
             alt={item.name ?? "Item Image"}
             className="aspect-[2/4] h-32 w-full rounded-lg object-cover"
@@ -19,7 +19,7 @@ export default async function MenuItem({ item }: MenuItemProps) {
           />
         </div>
       )}
-      <div className="flex flex-col place-content-end justify-between">
+      <div className="col-span-3">
         <h3
           className={cn(
             "flex gap-2 text-xl font-semibold",
@@ -29,7 +29,7 @@ export default async function MenuItem({ item }: MenuItemProps) {
           {!item.isAvailable && <ExclamationTriangleIcon className="size-6" />}
           {item.name}
         </h3>
-        <p className="text-sm leading-none">{item.description}</p>
+        <p className="text-sm leading-none text-gray-500">{item.description}</p>
         <div className="flex place-content-end items-end justify-between">
           <span className="font-semibold">{formatCurrency(item.price)}</span>
           <AddItemToOrderButton item={item} />

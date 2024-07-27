@@ -26,7 +26,7 @@ export const userRouter = createTRPCRouter({
   create: protectedProcedure
     .input(newUserSchema)
     .mutation(async ({ input }) => {
-      const password = await bcrypt.hash(input.password, 10);
+      const password = await bcrypt.hash(input.password!, 10);
       return await create({ ...input, password });
     }),
   deleteOne: protectedProcedure
@@ -35,7 +35,15 @@ export const userRouter = createTRPCRouter({
       return await deleteOne(input);
     }),
   update: protectedProcedure
-    .input(newUserSchema.extend({ id: z.string() }))
+    .input(
+      newUserSchema.extend({
+        id: z.string(),
+        password: z.string().optional(),
+        updatedAt: z.date().nullable().optional(),
+        createdAt: z.date().nullable().optional(),
+        email: z.string().email().optional(),
+      }),
+    )
     .mutation(async ({ input }) => {
       console.log("UPDATE USER: ?? !!! ", input);
       return await update({ id: input.id, body: { ...input } });

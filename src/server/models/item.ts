@@ -16,7 +16,8 @@ export const getStopItems = async () => {
     where: eq(items.isAvailable, false),
   });
 };
-export const update = async (body: Item) => {
+export const update = async (body: NewItem & { id: string }) => {
+  console.log("Updating item :::: ", body);
   return await db
     .update(items)
     .set(body)

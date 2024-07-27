@@ -26,10 +26,9 @@ export default function EditItem() {
     { id },
     { enabled: !!id },
   );
-  console.log("Edit Item >>>> ", { id, item });
 
   const form = useForm<Item>({
-    resolver: zodResolver(itemsSchema),
+    resolver: zodResolver(newItemSchema),
     defaultValues: {
       name: "",
       description: "",
@@ -43,6 +42,8 @@ export default function EditItem() {
       preparationTime: 0,
     },
   });
+  console.log("Edit Item >>>> ", { id, item, Error: form.formState.errors });
+
   useEffect(() => {
     if (item) {
       form.reset(item);

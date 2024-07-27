@@ -24,9 +24,11 @@ export const itemRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return await create(input);
     }),
-  update: protectedProcedure.input(itemsSchema).mutation(async ({ input }) => {
-    return await update(input);
-  }),
+  update: protectedProcedure
+    .input(newItemSchema.extend({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      return await update(input);
+    }),
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {

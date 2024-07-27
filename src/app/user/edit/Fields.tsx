@@ -44,7 +44,6 @@ export default function Fields({ form }: FieldsProps) {
             <FormControl>
               <Input {...field} placeholder="type here..." />
             </FormControl>
-            <FormDescription>This is item public display name.</FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -88,12 +87,11 @@ export default function Fields({ form }: FieldsProps) {
       <FormField
         control={form.control}
         name="role"
-        defaultValue={form.getValues("role")}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Role</FormLabel>
             <FormControl>
-              <Select {...field}>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a Role" />
                 </SelectTrigger>
@@ -114,6 +112,7 @@ export default function Fields({ form }: FieldsProps) {
           </FormItem>
         )}
       />
+      <pre>{JSON.stringify(form.formState.errors, undefined, 2)}</pre>
     </>
   );
 }

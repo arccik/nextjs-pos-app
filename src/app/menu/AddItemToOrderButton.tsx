@@ -53,7 +53,7 @@ export default function AddItemToOrderButton({
     });
   };
   return (
-    <div className="flex gap-2">
+    <div className="m-4 flex items-end align-bottom">
       <div className="flex">
         <Button
           variant="outline"

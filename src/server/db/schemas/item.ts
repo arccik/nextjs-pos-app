@@ -48,7 +48,7 @@ export const newItemSchemaRaw = createInsertSchema(items);
 export const newItemSchema = newItemSchemaRaw.extend({
   preparationTime: z.coerce.number().min(1, { message: "Required" }),
   name: z.string().min(1, { message: "Required" }),
-  categoryId: z.string({ invalid_type_error: "Required" }).min(0),
+  // categoryId: z.string({ invalid_type_error: "Required" }).min(0),
   price: z.coerce.number().min(1, { message: "Required" }),
 });
 export type NewItemSchemaType = z.infer<typeof newItemSchema>;

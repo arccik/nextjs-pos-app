@@ -11,6 +11,7 @@ import { relations, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { type AdapterAccount } from "next-auth/adapters";
 import { tables } from "./table";
+import { z } from "zod";
 
 export const userRoles = [
   "admin",
@@ -163,7 +164,8 @@ export const verificationTokens = sqliteTable(
 );
 
 export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
+// export type NewUser = typeof users.$inferInsert;
+export type NewUser = z.infer<typeof newUserSchema>;
 
 export const userSchema = createSelectSchema(users);
 export const newUserSchema = createInsertSchema(users);

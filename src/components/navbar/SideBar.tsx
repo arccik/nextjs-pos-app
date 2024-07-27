@@ -13,9 +13,14 @@ import navItems from "./NavItems";
 import MobileNav from "./MobileNav";
 
 import { signOut, useSession } from "next-auth/react";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 export default function SideBar() {
   const { data: session } = useSession();
+  const pathname = usePathname();
+  const isCurrentPath = (path: string) => path === pathname;
+
   const handleLogOut = async () => {
     await signOut({ callbackUrl: "/login" });
   };
@@ -31,7 +36,13 @@ export default function SideBar() {
                     href={navItem.link}
                     className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                   >
-                    <navItem.icon className="h-5 w-5" />
+                    <navItem.icon
+                      className={cn(
+                        "h-5 w-5 transition-all duration-300 ease-in-out",
+                        isCurrentPath(navItem.link) &&
+                          "scale-150 text-slate-900",
+                      )}
+                    />
                     <span className="sr-only">{navItem.title}</span>
                   </Link>
                 </TooltipTrigger>

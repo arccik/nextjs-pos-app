@@ -15,8 +15,16 @@ export const getOne = async (id: string) => {
 export const getAll = async () => {
   return await db.query.users.findMany();
 };
-export const update = async ({ id, body }: { id: string; body: NewUser }) => {
-  return await db.update(users).set(body).where(eq(users.id, id)).returning();
+
+type UpdateUserProp = {
+  id: string;
+  body: NewUser;
+};
+export const update = async ({ id, body }: UpdateUserProp) => {
+  const user = await getOne(id);
+  if (!user) return null;
+  const { createdAt, updatedAt, password, ...data } = body;
+  return await db.update(users).set(data).where(eq(users.id, id)).returning();
 };
 
 export const create = async (body: NewUser) => {
