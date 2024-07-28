@@ -13,6 +13,7 @@ import {
 import {
   newPaymentSchema,
   newUserSchema,
+  updateUserSchema,
   userSchema,
 } from "@/server/db/schemas";
 
@@ -35,15 +36,7 @@ export const userRouter = createTRPCRouter({
       return await deleteOne(input);
     }),
   update: protectedProcedure
-    .input(
-      newUserSchema.extend({
-        id: z.string(),
-        password: z.string().optional(),
-        updatedAt: z.date().nullable().optional(),
-        createdAt: z.date().nullable().optional(),
-        email: z.string().email().optional(),
-      }),
-    )
+    .input(updateUserSchema.extend({ id: z.string() }))
     .mutation(async ({ input }) => {
       console.log("UPDATE USER: ?? !!! ", input);
       return await update({ id: input.id, body: { ...input } });

@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "../db";
-import { NewUser, type User, users } from "../db/schemas/user";
+import { NewUser, UpdateUser, type User, users } from "../db/schemas/user";
 
 export const getOne = async (id: string) => {
   let response = await db.query.users.findFirst({
@@ -18,13 +18,12 @@ export const getAll = async () => {
 
 type UpdateUserProp = {
   id: string;
-  body: NewUser;
+  body: UpdateUser;
 };
 export const update = async ({ id, body }: UpdateUserProp) => {
   const user = await getOne(id);
   if (!user) return null;
-  const { createdAt, updatedAt, password, ...data } = body;
-  return await db.update(users).set(data).where(eq(users.id, id)).returning();
+  return await db.update(users).set(body).where(eq(users.id, id)).returning();
 };
 
 export const create = async (body: NewUser) => {

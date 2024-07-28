@@ -34,13 +34,16 @@ export const users = sqliteTable("user", {
     mode: "timestamp",
   }).default(sql`CURRENT_TIMESTAMP`),
   role: text("role", { enum: userRoles }).notNull().default("user"),
-  updatedAt: int("updated_at", { mode: "timestamp" })
-    .$onUpdate(() => sql`CURRENT_TIMESTAMP`)
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  createdAt: int("created_at", { mode: "timestamp" })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+  // updatedAt: int("updated_at", { mode: "timestamp" })
+  //   .$onUpdate(() => sql`CURRENT_TIMESTAMP`)
+  //   .default(sql`CURRENT_TIMESTAMP`)
+  //   .notNull(),
+
+  // createdAt: int("created_at", { mode: "timestamp" })
+  //   .default(sql`CURRENT_TIMESTAMP`)
+  //   .notNull(),
+  updatedAt: text("timestamp").$onUpdate(() => sql`CURRENT_TIMESTAMP`),
+  createdAt: text("timestamp").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -162,10 +165,20 @@ export const verificationTokens = sqliteTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   }),
 );
+export const updateUserSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  image: z.string().optional(),
+  role: z.enum(["admin", "user", "waiter", "chef", "manager"]),
+  password: z.string().optional(),
+});
+export type UpdateUser = z.infer<typeof updateUserSchema>;
 
 export type User = typeof users.$inferSelect;
 // export type NewUser = typeof users.$inferInsert;
 export type NewUser = z.infer<typeof newUserSchema>;
+
+
 
 export const userSchema = createSelectSchema(users);
 export const newUserSchema = createInsertSchema(users);

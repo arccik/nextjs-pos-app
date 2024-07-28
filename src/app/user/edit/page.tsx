@@ -12,25 +12,21 @@ import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import Fields from "./Fields";
 import { z } from "zod";
+import { UpdateUser, updateUserSchema } from "@/server/db/schemas";
+import { revalidatePath } from "next/cache";
+import { useSession } from "next-auth/react";
 
-const updateUserSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
-  email: z.string().email({ message: "Invalid email address" }),
-  image: z.string().optional(),
-  role: z.enum(["admin", "user", "waiter", "chef", "manager"]),
-  password: z.string().optional(),
-});
-type NewUser = z.infer<typeof updateUserSchema>;
 export default function EditUserPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { update } = useSession();
 
   const id = searchParams.get("id") as string;
   const { data: user, isLoading } = api.user.getOne.useQuery(id, {
     enabled: !!id,
   });
 
-  const form = useForm<NewUser>({
+  const form = useForm<UpdateUser>({
     resolver: zodResolver(updateUserSchema),
     defaultValues: {
       name: "",
@@ -51,15 +47,18 @@ export default function EditUserPage() {
     }
   }, [user]);
 
-  const updateItem = api.user.update.useMutation({
-    onSuccess: () => {
+  const updateUser = api.user.update.useMutation({
+    onSuccess: (response) => {
+      const [user] = response ?? [];
       toast({ title: `Successfully update ${form.getValues("name")}` });
+      update({ name: user?.name, image: user?.image });
+      router.refresh();
       router.back();
     },
   });
 
-  const onSubmit = (values: NewUser) => {
-    updateItem.mutate({ id, ...values });
+  const onSubmit = (values: UpdateUser) => {
+    updateUser.mutate({ id, ...values });
   };
 
   if (isLoading) return <Loading />;

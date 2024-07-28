@@ -62,13 +62,13 @@ export default [
     id: 242,
     title: "Menu Items",
     icon: Ham,
-    link: "/menu/items",
+    link: "/items",
   },
   {
     id: 5,
     title: "Analytics",
     icon: LineChart,
-    link: "/reports",
+    link: "/analytics",
   },
   {
     id: 1255,

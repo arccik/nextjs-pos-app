@@ -19,7 +19,7 @@ import { usePathname } from "next/navigation";
 export default function SideBar() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const isCurrentPath = (path: string) => path === pathname;
+  const isCurrentPath = (path: string) => path === pathname; 
 
   const handleLogOut = async () => {
     await signOut({ callbackUrl: "/login" });
