@@ -25,8 +25,14 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { userRoles, newUserSchema } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
+import { revalidatePath } from "next/cache";
+import { useRouter } from "next/navigation";
 
-export function AddNewUser() {
+type AddNewUserProps = {
+  onComplete: () => void;
+};
+export function AddNewUser({ onComplete }: AddNewUserProps) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof newUserSchema>>({
     resolver: zodResolver(newUserSchema),
     defaultValues: {
@@ -43,6 +49,8 @@ export function AddNewUser() {
         title: "User created",
       });
       form.reset();
+      router.refresh();
+      onComplete();
     },
     onError: (error) => {
       console.error(error);
@@ -66,6 +74,7 @@ export function AddNewUser() {
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input
+                  required
                   placeholder="John Doe"
                   {...field}
                   value={field.value ?? ""}

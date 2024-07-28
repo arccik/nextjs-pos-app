@@ -17,7 +17,7 @@ export const rotas = sqliteTable("rota", {
   userId: text("user_id")
     .notNull()
     .references(() => users.id),
-  date: int("date").notNull(),
+  date: int("created_at", { mode: "timestamp" }).notNull(),
   createdAt: int("created_at", { mode: "timestamp" })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { RotaItem } from "./MonthCalendar";
 import { format, isToday } from "date-fns";
 import { Rota } from "@/server/db/schemas";
 

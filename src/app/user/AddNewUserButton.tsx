@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,10 +9,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { AddNewUser } from "./AddNewUser";
+import { useState } from "react";
 
 export default function AddNewUserButton() {
+  const [show, setShow] = useState(false);
   return (
-    <Dialog>
+    <Dialog open={show} onOpenChange={setShow}>
       <DialogTrigger asChild>
         <Button variant="outline">Add New User</Button>
       </DialogTrigger>
@@ -23,7 +26,7 @@ export default function AddNewUserButton() {
           </DialogDescription>
         </DialogHeader>
 
-        <AddNewUser />
+        <AddNewUser onComplete={() => setShow(false)} />
       </DialogContent>
     </Dialog>
   );

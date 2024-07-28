@@ -44,8 +44,9 @@ export const YearlyRota: React.FC<YearlyRotaProps> = ({ rotaData, today }) => {
           month={currentMonth}
           rotaData={rotaData.filter(
             (item) =>
-              item.date.getFullYear() === currentMonth.getFullYear() &&
-              item.date.getMonth() === currentMonth.getMonth(),
+              new Date(item.date).getFullYear() ===
+                currentMonth.getFullYear() &&
+              new Date(item.date).getMonth() === currentMonth.getMonth(),
           )}
         />
       </CardContent>

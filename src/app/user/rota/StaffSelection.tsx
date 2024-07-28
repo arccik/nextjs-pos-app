@@ -8,11 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-interface StaffMember {
-  id: string;
-  name: string;
-}
+import { Rota, User } from "@/server/db/schemas";
 
 type Shift = "morning" | "evening" | "night";
 
@@ -23,7 +19,7 @@ interface StaffStatus {
 }
 
 interface StaffStatusSelectorProps {
-  staffMembers: StaffMember[];
+  staffMembers: User[];
   date: Date;
   onStatusChange: (staffStatus: StaffStatus[]) => void;
 }

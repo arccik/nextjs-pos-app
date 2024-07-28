@@ -26,7 +26,7 @@ export const users = sqliteTable("user", {
     .notNull()
     .primaryKey()
     .$defaultFn(() => uuid()),
-  name: text("name"),
+  name: text("name").notNull(),
   email: text("email").unique().notNull(),
   password: text("password").notNull(),
   image: text("image"),

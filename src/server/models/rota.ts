@@ -19,3 +19,7 @@ export const getByDate = async (date: Date) => {
 export const update = async ({ id, data }: { id: string; data: NewRota }) => {
   return db.update(rotas).set(data).where(eq(rotas.id, id));
 };
+
+export const saveRota = async (data: NewRota) => {
+  return await db.insert(rotas).values(data).returning();
+};

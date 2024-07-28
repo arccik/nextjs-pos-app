@@ -9,6 +9,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { StaffStatusSelector } from "./StaffSelection";
+import { api } from "@/trpc/react";
+import Loading from "@/components/Loading";
 type SelectedDayProps = {
   date: Date | null;
   diselect: () => void;
@@ -29,6 +31,8 @@ export default function SelectedDay({ date, diselect }: SelectedDayProps) {
     console.log("Working staff:", workingStaff);
     console.log("Off staff:", offStaff);
   };
+  const { data, isLoading } = api.user.getAll.useQuery();
+
   return (
     <Dialog open={!!date} onOpenChange={diselect}>
       <DialogContent>
@@ -43,11 +47,14 @@ export default function SelectedDay({ date, diselect }: SelectedDayProps) {
           repellendus eligendi recusandae laborum ratione nesciunt laboriosam
           maiores! Assumenda, voluptatum officiis.
         </p> */}
-        <StaffStatusSelector
-          staffMembers={staffMembers}
-          date={new Date()} // You can pass any date here
-          onStatusChange={handleStatusChange}
-        />
+        {isLoading && <Loading />}
+        {data && (
+          <StaffStatusSelector
+            staffMembers={data}
+            date={new Date()} // You can pass any date here
+            onStatusChange={handleStatusChange}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

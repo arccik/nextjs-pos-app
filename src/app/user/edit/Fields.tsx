@@ -112,7 +112,6 @@ export default function Fields({ form }: FieldsProps) {
           </FormItem>
         )}
       />
-      <pre>{JSON.stringify(form.formState.errors, undefined, 2)}</pre>
     </>
   );
 }
