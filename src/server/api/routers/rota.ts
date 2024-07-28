@@ -16,9 +16,9 @@ export const rotaRouter = createTRPCRouter({
   getByDate: protectedProcedure.input(z.date()).mutation(async ({ input }) => {
     return await getByDate(input);
   }),
-  saveRota: protectedProcedure
-    .input(z.array(newRotaSchema))
-    .mutation(async ({ input }) => {
-      return await saveRota(input);
-    }),
+  // saveRota: protectedProcedure
+  //   .input(z.array(newRotaSchema))
+  //   .mutation(async ({ input }) => {
+  //     return await saveRota(input);
+  //   }),
 });

@@ -15,13 +15,10 @@ type SelectedDayProps = {
   date: Date | null;
   diselect: () => void;
 };
-const staffMembers = [
-  { id: "1", name: "John Doe" },
-  { id: "2", name: "Jane Smith" },
-  // Add more staff members as needed
-];
+
 
 export default function SelectedDay({ date, diselect }: SelectedDayProps) {
+  const saveRota = api.rota;
   const handleStatusChange = (staffStatus: any[]) => {
     console.log("Staff status:", staffStatus);
     // Handle the status change (e.g., update state, send to server, etc.)

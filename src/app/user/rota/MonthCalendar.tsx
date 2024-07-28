@@ -85,7 +85,7 @@ export const MonthCalendar: React.FC<MonthlyRotaProps> = ({
         </DialogContent>
       </Dialog> */}
       <SelectedDay date={selectedDay} diselect={() => setSelectedDay(null)} />
-      <CardContent className="grid flex-grow grid-cols-7 grid-rows-[auto_1fr_1fr_1fr_1fr_1fr_1fr] gap-1">
+      <CardContent className="bg-gradient-radial grid flex-grow grid-cols-7 grid-rows-[auto_1fr_1fr_1fr_1fr_1fr_1fr] gap-1">
         {DAYS_OF_WEEK.map((day) => (
           <div key={day} className="p-2 text-center font-bold">
             {day}
