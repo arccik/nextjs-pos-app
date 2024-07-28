@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import React, { useState } from "react";
 import { format, addMonths, subMonths } from "date-fns";
 import { MonthCalendar } from "./MonthCalendar";
+import { Rota } from "@/server/db/schemas";
 
 interface YearlyRotaProps {
-  rotaData: RotaItem[];
+  rotaData: Rota[];
   today: Date;
 }
 

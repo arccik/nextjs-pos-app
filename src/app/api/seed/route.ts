@@ -1,5 +1,6 @@
 import { db } from "@/server/db";
 import * as schema from "@/server/db/schemas";
+import { tables } from "@/server/db/schemas";
 import bcrypt from "bcryptjs";
 
 export async function GET() {
@@ -37,6 +38,15 @@ async function seedDatabase() {
       email: "arccik@gmail.com",
       role: "admin",
     });
+
+    await db.insert(tables).values([
+      { number: 1, seats: 4, status: "available" },
+      { number: 2, seats: 4, status: "available" },
+      { number: 3, seats: 4, status: "available" },
+      { number: 4, seats: 4, status: "available" },
+      { number: 5, seats: 4, status: "available" },
+      { number: 6, seats: 4, status: "available" },
+    ]);
 
     await db.insert(schema.storeRegularSchedule).values([
       { day: "sunday", number: 0, openTime: "10:00:00", closeTime: "16:00:00" },

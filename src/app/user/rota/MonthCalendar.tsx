@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Rota } from "@/server/db/schemas";
 
 export interface RotaItem {
   date: Date;
@@ -30,7 +31,7 @@ export interface RotaItem {
 
 interface MonthlyRotaProps {
   month: Date;
-  rotaData: RotaItem[];
+  rotaData: Rota[];
 }
 
 const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
