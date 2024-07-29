@@ -18,7 +18,8 @@ import { Input } from "@/components/ui/input";
 
 // import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
+import { api } from "@/trpc/react";
 const formSchema = z.object({
   email: z.string().email().min(5, { message: "Required" }),
   password: z.string().min(4, { message: "Password too short" }),
@@ -27,6 +28,7 @@ const formSchema = z.object({
 export default function Authentication() {
   // const { data: session } = useSession();
   const router = useRouter();
+  const { data: settings } = api.settings.getName.useQuery();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,7 +57,7 @@ export default function Authentication() {
       <div className="mx-auto flex flex-col items-center justify-center px-6 py-8">
         <p className="mb-6 flex items-center text-2xl font-semibold text-gray-900 ">
           <ExclamationTriangleIcon className="mr-2 h-8 w-8" />
-          Rest-App
+          {settings?.name}
         </p>
       </div>
       <div className="mx-auto flex flex-col items-center justify-center px-2 py-8 md:px-6">
@@ -109,7 +111,7 @@ export default function Authentication() {
               Have a difficulty to login ?
             </p>
             <a
-              href="mailto:manager@email.com"
+              href={`mailto:${settings?.email}`}
               className="ml-2 text-sm underline"
             >
               Contact Manager

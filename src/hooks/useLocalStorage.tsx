@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 function useLocalStorageState<T>(
   key: string,
   initialValue: T,
-): [T, React.Dispatch<React.SetStateAction<T>>] {
+): [T, React.Dispatch<React.SetStateAction<T>>, () => void] {
   // Get the initial value from local storage or use the provided initialValue
   const [state, setState] = useState<T>(() => {
     try {
@@ -24,7 +24,12 @@ function useLocalStorageState<T>(
     }
   }, [key, state]);
 
-  return [state, setState];
+  const clearData = () => {
+    setState(initialValue);
+    localStorage.removeItem(key);
+  };
+
+  return [state, setState, clearData];
 }
 
 export default useLocalStorageState;

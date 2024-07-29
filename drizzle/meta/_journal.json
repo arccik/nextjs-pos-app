@@ -15,6 +15,13 @@
       "when": 1722190909470,
       "tag": "0001_medical_magik",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1722244253903,
+      "tag": "0002_pale_pandemic",
+      "breakpoints": true
     }
   ]
 }

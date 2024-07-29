@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
+import useLocalStorageState from "@/hooks/useLocalStorage";
 
 type ChooseTableProps = {
   close: () => void;
@@ -15,6 +16,9 @@ type ChooseTableProps = {
 
 export default function ChooseTable({ close }: ChooseTableProps) {
   const router = useRouter();
+  const [localStorageState, setLocalStorageState] = useLocalStorageState<
+    string | null
+  >("table", null);
   const {
     data: tables,
     isLoading: isTablesLoading,
@@ -39,11 +43,18 @@ export default function ChooseTable({ close }: ChooseTableProps) {
       refetchSelectedTable();
       refetchTables();
       router.refresh();
+      setLocalStorageState(null);
     },
   });
 
   const handleTableSelect = (tableId: string) => {
     select.mutate(tableId);
+    close();
+    setLocalStorageState(tableId);
+  };
+
+  const handleTableDiselect = (tableId: string) => {
+    unselect.mutate({ tableId });
     close();
   };
 
@@ -60,7 +71,7 @@ export default function ChooseTable({ close }: ChooseTableProps) {
         <p>You Have selected table number {selectedTable.number}</p>
         <Button
           size="icon"
-          onClick={() => unselect.mutate({ tableId: selectedTable.id })}
+          onClick={() => handleTableDiselect(selectedTable.id)}
         >
           <XIcon />
           {unselect.isPending && <Loading />}

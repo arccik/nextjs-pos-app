@@ -1,4 +1,8 @@
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 import {
   newVenueSettingsSchema,
   venueSettings,
@@ -26,5 +30,13 @@ export const settingsRouter = createTRPCRouter({
     }),
   get: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.db.query.venueSettings.findFirst();
+  }),
+  getName: publicProcedure.query(({ ctx }) => {
+    return ctx.db.query.venueSettings.findFirst({
+      columns: {
+        name: true,
+        email: true,
+      },
+    });
   }),
 });
