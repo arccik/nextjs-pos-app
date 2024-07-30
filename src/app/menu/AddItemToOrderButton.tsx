@@ -8,6 +8,7 @@ import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import useLocalStorageOrderData from "@/hooks/useLocalStorageOrderData";
 
 type AddItemToOrderButtonProps = {
   item: Item;
@@ -17,6 +18,8 @@ export default function AddItemToOrderButton({
   item,
 }: AddItemToOrderButtonProps) {
   const [quantity, setQuantity] = useState(1);
+  const [localOrder, setLocalOrder] = useLocalStorageOrderData();
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -41,16 +44,23 @@ export default function AddItemToOrderButton({
   });
 
   const handleClick = () => {
-    if (orderId) {
-      addItem.mutate({ orderId, itemId: item.id, quantity });
-    } else {
-      createOrder.mutate({ items: [{ itemId: item.id, quantity }] });
-    }
-    console.log("Add items to order: Status take");
-
-    toast({
-      title: `${item.name} added to selected order`,
+    setLocalOrder({
+      ...localOrder,
+      items: [
+        ...localOrder.items,
+        { itemId: item.id, quantity, name: item.name, price: item.price },
+      ],
     });
+    // if (orderId) {
+    //   addItem.mutate({ orderId, itemId: item.id, quantity });
+    // } else {
+    //   createOrder.mutate({ items: [{ itemId: item.id, quantity }] });
+    // }
+    // console.log("Add items to order: Status take");
+
+    // toast({
+    //   title: `${item.name} added to selected order`,
+    // });
   };
   return (
     <div className="m-4 flex items-end align-bottom">

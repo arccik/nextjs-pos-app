@@ -37,6 +37,7 @@ import TableIcon from "@/components/navbar/TableIcon";
 import { ClockIcon, Edit2, Utensils } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
+import useLocalStorageOrderData from "@/hooks/useLocalStorageOrderData";
 
 type CartProps = {
   onComplete?: () => void;
@@ -53,6 +54,10 @@ export default function Cart({ onComplete }: CartProps) {
   );
   const specialRequest = "jaica";
   console.log("CART CART CART !!! ", items);
+  const [localOrder, setLocalOrder] = useLocalStorageOrderData();
+
+  console.log("CART::: >> ", localOrder);
+
   if (!activeOrderId && !selectedTable) return null;
   // const addMoreItemsToOrder = api.order.addMoreItemsToOrder.useMutation({
   //   onSuccess: ({ orderId }: { orderId: string }) => {

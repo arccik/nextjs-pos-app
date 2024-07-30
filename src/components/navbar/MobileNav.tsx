@@ -31,7 +31,7 @@ export default function MobileNav() {
             title="Navigation menu"
           >
             <NavigationMenu className="mx-auto">
-              <NavigationMenuList className="grid grid-cols-2 gap-1 md:grid-cols-3">
+              <NavigationMenuList className="grid grid-cols-3 gap-1 md:grid-cols-3">
                 {navItems.map((item) => (
                   <DialogClose
                     key={item.id}

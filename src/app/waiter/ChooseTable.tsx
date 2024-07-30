@@ -8,17 +8,26 @@ import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
-import useLocalStorageState from "@/hooks/useLocalStorage";
+import useLocalStorage from "@/hooks/useLocalStorageOrderData";
 
 type ChooseTableProps = {
   close: () => void;
 };
 
+type OrderLocalStorage = {
+  tableId: string | null;
+  items: {
+    itemId: string;
+    quantity: number;
+    name: string;
+    price: number;
+  }[];
+  orderId?: string;
+};
+
 export default function ChooseTable({ close }: ChooseTableProps) {
   const router = useRouter();
-  const [localStorageState, setLocalStorageState] = useLocalStorageState<
-    string | null
-  >("table", null);
+  const [localOrder, setLocalOrder] = useLocalStorage();
   const {
     data: tables,
     isLoading: isTablesLoading,
@@ -43,18 +52,18 @@ export default function ChooseTable({ close }: ChooseTableProps) {
       refetchSelectedTable();
       refetchTables();
       router.refresh();
-      setLocalStorageState(null);
     },
   });
 
   const handleTableSelect = (tableId: string) => {
     select.mutate(tableId);
     close();
-    setLocalStorageState(tableId);
+    setLocalOrder({ tableId });
   };
 
   const handleTableDiselect = (tableId: string) => {
     unselect.mutate({ tableId });
+    setLocalOrder({ tableId: null });
     close();
   };
 
