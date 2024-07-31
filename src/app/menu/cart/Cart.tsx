@@ -47,16 +47,17 @@ export default function Cart({ onComplete }: CartProps) {
   const params = new URLSearchParams(searchParams.toString());
   const activeOrderId = params.get("orderId");
 
-  const { data: selectedTable } = api.table.getSelectedTable.useQuery();
-  const { data: items } = api.order.getOrderWithItems.useQuery(
-    { id: activeOrderId! },
-    { enabled: !!activeOrderId },
-  );
+  // const { data: selectedTable } = api.table.getSelectedTable.useQuery();
+  // const { data: items } = api.order.getOrderWithItems.useQuery(
+  //   { id: activeOrderId! },
+  //   { enabled: !!activeOrderId },
+  // );
   const specialRequest = "jaica";
-  console.log("CART CART CART !!! ", items);
+  // console.log("CART CART CART !!! ", items);
   const [localOrder, setLocalOrder] = useLocalStorageOrderData();
+  const selectedTable = localOrder?.table;
 
-  console.log("CART::: >> ", localOrder);
+  console.log("CART::: >> ", selectedTable);
 
   if (!activeOrderId && !selectedTable) return null;
   // const addMoreItemsToOrder = api.order.addMoreItemsToOrder.useMutation({
@@ -172,7 +173,7 @@ export default function Cart({ onComplete }: CartProps) {
           />
         )}
 
-        {activeOrderId && <CartItems activeOrderId={activeOrderId} />}
+        <CartItems />
       </CardContent>
       <CardFooter className="flex flex-col justify-center gap-4 p-4">
         {/* <AddSpecialRequest orderId={activeOrder} /> */}

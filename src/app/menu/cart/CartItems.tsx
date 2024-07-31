@@ -11,16 +11,19 @@ import type { Item } from "@/server/db/schemas/item";
 
 import { formatCurrency } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import useLocalStorageOrderData from "@/hooks/useLocalStorageOrderData";
 
 type CartItemsProps = {
   activeOrderId: string;
 };
-export default function CartItems({ activeOrderId }: CartItemsProps) {
-  const { data: orderWithItems } = api.order.getOrderWithItems.useQuery(
-    { id: activeOrderId! },
-    { enabled: !!activeOrderId },
-  );
-  console.log("CART CART CART !!! ", orderWithItems);
+export default function CartItems() {
+  // const { data: orderWithItems } = api.order.getOrderWithItems.useQuery(
+  //   { id: activeOrderId! },
+  //   { enabled: !!activeOrderId },
+  // );
+  // console.log("CART CART CART !!! ", orderWithItems);
+  const [orderWithItems] = useLocalStorageOrderData();
+  console.log("CHAT ITEMS: ", orderWithItems);
   const serviceFee = 66;
   const totalAmount = 666;
   // orderWithItems?.orderItems.reduce<number>((total, item) => {
@@ -51,13 +54,13 @@ export default function CartItems({ activeOrderId }: CartItemsProps) {
         </TableRow>
       </TableHeader>
       <TableBody className="mt-5">
-        {orderWithItems?.orderItems.map((order) => (
-          <TableRow key={order.id}>
-            <TableCell className="font-medium">{order.name}</TableCell>
-            <TableCell className="font-medium">{order.quantity}</TableCell>
-            <TableCell className="font-medium">{order.price}</TableCell>
+        {orderWithItems?.items.map((item) => (
+          <TableRow key={item.itemId}>
+            <TableCell className="font-medium">{item.name}</TableCell>
+            <TableCell className="font-medium">{item.quantity}</TableCell>
+            <TableCell className="font-medium">{item.price}</TableCell>
             <TableCell className="text-right font-medium">
-              {(order.quantity * Number(order.price))?.toFixed(2)}
+              {(item.quantity * Number(item.price))?.toFixed(2)}
             </TableCell>
           </TableRow>
         ))}

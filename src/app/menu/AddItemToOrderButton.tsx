@@ -9,6 +9,8 @@ import { toast } from "@/components/ui/use-toast";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import useLocalStorageOrderData from "@/hooks/useLocalStorageOrderData";
+import { addOrUpdateItem } from "@/lib/utils";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 type AddItemToOrderButtonProps = {
   item: Item;
@@ -18,7 +20,13 @@ export default function AddItemToOrderButton({
   item,
 }: AddItemToOrderButtonProps) {
   const [quantity, setQuantity] = useState(1);
-  const [localOrder, setLocalOrder] = useLocalStorageOrderData();
+  // const [localOrder, setLocalOrder] = useLocalStorageOrderData();
+  const [openOrder, setOpenOrder] = useLocalStorage("order", {
+    itemId: "",
+    price: null,
+    name: "",
+    quantity: null,
+  });
 
   const pathname = usePathname();
   const router = useRouter();
@@ -29,28 +37,41 @@ export default function AddItemToOrderButton({
   // TODO: Try to use params.set('orderId', res.id) instead
 
   console.log("AddITem ButTOn : ", orderId);
-  const addItem = api.order.addItems.useMutation({
-    onSuccess: (res) => {
-      console.log("Success. Response: ", res);
-      // res && params.set("orderId", res?.id);
-      if (!orderId) router.push(pathname + "?" + `orderId=${res?.id}`);
-      // toast({
-      //   title: "Order created",
-      // });
-    },
-  });
-  const createOrder = api.order.create.useMutation({
-    onSuccess: () => console.log("Order Created!"),
-  });
+  // const addItem = api.order.addItems.useMutation({
+  //   onSuccess: (res) => {
+  //     console.log("Success. Response: ", res);
+  //     // res && params.set("orderId", res?.id);
+  //     if (!orderId) router.push(pathname + "?" + `orderId=${res?.id}`);
+  //     // toast({
+  //     //   title: "Order created",
+  //     // });
+  //   },
+  // });
+  // const createOrder = api.order.create.useMutation({
+  //   onSuccess: () => console.log("Order Created!"),
+  // });
 
   const handleClick = () => {
-    setLocalOrder({
-      ...localOrder,
-      items: [
-        ...localOrder.items,
-        { itemId: item.id, quantity, name: item.name, price: item.price },
-      ],
+    console.log("handle add item: ", { item });
+
+    //  const newData =  addOrUpdateItem(openOrder, {
+    //     itemId: item.id,
+    //     price: item.price,
+    //     name: item.name,
+    //     quantity,
+    //   }),
+    setOpenOrder({
+      itemId: item.id,
+      price: item.price,
+      name: item.name,
+      quantity,
     });
+    // [
+    //   ...localOrder.items,
+    //   { itemId: item.id, quantity, name: item.name, price: item.price },
+    // ],
+    // });
+    console.log("handle add button click: ", localOrder);
     // if (orderId) {
     //   addItem.mutate({ orderId, itemId: item.id, quantity });
     // } else {

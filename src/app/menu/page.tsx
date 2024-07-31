@@ -5,8 +5,8 @@ import AddNewCategoryButton from "./category/AddNewCategoryButton";
 import MenuGrid from "./grid/MenuGrid";
 
 export default async function MenuPage() {
-  const orderId = await api.order.getPendingOrder();
-  console.log("Panding Order :>>>> ", orderId);
+  // const orderId = await api.order.getPendingOrder();
+  // console.log("Panding Order :>>>> ", orderId);
   return (
     <section className="grid w-full grid-flow-row py-12 ">
       <div className="grid gap-8 px-4 md:container md:px-6">

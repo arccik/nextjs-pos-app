@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 
-interface Item {
+export type ShortItem = {
   itemId: string;
   quantity: number;
   name: string;
   price: number;
-}
+};
 
-interface OrderData {
-  tableId: string | null;
-  items: Item[];
+export type OrderData = {
+  table: { id: string; number: number } | null;
+  items: ShortItem[];
   orderId: string | null;
-}
+};
 
 function useLocalStorageOrderData(): [
   OrderData,
@@ -21,12 +21,12 @@ function useLocalStorageOrderData(): [
     const storedData = localStorage.getItem("orderData");
     return storedData
       ? JSON.parse(storedData)
-      : { tableId: "", items: [], orderId: null };
+      : { tableId: { id: null, number: null }, items: [], orderId: null };
   });
 
   useEffect(() => {
     localStorage.setItem("orderData", JSON.stringify(orderData));
-  }, [orderData.tableId]);
+  }, [orderData.table?.id, orderData.items[0]?.quantity, orderData.orderId]);
 
   const updateOrderData = (newData: Partial<OrderData>) => {
     setOrderData((prevOrderData) => ({

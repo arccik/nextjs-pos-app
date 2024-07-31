@@ -14,17 +14,6 @@ type ChooseTableProps = {
   close: () => void;
 };
 
-type OrderLocalStorage = {
-  tableId: string | null;
-  items: {
-    itemId: string;
-    quantity: number;
-    name: string;
-    price: number;
-  }[];
-  orderId?: string;
-};
-
 export default function ChooseTable({ close }: ChooseTableProps) {
   const router = useRouter();
   const [localOrder, setLocalOrder] = useLocalStorage();
@@ -55,16 +44,17 @@ export default function ChooseTable({ close }: ChooseTableProps) {
     },
   });
 
-  const handleTableSelect = (tableId: string) => {
-    select.mutate(tableId);
+  const handleTableSelect = (table: { id: string; number: number }) => {
+    // select.mutate(tableId);
+    setLocalOrder({ table });
+    router.push("/menu");
     close();
-    setLocalOrder({ tableId });
   };
 
-  const handleTableDiselect = (tableId: string) => {
-    unselect.mutate({ tableId });
-    setLocalOrder({ tableId: null });
-    close();
+  const handleTableDiselect = (tableId?: string) => {
+    // unselect.mutate({ tableId });
+    setLocalOrder({ table: null });
+    // close();
   };
 
   const statusIcon: Record<TableStatus, React.ReactNode> = {
@@ -74,14 +64,11 @@ export default function ChooseTable({ close }: ChooseTableProps) {
     reserved: "🔒",
   };
 
-  if (selectedTable) {
+  if (localOrder?.table?.id) {
     return (
       <div className="flex items-center justify-center gap-4">
-        <p>You Have selected table number {selectedTable.number}</p>
-        <Button
-          size="icon"
-          onClick={() => handleTableDiselect(selectedTable.id)}
-        >
+        <p>You Have selected table number {localOrder.table.number}</p>
+        <Button size="icon" onClick={() => handleTableDiselect()}>
           <XIcon />
           {unselect.isPending && <Loading />}
         </Button>
@@ -97,7 +84,9 @@ export default function ChooseTable({ close }: ChooseTableProps) {
           <Button
             variant="outline"
             disabled={table.status !== "available" || !!table.selectedBy}
-            onClick={() => handleTableSelect(table.id)}
+            onClick={() =>
+              handleTableSelect({ id: table.id, number: table.number })
+            }
             key={table.id}
             className={cn(
               "grid size-32 cursor-pointer place-content-center gap-2 rounded-xl border-2 p-2",
