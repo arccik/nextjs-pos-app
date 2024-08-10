@@ -13,7 +13,6 @@ import { formatCurrency } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { OrderData } from "../AddItemToOrderButton";
 import { useContext, useEffect, useState } from "react";
-import OrderContext from "../provider";
 
 type CartItemsProps = {
   activeOrderId: string;
@@ -25,21 +24,9 @@ export default function CartItems() {
   //   { enabled: !!activeOrderId },
   // );
   // console.log("CART CART CART !!! ", orderWithItems);
-  const { orderData, setOrderData } = useContext(OrderContext);
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setOrderData(orderData);
-    };
+  let orderData = undefined;
 
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
-
-  console.log("CHAT ITEMS: ", orderData);
   const serviceFee = 66;
   const totalAmount = 666;
   // orderWithItems?.orderItems.reduce<number>((total, item) => {
@@ -70,7 +57,7 @@ export default function CartItems() {
         </TableRow>
       </TableHeader>
       <TableBody className="mt-5">
-        {orderData?.items.map((item) => (
+        {/* {orderData?.items.map((item) => (
           <TableRow key={item.itemId}>
             <TableCell className="font-medium">{item.name}</TableCell>
             <TableCell className="font-medium">{item.quantity}</TableCell>
@@ -79,7 +66,7 @@ export default function CartItems() {
               {(item.quantity * Number(item.price))?.toFixed(2)}
             </TableCell>
           </TableRow>
-        ))}
+        ))} */}
       </TableBody>
       <TableFooter>
         {!!serviceFee && (

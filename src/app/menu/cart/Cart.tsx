@@ -29,18 +29,17 @@ import { ClockIcon, Edit2, Utensils } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
 import { useContext } from "react";
-import OrderContext from "../provider";
 
 type CartProps = {
   onComplete?: () => void;
 };
 export default function Cart({ onComplete }: CartProps) {
-  const { orderData } = useContext(OrderContext);
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
   const activeOrderId = params.get("orderId");
 
-  const selectedTable = orderData?.table?.id;
+  const selectedTable = "test";
+  const specialRequest = "TEST - special request: jaica";
 
   //   const handleSubmitOrder = () => {
   //     if (activeOrder) {

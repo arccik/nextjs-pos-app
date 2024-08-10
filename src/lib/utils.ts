@@ -202,7 +202,7 @@ export function summarizeOrder(items: Item[], orderId?: string) {
       return acc;
     },
     {} as {
-      [key: number]: { itemId: string; quantity: number; orderId?: string };
+      [key: string]: { itemId: string; quantity: number; orderId?: string };
     },
   );
   return Object.values(itemMap);
