@@ -1,3 +1,4 @@
+"use client";
 import {
   Accordion,
   AccordionContent,
@@ -8,15 +9,17 @@ import {
 import MenuItem from "./MenuItem";
 
 import Cart from "./cart/Cart";
-import { api } from "@/trpc/server";
+import { api } from "@/trpc/react";
 import DeleteCategory from "./category/DeleteCategory";
 
 type MenuListProps = {
   closeMenu?: () => void;
 };
-export async function MenuList({ closeMenu }: MenuListProps) {
-  const categories = await api.category.getAll();
-  const items = await api.item.getAll();
+export function MenuList({ closeMenu }: MenuListProps) {
+  // const categories = await api.category.getAll();
+  // const items = await api.item.getAll();
+  const { data: categories } = api.category.getAll.useQuery();
+  const { data: items } = api.item.getAll.useQuery();
 
   const getByCategory = (categoryId: string) => {
     if (!items) return;

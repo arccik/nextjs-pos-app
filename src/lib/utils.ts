@@ -10,7 +10,6 @@ import {
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format } from "date-fns";
-import { OrderData, ShortItem } from "@/hooks/useLocalStorageOrderData";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -229,50 +228,6 @@ export function formatId(id: string) {
   return id.slice(-4);
 }
 
-interface OrderData {
-  items: ShortItem[];
-  // Other properties of OrderData
-}
 
-interface ShortItem {
-  itemId: string; // Assuming itemId is a string
-  quantity: number;
-  // Other properties of ShortItem
-}
 
-interface OrderData {
-  items: ShortItem[];
-  // Other properties of OrderData
-}
 
-interface ShortItem {
-  itemId: string; // Assuming itemId is a string
-  quantity: number;
-  // Other properties of ShortItem
-}
-
-export function addOrUpdateItem(
-  orderData: OrderData,
-  newItem: ShortItem,
-): OrderData {
-  const newOrderData = { ...orderData }; // Create a copy of orderData
-  const existingItemIndex = newOrderData.items.findIndex(
-    (item) => item.itemId === newItem.itemId,
-  );
-
-  if (existingItemIndex !== -1) {
-    // Item exists, increase quantity
-    const updatedItems = [...newOrderData.items];
-    const updatedItem = {
-      ...updatedItems[existingItemIndex],
-      quantity: updatedItems[existingItemIndex].quantity + 1,
-    };
-    updatedItems[existingItemIndex] = updatedItem;
-    newOrderData.items = updatedItems;
-  } else {
-    // Item doesn't exist, add new item
-    newOrderData.items = [...newOrderData.items, { ...newItem }];
-  }
-
-  return newOrderData;
-}

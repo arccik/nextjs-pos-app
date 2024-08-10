@@ -7,7 +7,7 @@ interface UseLocalStorageOptions<T> {
 
 function useLocalStorage<T>(
   key: string,
-  initialValue: T | (() => T),
+  initialValue?: T | (() => T),
   options?: UseLocalStorageOptions<T>,
 ) {
   const { serializer, deserializer } = options || {};

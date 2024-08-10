@@ -11,19 +11,35 @@ import type { Item } from "@/server/db/schemas/item";
 
 import { formatCurrency } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import useLocalStorageOrderData from "@/hooks/useLocalStorageOrderData";
+import { OrderData } from "../AddItemToOrderButton";
+import { useContext, useEffect, useState } from "react";
+import OrderContext from "../provider";
 
 type CartItemsProps = {
   activeOrderId: string;
 };
 export default function CartItems() {
+  // const [orderData, setOrderData] = useState<OrderData[]>([]);
   // const { data: orderWithItems } = api.order.getOrderWithItems.useQuery(
   //   { id: activeOrderId! },
   //   { enabled: !!activeOrderId },
   // );
   // console.log("CART CART CART !!! ", orderWithItems);
-  const [orderWithItems] = useLocalStorageOrderData();
-  console.log("CHAT ITEMS: ", orderWithItems);
+  const { orderData, setOrderData } = useContext(OrderContext);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setOrderData(orderData);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  console.log("CHAT ITEMS: ", orderData);
   const serviceFee = 66;
   const totalAmount = 666;
   // orderWithItems?.orderItems.reduce<number>((total, item) => {
@@ -54,7 +70,7 @@ export default function CartItems() {
         </TableRow>
       </TableHeader>
       <TableBody className="mt-5">
-        {orderWithItems?.items.map((item) => (
+        {orderData?.items.map((item) => (
           <TableRow key={item.itemId}>
             <TableCell className="font-medium">{item.name}</TableCell>
             <TableCell className="font-medium">{item.quantity}</TableCell>

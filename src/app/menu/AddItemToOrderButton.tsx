@@ -1,16 +1,27 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import { type Item } from "@/server/db/schemas/item";
 import { ChevronRight, ChevronLeft, PlusIcon } from "lucide-react";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import useLocalStorageOrderData from "@/hooks/useLocalStorageOrderData";
-import { addOrUpdateItem } from "@/lib/utils";
-import useLocalStorage from "@/hooks/useLocalStorage";
+import { useRouter } from "next/navigation";
+import OrderContext, { OrderDataType } from "./provider";
+
+export type ShortItem = {
+  itemId: string;
+  quantity: number;
+  name: string;
+  price: number;
+};
+
+export type OrderData = {
+  table: { id: string; number: number } | null;
+  items: ShortItem[];
+  orderId: string | null;
+};
 
 type AddItemToOrderButtonProps = {
   item: Item;
@@ -19,93 +30,77 @@ type AddItemToOrderButtonProps = {
 export default function AddItemToOrderButton({
   item,
 }: AddItemToOrderButtonProps) {
-  const [quantity, setQuantity] = useState(1);
-  // const [localOrder, setLocalOrder] = useLocalStorageOrderData();
-  const [openOrder, setOpenOrder] = useLocalStorage("order", {
-    itemId: "",
-    price: null,
-    name: "",
-    quantity: null,
-  });
+  const { orderData, setOrderData } = useContext(OrderContext);
+  console.log("Add Item to the order button: ", orderData);
 
-  const pathname = usePathname();
-  const router = useRouter();
+  const handleClick = (item: Item) => {
+    if (!orderData || orderData?.items.length === 0) {
+      setOrderData({
+        table: null,
+        orderId: null,
+        items: [
+          { itemId: item.id, name: item.name, price: item.price, quantity: 1 },
+        ],
+      });
+    } else {
+      const existingItemIndex = orderData.items.findIndex(
+        (orderItem) => orderItem.itemId === item.id,
+      );
 
-  const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams.toString());
-  const orderId = params.get("orderId");
-  // TODO: Try to use params.set('orderId', res.id) instead
+      let updatedItems: ShortItem[];
+      if (existingItemIndex !== -1) {
+        updatedItems = [...orderData.items];
+        updatedItems[existingItemIndex].quantity += 1;
+      } else {
+        updatedItems = [
+          ...orderData.items,
+          { itemId: item.id, name: item.name, price: item.price, quantity: 1 },
+        ];
+      }
 
-  console.log("AddITem ButTOn : ", orderId);
-  // const addItem = api.order.addItems.useMutation({
-  //   onSuccess: (res) => {
-  //     console.log("Success. Response: ", res);
-  //     // res && params.set("orderId", res?.id);
-  //     if (!orderId) router.push(pathname + "?" + `orderId=${res?.id}`);
-  //     // toast({
-  //     //   title: "Order created",
-  //     // });
-  //   },
-  // });
-  // const createOrder = api.order.create.useMutation({
-  //   onSuccess: () => console.log("Order Created!"),
-  // });
-
-  const handleClick = () => {
-    console.log("handle add item: ", { item });
-
-    //  const newData =  addOrUpdateItem(openOrder, {
-    //     itemId: item.id,
-    //     price: item.price,
-    //     name: item.name,
-    //     quantity,
-    //   }),
-    setOpenOrder({
-      itemId: item.id,
-      price: item.price,
-      name: item.name,
-      quantity,
-    });
-    // [
-    //   ...localOrder.items,
-    //   { itemId: item.id, quantity, name: item.name, price: item.price },
-    // ],
-    // });
-    console.log("handle add button click: ", localOrder);
-    // if (orderId) {
-    //   addItem.mutate({ orderId, itemId: item.id, quantity });
-    // } else {
-    //   createOrder.mutate({ items: [{ itemId: item.id, quantity }] });
-    // }
-    // console.log("Add items to order: Status take");
-
-    // toast({
-    //   title: `${item.name} added to selected order`,
-    // });
+      setOrderData({ ...orderData, items: updatedItems });
+    }
   };
+
   return (
     <div className="m-4 flex items-end align-bottom">
       <div className="flex">
         <Button
           variant="outline"
           size="icon"
-          disabled={quantity <= 1}
-          onClick={() => setQuantity((prev) => prev - 1)}
+          disabled={
+            !item.isAvailable ||
+            orderData?.items.findIndex(
+              (i) => i.itemId === item.id && i.quantity <= 1,
+            ) === -1
+          }
+          onClick={() => {
+            const existingItemIndex = orderData?.items.findIndex(
+              (i) => i.itemId === item.id,
+            );
+            if (existingItemIndex !== -1) {
+              const updatedItems = [...orderData.items];
+              updatedItems[existingItemIndex].quantity = Math.max(
+                updatedItems[existingItemIndex].quantity - 1,
+                1,
+              );
+              setOrderData({ ...orderData, items: updatedItems });
+            }
+          }}
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
         <Input
           className="w-12 text-center [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           type="number"
-          value={quantity}
+          value={1} // You can remove the value prop since it's not being used
           disabled
-          onChange={(e) => setQuantity(Number(e.target.value))}
         />
         <Button
           variant="outline"
           size="icon"
-          disabled={quantity > 90}
-          onClick={() => setQuantity((prev) => prev + 1)}
+          disabled={!item.isAvailable}
+          onClick={() => handleClick(item)}
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
@@ -113,7 +108,7 @@ export default function AddItemToOrderButton({
       <Button
         variant="outline"
         size="sm"
-        onClick={handleClick}
+        onClick={() => handleClick(item)}
         disabled={!item.isAvailable}
       >
         <PlusIcon size="1rem" className="mr-1" /> Add to Order

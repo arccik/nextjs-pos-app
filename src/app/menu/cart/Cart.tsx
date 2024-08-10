@@ -1,10 +1,8 @@
 "use client";
-// import { ClockIcon } from "@radix-ui/react-icons";
 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -25,61 +23,25 @@ import { Button } from "@/components/ui/button";
 import { CloseCartDialog } from "./CloseCartDialog";
 import CartItems from "./CartItems";
 import SelectTable from "./SelectedTable";
-import { toast, useToast } from "@/components/ui/use-toast";
-// import { create, addMoreItems } from "@/api/orders";
-// import { useNavigate } from "react-router-dom";
-// import { summarizeOrder } from "@/lib/utils";
-// import { Edit2, Trash2Icon, Utensils } from "lucide-react";
-// import usePayments from "@/hooks/usePayments";
-// import TableIcon from "@/components/navbar/TableIcon";
-import { api } from "@/trpc/react";
+
 import TableIcon from "@/components/navbar/TableIcon";
 import { ClockIcon, Edit2, Utensils } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
-import useLocalStorageOrderData from "@/hooks/useLocalStorageOrderData";
+import { useContext } from "react";
+import OrderContext from "../provider";
 
 type CartProps = {
   onComplete?: () => void;
 };
 export default function Cart({ onComplete }: CartProps) {
+  const { orderData } = useContext(OrderContext);
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
   const activeOrderId = params.get("orderId");
 
-  // const { data: selectedTable } = api.table.getSelectedTable.useQuery();
-  // const { data: items } = api.order.getOrderWithItems.useQuery(
-  //   { id: activeOrderId! },
-  //   { enabled: !!activeOrderId },
-  // );
-  const specialRequest = "jaica";
-  // console.log("CART CART CART !!! ", items);
-  const [localOrder, setLocalOrder] = useLocalStorageOrderData();
-  const selectedTable = localOrder?.table;
+  const selectedTable = orderData?.table?.id;
 
-  console.log("CART::: >> ", selectedTable);
-
-  if (!activeOrderId && !selectedTable) return null;
-  // const addMoreItemsToOrder = api.order.addMoreItemsToOrder.useMutation({
-  //   onSuccess: ({ orderId }: { orderId: string }) => {
-  //     toast({ title: "Order successfully updated" });
-  //       setActiveOrder(null);
-  //       resetItems();
-  //       Promise.all([
-  //         queryClient.invalidateQueries({ queryKey: ["order"] }),
-  //         queryClient.invalidateQueries({ queryKey: ["tables"] }),
-  //         queryClient.invalidateQueries({ queryKey: ["orders"] }),
-  //       ]);
-  //       generateBill({ orderId, tipsAmount: null });
-  //       setSelectedTable(null);
-  //       navigate(`/order?id=${orderId}`);
-  //     onComplete && onComplete();
-  //   },
-  //   onError: (error) => {
-  //     toast({ title: "Error updating order", variant: "destructive" });
-  //     console.error(error);
-  //   },
-  // });
   //   const handleSubmitOrder = () => {
   //     if (activeOrder) {
   //       const summerize = summarizeOrder(items, activeOrder);
@@ -94,7 +56,6 @@ export default function Cart({ onComplete }: CartProps) {
   //       });
   //     }
   //   };
-  //   if (!selectedTable && !items.length) return null;
   //   if (selectedTable && !items.length) {
   //     return (
   //       <AlertDialog>
@@ -142,12 +103,12 @@ export default function Cart({ onComplete }: CartProps) {
         )}
       </CardHeader>
       <CardContent className="grid gap-4">
-        {selectedTable && (
+        {!selectedTable && (
           <div className="flex items-center gap-4">
             <ClockIcon className="h-6 w-6" />
             <div className="grid gap-1 text-sm">
               <div className="flex items-center gap-2">
-                <p className="font-semibold">Table #{selectedTable.number}</p>
+                <p className="font-semibold">Table #{selectedTable}</p>
                 <SelectTable buttonTrigger={<Edit2 size="1rem" />} />
               </div>
               {specialRequest && (
@@ -178,10 +139,7 @@ export default function Cart({ onComplete }: CartProps) {
       <CardFooter className="flex flex-col justify-center gap-4 p-4">
         {/* <AddSpecialRequest orderId={activeOrder} /> */}
         <div className="flex w-full gap-5">
-          <CloseCartDialog
-            orderId={activeOrderId}
-            tableId={selectedTable?.id}
-          />
+          <CloseCartDialog orderId={activeOrderId} tableId={selectedTable} />
           <Button
             // onClick={handleSubmitOrder}
             // disabled={saveOrder.isPending || addMoreItemsToOrder.isPending}

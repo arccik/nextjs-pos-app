@@ -7,7 +7,7 @@ type MenuItemProps = {
   item: Item;
 };
 
-export default async function MenuItem({ item }: MenuItemProps) {
+export default function MenuItem({ item }: MenuItemProps) {
   return (
     <div className="mb-8 grid grid-cols-4 gap-4">
       {item.imageUrl && (

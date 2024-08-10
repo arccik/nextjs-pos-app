@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
-import useLocalStorage from "@/hooks/useLocalStorageOrderData";
+
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 type ChooseTableProps = {
   close: () => void;
@@ -16,7 +17,10 @@ type ChooseTableProps = {
 
 export default function ChooseTable({ close }: ChooseTableProps) {
   const router = useRouter();
-  const [localOrder, setLocalOrder] = useLocalStorage();
+  const [openTable, setOpenTable] = useLocalStorage<{
+    id: string;
+    number: number;
+  } | null>("table");
   const {
     data: tables,
     isLoading: isTablesLoading,
@@ -46,14 +50,14 @@ export default function ChooseTable({ close }: ChooseTableProps) {
 
   const handleTableSelect = (table: { id: string; number: number }) => {
     // select.mutate(tableId);
-    setLocalOrder({ table });
+    setOpenTable({ table });
     router.push("/menu");
     close();
   };
 
   const handleTableDiselect = (tableId?: string) => {
     // unselect.mutate({ tableId });
-    setLocalOrder({ table: null });
+    setOpenTable({ table: null });
     // close();
   };
 
@@ -64,10 +68,10 @@ export default function ChooseTable({ close }: ChooseTableProps) {
     reserved: "🔒",
   };
 
-  if (localOrder?.table?.id) {
+  if (openTable?.id) {
     return (
       <div className="flex items-center justify-center gap-4">
-        <p>You Have selected table number {localOrder.table.number}</p>
+        <p>You Have selected table number {openTable.number}</p>
         <Button size="icon" onClick={() => handleTableDiselect()}>
           <XIcon />
           {unselect.isPending && <Loading />}
