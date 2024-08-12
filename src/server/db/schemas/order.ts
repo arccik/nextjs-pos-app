@@ -27,7 +27,9 @@ export const orders = sqliteTable("orders", {
     .notNull()
     .primaryKey()
     .$defaultFn(() => uuid()),
-  userId: text("userId", { length: 255 }).references(() => users.id),
+  userId: text("userId", { length: 255 })
+    .notNull()
+    .references(() => users.id),
   tableId: text("table_id").references(() => tables.id),
   isPaid: integer("is_paid", { mode: "boolean" }).default(false).notNull(),
   status: text("order_status", { enum: orderStatus })

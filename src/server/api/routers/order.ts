@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import {
+  newOrderSchema,
   newOrderWithItemsSchema,
   orderItemsSchema,
   orderStatus,
@@ -21,9 +22,19 @@ import {
   deleteOne,
   getPendingOrder,
   getAllByStatus,
+  newOrder,
+  removeItemFromOrder,
+  updateOrder,
+  getOneByBillId,
 } from "@/server/models/order";
 
 export const orderRouter = createTRPCRouter({
+  newOrder: protectedProcedure
+    .input(newOrderSchema.optional())
+    .mutation(async ({ input, ctx }) => {
+      return newOrder({ ...input, userId: ctx.session.user.id });
+    }),
+
   getOne: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
@@ -93,7 +104,22 @@ export const orderRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return await deleteOne(input.id);
     }),
+  removeItemFromOrder: protectedProcedure
+    .input(z.object({ itemId: z.string(), orderId: z.string() }))
+    .mutation(async ({ input }) => {
+      return await removeItemFromOrder(input);
+    }),
   getPendingOrder: protectedProcedure.query(async ({ ctx }) => {
     return await getPendingOrder(ctx.session.user.id);
   }),
+  updateOrder: protectedProcedure
+    .input(z.object({ id: z.string(), body: newOrderSchema }))
+    .mutation(async ({ input }) => {
+      return await updateOrder(input);
+    }),
+  getByBillId: protectedProcedure
+    .input(z.object({ billId: z.string() }))
+    .query(async ({ input }) => {
+      return await getOneByBillId(input.billId);
+    }),
 });

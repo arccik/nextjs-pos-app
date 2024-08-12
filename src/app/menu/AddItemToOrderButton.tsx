@@ -2,10 +2,11 @@
 import { Button } from "@/components/ui/button";
 
 import { type Item } from "@/server/db/schemas/item";
-import { ChevronRight, ChevronLeft, PlusIcon } from "lucide-react";
 import { api } from "@/trpc/react";
-import { Input } from "@/components/ui/input";
+import { PlusIcon } from "lucide-react";
 import { useState } from "react";
+import QuantityButtons from "./QuantityButtons";
+import useOrder from "@/hooks/useOrder";
 
 type AddItemToOrderButtonProps = {
   item: Item;
@@ -15,10 +16,7 @@ export default function AddItemToOrderButton({
   item,
 }: AddItemToOrderButtonProps) {
   const [quantity, setQuantity] = useState(1);
-  const addItem = api.order.create.useMutation({
-    onSuccess: () => console.log("item successfully added!"),
-    onError: () => console.log("Something went wrong!"),
-  });
+  const { add } = useOrder();
 
   const handleAddItem = ({
     itemId,
@@ -27,12 +25,13 @@ export default function AddItemToOrderButton({
     itemId: string;
     quantity: number;
   }) => {
-    console.log("add item to the order", { itemId, quantity });
+    const res = add({ itemId, quantity });
+    console.log("add item to the order", { itemId, quantity, res });
   };
 
   return (
-    <div className="m-4 flex items-end align-bottom">
-      <QuantityButtons onChange={(e) => setQuantity(e)} />
+    <div className="flex items-center gap-2">
+      <QuantityButtons onChange={(e) => setQuantity(e)} value={quantity} />
       <Button
         variant="outline"
         size="sm"
@@ -45,36 +44,3 @@ export default function AddItemToOrderButton({
   );
 }
 
-function QuantityButtons({ onChange }: { onChange: (q: number) => void }) {
-  const [quantity, setQuantity] = useState(1);
-
-  const handleClick = (operator: "+" | "-") => {
-    if (operator === "+") {
-      setQuantity(quantity + 1);
-    } else if (operator === "-" && quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-    onChange(quantity);
-  };
-  return (
-    <div className="flex">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => handleClick("-")}
-        disabled={quantity === 1}
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </Button>
-      <Input
-        className="w-12 text-center [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-        type="number"
-        value={quantity} // You can remove the value prop since it's not being used
-        disabled
-      />
-      <Button variant="outline" size="icon" onClick={() => handleClick("+")}>
-        <ChevronRight className="h-4 w-4" />
-      </Button>
-    </div>
-  );
-}

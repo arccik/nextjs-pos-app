@@ -5,6 +5,13 @@ import { getOne as getOneOrder } from "./order";
 import { subDays } from "date-fns";
 import { db } from "../db";
 
+export const getOneById = async (billId: string) => {
+  return await db.query.bills.findFirst({
+    where: eq(bills.id, billId),
+    with: { payments: true, user: { columns: { name: true, role: true } } },
+  });
+};
+ 
 export const getOneByOrderId = async (orderId: string) => {
   return await db.query.bills.findFirst({
     where: eq(bills.orderId, orderId),

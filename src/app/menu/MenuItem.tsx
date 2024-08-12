@@ -9,7 +9,7 @@ type MenuItemProps = {
 
 export default function MenuItem({ item }: MenuItemProps) {
   return (
-    <div className="mb-8 grid grid-cols-4 gap-4">
+    <div className="relative mb-8 grid grid-cols-4 gap-4">
       {item.imageUrl && (
         <div className="col-span-1">
           <img
@@ -19,7 +19,7 @@ export default function MenuItem({ item }: MenuItemProps) {
           />
         </div>
       )}
-      <div className="col-span-3">
+      <div className="col-span-3 ">
         <h3
           className={cn(
             "flex gap-2 text-xl font-semibold",
@@ -30,10 +30,10 @@ export default function MenuItem({ item }: MenuItemProps) {
           {item.name}
         </h3>
         <p className="text-sm leading-none text-gray-500">{item.description}</p>
-        <div className="flex place-content-end items-end justify-between">
-          <span className="font-semibold">{formatCurrency(item.price)}</span>
+        <div className="absolute bottom-0 right-0">
           <AddItemToOrderButton item={item} />
         </div>
+        <span className="font-semibold">{formatCurrency(item.price)}</span>
       </div>
     </div>
   );

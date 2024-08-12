@@ -14,6 +14,7 @@ import {
   Item,
   type NewItem,
   Order,
+  bills,
 } from "../db/schemas";
 import { combineItems, combineOrderItems } from "../../lib/utils";
 import { endOfToday, startOfToday } from "date-fns";
@@ -27,6 +28,30 @@ import {
 export const getOne = async (id: string) => {
   const result = await db.query.orders.findFirst({
     where: and(eq(orders.id, id)),
+    with: {
+      orderItems: {
+        columns: {
+          orderId: false,
+        },
+        with: {
+          items: {
+            columns: {
+              price: true,
+              name: true,
+              imageUrl: true,
+            },
+          },
+        },
+      },
+      bill: true,
+    },
+  });
+  return result;
+};
+
+export const getOneByBillId = async (billId: string) => {
+  const result = await db.query.orders.findFirst({
+    where: and(eq(orders.billId, billId)),
     with: {
       orderItems: {
         columns: {
@@ -121,6 +146,36 @@ export const update = async (id: string, body: NewOrder) => {
   return result;
 };
 
+export const newOrder = async (body: NewOrder) => {
+  const [order] = await db
+    .insert(orders)
+    .values(body)
+    .returning({ id: orders.id });
+
+  if (!order?.id) throw new Error("Error: Order ID is missing");
+  console.log(" ✓ New ORder Creted:>>>>> ", order);
+
+  const [bill] = await db
+    .insert(bills)
+    .values({
+      totalAmount: 0,
+      orderId: order?.id ? order?.id : "Error: Order ID is missing",
+      userId: body.userId,
+    })
+    .returning({ id: bills.id });
+  console.log(" ✓ New ORder Creted:>>>>> ", bill);
+
+  if (!bill?.id) throw new Error("Error: Bill ID is missing");
+  const [res] = await db
+    .update(orders)
+    .set({ billId: bill?.id })
+    .where(eq(orders.id, order?.id))
+    .returning({ id: orders.id });
+  console.log(" ✓ New ORder UPDATED:>>>>> ", order);
+
+  return res;
+};
+
 export const create = async (values: NewOrderWithItems) => {
   const insertedOrder = await db
     .insert(orders)
@@ -184,6 +239,18 @@ export const addItem = async (data: {
 
 export const deleteOne = async (id: string) => {
   return await db.delete(orders).where(eq(orders.id, id));
+};
+
+export const removeItemFromOrder = async ({
+  itemId,
+  orderId,
+}: {
+  itemId: string;
+  orderId: string;
+}) => {
+  return await db
+    .delete(orderItems)
+    .where(and(eq(orderItems.orderId, orderId), eq(orderItems.itemId, itemId)));
 };
 
 export const pay = async (id: string) => {
@@ -408,4 +475,14 @@ export const getPendingOrder = async (userId: string) => {
   return await db.query.orders.findFirst({
     where: and(eq(orders.userId, userId), eq(orders.status, "Pending")),
   });
+};
+
+export const updateOrder = async ({
+  id,
+  body,
+}: {
+  id: string;
+  body: NewOrder;
+}) => {
+  return await db.update(orders).set(body).where(eq(orders.id, id));
 };
