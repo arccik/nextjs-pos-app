@@ -18,7 +18,10 @@ export default function AddItemToOrderButton({
 }: AddItemToOrderButtonProps) {
   const [quantity, setQuantity] = useState(1);
   const { add } = useOrder();
-  const [orderId] = useLocalStorage<string | null>("orderId", null);
+  const [orderId, setOrderId] = useLocalStorage<string | undefined>(
+    "orderId",
+    undefined,
+  );
 
   console.log("AddItemToOrderButtonPropsAddItemToOrderButtonProps", orderId);
 
@@ -30,7 +33,7 @@ export default function AddItemToOrderButton({
     quantity: number;
   }) => {
     const res = add({ itemId, quantity, id: orderId ?? undefined });
-    console.log("add item to the order", { itemId, quantity, orderId });
+    console.log("add item to the order", { itemId, quantity, orderId, res });
   };
 
   return (

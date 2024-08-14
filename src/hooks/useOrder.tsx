@@ -4,6 +4,7 @@ import { api } from "@/trpc/react";
 import { useUrlState } from "./useUrlState";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "@/components/ui/use-toast";
 
 type AddToOrderProps = {
   itemId: string;
@@ -20,8 +21,12 @@ export default function useOrder(id?: string) {
       // router.push(`/${data?.id}`);
       console.log("CREATED ORDER: ", { data });
 
-      router.replace(`?orderId=${data?.id}`);
+      // router.replace(`?orderId=${data?.id}`);
       setOrderId(data?.id);
+      toast({
+        title: "Order created",
+        description: "Your order has been created successfully",
+      });
     },
   });
   const addItemToOrder = api.order.addMoreItemsToOrder.useMutation();
@@ -30,6 +35,10 @@ export default function useOrder(id?: string) {
   const updateOrder = api.order.updateOrder.useMutation();
 
   const add = ({ itemId, quantity, id }: AddToOrderProps) => {
+    toast({
+      title: "Order creating...",
+      description: "Your order has been created successfully",
+    });
     const isOrderExist = id || orderId;
     if (isOrderExist) {
       return addItemToOrder.mutate([
