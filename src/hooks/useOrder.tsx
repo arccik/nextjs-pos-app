@@ -1,30 +1,42 @@
 "use client";
 import { Order } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
+import { useUrlState } from "./useUrlState";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type AddToOrderProps = {
   itemId: string;
   quantity: number;
-  orderId?: string;
+  id?: string;
 };
 
-export default function useOrder(orderId?: string) {
-  const creteOrder = api.order.newOrder.useMutation();
+export default function useOrder(id?: string) {
+  const [orderId, setOrderId] = useState<string | undefined>(id);
+  const router = useRouter();
+  const creteOrder = api.order.newOrder.useMutation({
+    onSuccess: (data) => {
+      // data && setOrderId(data.id);
+      // router.push(`/${data?.id}`);
+      console.log("CREATED ORDER: ", { data });
+
+      router.replace(`?orderId=${data?.id}`);
+      setOrderId(data?.id);
+    },
+  });
   const addItemToOrder = api.order.addMoreItemsToOrder.useMutation();
   const deleteOrder = api.order.deleteOne.useMutation();
   const removeItemFromOrder = api.order.removeItemFromOrder.useMutation();
   const updateOrder = api.order.updateOrder.useMutation();
 
-  const add = ({ itemId, quantity, orderId }: AddToOrderProps) => {
-    if (orderId) {
-      return addItemToOrder.mutate([{ itemId, quantity, orderId }]);
-    }
-    creteOrder.mutate();
-    if (creteOrder.data) {
+  const add = ({ itemId, quantity, id }: AddToOrderProps) => {
+    const isOrderExist = id || orderId;
+    if (isOrderExist) {
       return addItemToOrder.mutate([
-        { itemId, quantity, orderId: creteOrder.data.id },
+        { itemId, quantity, orderId: isOrderExist },
       ]);
     }
+    return creteOrder.mutate();
   };
 
   const deleteOne = (id: string) => {

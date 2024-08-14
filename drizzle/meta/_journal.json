@@ -22,6 +22,41 @@
       "when": 1722244253903,
       "tag": "0002_pale_pandemic",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1723463104295,
+      "tag": "0003_military_black_bolt",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1723590235567,
+      "tag": "0004_careful_revanche",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1723590404568,
+      "tag": "0005_gray_roland_deschain",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1723590759029,
+      "tag": "0006_supreme_vulture",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1723590966011,
+      "tag": "0007_overconfident_next_avengers",
+      "breakpoints": true
     }
   ]
 }

@@ -27,7 +27,10 @@ export default function AddOrderSpecialRequest({
       alert('REquest Added!')
     },
   });
-  const { data } = api.order.getSpecialRequest.useQuery({ orderId });
+  const { data } = api.order.getSpecialRequest.useQuery(
+    { orderId },
+    { enabled: !!orderId },
+  );
 
   const handleSubmit = () => {
     addSpecialRequest.mutate({ request: inputValue, orderId });

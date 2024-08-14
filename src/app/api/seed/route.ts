@@ -154,7 +154,7 @@ async function seedDatabase() {
     }
     await db.insert(schema.items).values([
       {
-        imageUrl: "/img/food.png",
+        imageUrl: "/img/food.jpg",
         name: "Caesar Salad",
         description: "Fresh romaine lettuce with Caesar dressing and croutons",
         price: 8.99,

@@ -1,4 +1,4 @@
-import { text, sqliteTable, int } from "drizzle-orm/sqlite-core";
+import { text, sqliteTable, int, integer } from "drizzle-orm/sqlite-core";
 import { v4 as uuid } from "uuid";
 
 import { users } from "./user";
@@ -18,9 +18,12 @@ export const rotas = sqliteTable("rota", {
     .notNull()
     .references(() => users.id),
   date: int("created_at", { mode: "timestamp" }).notNull(),
-  createdAt: int("created_at", { mode: "timestamp" })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).$default(
+    () => new Date(),
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).$default(
+    () => new Date(),
+  ),
 });
 
 export const rotaRelations = relations(rotas, ({ one }) => ({

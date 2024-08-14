@@ -31,9 +31,12 @@ export const reservations = sqliteTable("reservations", {
     .notNull(),
   scheduledAt: text("scheduled_at", { length: 255 }).notNull(),
   expireAt: text("expire_at", { length: 255 }).notNull(),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .default(sql`(CURRENT_DATE)`)
-    .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).$default(
+    () => new Date(),
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).$default(
+    () => new Date(),
+  ),
 });
 
 export const tablesRelations = relations(tables, ({ many }) => ({

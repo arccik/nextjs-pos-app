@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
 
 export default function NewOrderCard() {
   return (
@@ -8,12 +15,13 @@ export default function NewOrderCard() {
       <CardHeader className="pb-3">
         <CardTitle>Your Orders</CardTitle>
         <CardDescription className="max-w-lg text-balance leading-relaxed">
-          Introducing Our Orders Dashboard for Seamless Management and Insightful Analysis.
+          Introducing Our Orders Dashboard for Seamless Management and
+          Insightful Analysis.
         </CardDescription>
       </CardHeader>
       <CardFooter>
         <Button asChild>
-          <Link to="/menu">Create New Order</Link>
+          <Link href="/menu">Create New Order</Link>
         </Button>
       </CardFooter>
     </Card>

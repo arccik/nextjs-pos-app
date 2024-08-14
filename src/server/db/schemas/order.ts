@@ -37,13 +37,12 @@ export const orders = sqliteTable("orders", {
     .notNull(),
   specialRequest: text("special_request"),
   billId: text("bill_id"),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
-    .notNull()
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).$default(
+    () => new Date(),
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).$default(
+    () => new Date(),
+  ),
 });
 
 export const orderItems = sqliteTable(

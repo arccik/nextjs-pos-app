@@ -10,8 +10,11 @@ export const categories = sqliteTable("category", {
     .primaryKey()
     .$defaultFn(() => uuid()),
   name: text("name", { length: 255 }).notNull(),
-  createdAt: integer("created_at", { mode: "timestamp" }).default(
-    sql`(CURRENT_DATE)`,
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).$default(
+    () => new Date(),
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).$default(
+    () => new Date(),
   ),
 });
 

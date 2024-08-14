@@ -11,24 +11,18 @@ import type { Item } from "@/server/db/schemas/item";
 
 import { formatCurrency } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { OrderData } from "../AddItemToOrderButton";
-import { useContext, useEffect, useState } from "react";
 
 type CartItemsProps = {
-  activeOrderId: string;
+  items: { quantity: number; id: string; name: string; price: number }[];
 };
-export default function CartItems() {
-  // const [orderData, setOrderData] = useState<OrderData[]>([]);
-  // const { data: orderWithItems } = api.order.getOrderWithItems.useQuery(
-  //   { id: activeOrderId! },
-  //   { enabled: !!activeOrderId },
-  // );
-  // console.log("CART CART CART !!! ", orderWithItems);
+export default function CartItems({ items }: CartItemsProps) {
+  const { data: settings } = api.settings.get.useQuery();
 
-  let orderData = undefined;
+  const serviceFee = settings?.serviceFee;
+  const total = items.reduce<number>((total, item) => {
+    return (total += Number(item.price) * item.quantity);
+  }, 0);
 
-  const serviceFee = 66;
-  const totalAmount = 666;
   // orderWithItems?.orderItems.reduce<number>((total, item) => {
   //     return (total += Number(item.price));
   //   }, 0) + serviceFee;
@@ -57,8 +51,8 @@ export default function CartItems() {
         </TableRow>
       </TableHeader>
       <TableBody className="mt-5">
-        {/* {orderData?.items.map((item) => (
-          <TableRow key={item.itemId}>
+        {items.map((item) => (
+          <TableRow key={item.id}>
             <TableCell className="font-medium">{item.name}</TableCell>
             <TableCell className="font-medium">{item.quantity}</TableCell>
             <TableCell className="font-medium">{item.price}</TableCell>
@@ -66,7 +60,7 @@ export default function CartItems() {
               {(item.quantity * Number(item.price))?.toFixed(2)}
             </TableCell>
           </TableRow>
-        ))} */}
+        ))}
       </TableBody>
       <TableFooter>
         {!!serviceFee && (
@@ -77,12 +71,14 @@ export default function CartItems() {
             </TableCell>
           </TableRow>
         )}
-        <TableRow>
-          <TableCell colSpan={3}>Sub Total</TableCell>
-          <TableCell className="text-right">
-            {formatCurrency(totalAmount.toFixed(2))}
-          </TableCell>
-        </TableRow>
+        {!!total && (
+          <TableRow>
+            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell className="text-right">
+              {formatCurrency(total.toFixed(2))}
+            </TableCell>
+          </TableRow>
+        )}
       </TableFooter>
     </Table>
   );

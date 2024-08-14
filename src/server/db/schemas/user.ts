@@ -12,6 +12,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { type AdapterAccount } from "next-auth/adapters";
 import { tables } from "./table";
 import { z } from "zod";
+import { orders } from "./order";
 
 export const userRoles = [
   "admin",
@@ -42,14 +43,19 @@ export const users = sqliteTable("user", {
   // createdAt: int("created_at", { mode: "timestamp" })
   //   .default(sql`CURRENT_TIMESTAMP`)
   //   .notNull(),
-  updatedAt: text("timestamp").$onUpdate(() => sql`CURRENT_TIMESTAMP`),
-  createdAt: text("timestamp").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).$default(
+    () => new Date(),
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).$default(
+    () => new Date(),
+  ),
 });
 
 export const usersRelations = relations(users, ({ one, many }) => ({
   profileInfo: one(profileInfo),
   accounts: many(accounts),
   tables: many(tables),
+  orders: many(orders),
 }));
 
 export const profileInfo = sqliteTable("profile", {

@@ -147,10 +147,9 @@ export const update = async (id: string, body: NewOrder) => {
 };
 
 export const newOrder = async (body: NewOrder) => {
-  const [order] = await db
-    .insert(orders)
-    .values(body)
-    .returning({ id: orders.id });
+  console.log("NEw ORDER ??? ", { body });
+  const [order] = await db.insert(orders).values(body).returning();
+  console.log("NEw END <<>>  ??? ", { order });
 
   if (!order?.id) throw new Error("Error: Order ID is missing");
   console.log(" ✓ New ORder Creted:>>>>> ", order);
@@ -162,16 +161,16 @@ export const newOrder = async (body: NewOrder) => {
       orderId: order?.id ? order?.id : "Error: Order ID is missing",
       userId: body.userId,
     })
-    .returning({ id: bills.id });
-  console.log(" ✓ New ORder Creted:>>>>> ", bill);
+    .returning();
+  console.log(" ✓ New Bill Creted:>>>>> ", bill);
 
   if (!bill?.id) throw new Error("Error: Bill ID is missing");
   const [res] = await db
     .update(orders)
-    .set({ billId: bill?.id })
-    .where(eq(orders.id, order?.id))
+    .set({ billId: bill.id })
+    .where(eq(orders.id, order.id))
     .returning({ id: orders.id });
-  console.log(" ✓ New ORder UPDATED:>>>>> ", order);
+  console.log(" ✓ New ORder UPDATED:>>>>> ", res);
 
   return res;
 };

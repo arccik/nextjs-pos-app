@@ -12,6 +12,7 @@ import { PlusIcon } from "lucide-react";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useUrlState } from "@/hooks/useUrlState";
 // import { setSelectedTable } from "@/server/models/table";
 
 type EmptytableProps = { tableId: string; clean: boolean; tableNumber: number };
@@ -22,11 +23,12 @@ export default function EmptyTable({
   tableNumber,
 }: EmptytableProps) {
   const router = useRouter();
+  const [_, __, removeTable] = useUrlState("table", null);
 
   const setSelectedTable = api.table.setSelectedTable.useMutation({
     onSuccess: () => {
       toast({
-        title: "Table selected",
+        title: "Table has been selected",
       });
     },
   });

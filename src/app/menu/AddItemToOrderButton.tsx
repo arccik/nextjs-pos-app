@@ -7,6 +7,7 @@ import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import QuantityButtons from "./QuantityButtons";
 import useOrder from "@/hooks/useOrder";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 type AddItemToOrderButtonProps = {
   item: Item;
@@ -17,6 +18,9 @@ export default function AddItemToOrderButton({
 }: AddItemToOrderButtonProps) {
   const [quantity, setQuantity] = useState(1);
   const { add } = useOrder();
+  const [orderId] = useLocalStorage<string | null>("orderId", null);
+
+  console.log("AddItemToOrderButtonPropsAddItemToOrderButtonProps", orderId);
 
   const handleAddItem = ({
     itemId,
@@ -25,8 +29,8 @@ export default function AddItemToOrderButton({
     itemId: string;
     quantity: number;
   }) => {
-    const res = add({ itemId, quantity });
-    console.log("add item to the order", { itemId, quantity, res });
+    const res = add({ itemId, quantity, id: orderId ?? undefined });
+    console.log("add item to the order", { itemId, quantity, orderId });
   };
 
   return (

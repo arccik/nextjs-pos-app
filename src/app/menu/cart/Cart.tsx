@@ -29,6 +29,8 @@ import { ClockIcon, Edit2, Utensils } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
 import { useContext } from "react";
+import { api } from "@/trpc/react";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 type CartProps = {
   onComplete?: () => void;
@@ -37,6 +39,23 @@ export default function Cart({ onComplete }: CartProps) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
   const activeOrderId = params.get("orderId");
+
+  const [orderId, setOrderId] = useLocalStorage<string | undefined>(
+    "orderId",
+    undefined,
+  );
+
+  console.log(
+    "CARD << ACTIVE ORDER : !! ! !{ } }} {{ } }{ {{{ { {{ { { { { { {",
+    orderId,
+  );
+
+  const { data } = api.order.getOrderWithItems.useQuery(
+    { id: orderId! },
+    { enabled: !!orderId },
+  );
+  const items = data?.orderItems;
+  console.log("CARD << ACTIVE ORDER : ", orderId);
 
   const selectedTable = "test";
   const specialRequest = "TEST - special request: jaica";
@@ -97,7 +116,7 @@ export default function Cart({ onComplete }: CartProps) {
               <Utensils size="1rem" className="mr-2" />
               Order #{activeOrderId.slice(-9)}
             </CardTitle>
-            <AddOrderSpecialRequest orderId={activeOrderId} />
+            {/* <AddOrderSpecialRequest orderId={activeOrderId} /> */}
           </>
         )}
       </CardHeader>
@@ -133,7 +152,7 @@ export default function Cart({ onComplete }: CartProps) {
           />
         )}
 
-        <CartItems />
+        {items && <CartItems items={items} />}
       </CardContent>
       <CardFooter className="flex flex-col justify-center gap-4 p-4">
         {/* <AddSpecialRequest orderId={activeOrder} /> */}
