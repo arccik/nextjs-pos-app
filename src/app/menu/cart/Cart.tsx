@@ -36,9 +36,7 @@ type CartProps = {
   onComplete?: () => void;
 };
 export default function Cart({ onComplete }: CartProps) {
-  const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams.toString());
-  const activeOrderId = params.get("orderId");
+
 
   const [orderId, setOrderId] = useLocalStorage<string | undefined>(
     "orderId",
@@ -60,20 +58,8 @@ export default function Cart({ onComplete }: CartProps) {
   const selectedTable = "test";
   const specialRequest = "TEST - special request: jaica";
 
-  //   const handleSubmitOrder = () => {
-  //     if (activeOrder) {
-  //       const summerize = summarizeOrder(items, activeOrder);
-  //       addMoreItemsToOrder.mutate({ id: activeOrder, data: summerize });
-  //     } else {
-  //       const summerize = summarizeOrder(items);
-  //       createOrder.mutate({
-  //         items: summerize,
-  //         // tableId: selectedTable?.tableId,
-  //         userId, // TODO: should be assigned on backend
-  //         // specialRequest,
-  //       });
-  //     }
-  //   };
+  if (!orderId) return null;
+
   //   if (selectedTable && !items.length) {
   //     return (
   //       <AlertDialog>
@@ -110,11 +96,11 @@ export default function Cart({ onComplete }: CartProps) {
   return (
     <Card className="max-w-full">
       <CardHeader>
-        {activeOrderId && (
+        {orderId && (
           <>
             <CardTitle className="flex items-center">
               <Utensils size="1rem" className="mr-2" />
-              Order #{activeOrderId.slice(-9)}
+              Order #{orderId.slice(-9)}
             </CardTitle>
             {/* <AddOrderSpecialRequest orderId={activeOrderId} /> */}
           </>
@@ -157,7 +143,7 @@ export default function Cart({ onComplete }: CartProps) {
       <CardFooter className="flex flex-col justify-center gap-4 p-4">
         {/* <AddSpecialRequest orderId={activeOrder} /> */}
         <div className="flex w-full gap-5">
-          <CloseCartDialog orderId={activeOrderId} tableId={selectedTable} />
+          <CloseCartDialog orderId={orderId} tableId={selectedTable} />
           <Button
             // onClick={handleSubmitOrder}
             // disabled={saveOrder.isPending || addMoreItemsToOrder.isPending}

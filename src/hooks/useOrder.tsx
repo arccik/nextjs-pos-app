@@ -5,6 +5,7 @@ import { useUrlState } from "./useUrlState";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
+import useLocalStorage from "./useLocalStorage";
 
 type AddToOrderProps = {
   itemId: string;
@@ -13,8 +14,10 @@ type AddToOrderProps = {
 };
 
 export default function useOrder(id?: string) {
-  const [orderId, setOrderId] = useState<string | undefined>(id);
+  // const [orderId, setOrderId] = useState<string | undefined>(id);
+  const [orderId, setOrderId] = useLocalStorage("orderId", id);
   const router = useRouter();
+  const utils = api.useUtils();
   const creteOrder = api.order.newOrder.useMutation({
     onSuccess: (data) => {
       // data && setOrderId(data.id);
@@ -23,16 +26,51 @@ export default function useOrder(id?: string) {
 
       // router.replace(`?orderId=${data?.id}`);
       setOrderId(data?.id);
+      utils.order.invalidate();
+
       toast({
         title: "Order created",
         description: "Your order has been created successfully",
       });
     },
   });
-  const addItemToOrder = api.order.addMoreItemsToOrder.useMutation();
-  const deleteOrder = api.order.deleteOne.useMutation();
-  const removeItemFromOrder = api.order.removeItemFromOrder.useMutation();
-  const updateOrder = api.order.updateOrder.useMutation();
+  const addItemToOrder = api.order.addMoreItemsToOrder.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Order updated",
+        description: "Your order has been updated successfully",
+      });
+      utils.order.invalidate();
+    },
+  });
+  const deleteOrder = api.order.deleteOne.useMutation({
+    onSuccess: () => {
+      setOrderId(undefined);
+      toast({
+        title: "Order deleted",
+        description: "Your order has been deleted successfully",
+      });
+      utils.order.invalidate();
+    },
+  });
+  const removeItemFromOrder = api.order.removeItemFromOrder.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Order updated",
+        description: "Your order has been updated successfully",
+      });
+      utils.order.invalidate();
+    },
+  });
+  const updateOrder = api.order.updateOrder.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Order updated",
+        description: "Your order has been updated successfully",
+      });
+      utils.order.invalidate();
+    },
+  });
 
   const add = ({ itemId, quantity, id }: AddToOrderProps) => {
     toast({
@@ -40,12 +78,15 @@ export default function useOrder(id?: string) {
       description: "Your order has been created successfully",
     });
     const isOrderExist = id || orderId;
+    console.log("IS EXIST : ", { isOrderExist });
     if (isOrderExist) {
       return addItemToOrder.mutate([
         { itemId, quantity, orderId: isOrderExist },
       ]);
     }
-    return creteOrder.mutate();
+    const result = creteOrder.mutate();
+    console.log("ADd ITem TO ORder : ", result);
+    return result;
   };
 
   const deleteOne = (id: string) => {
@@ -72,7 +113,7 @@ export default function useOrder(id?: string) {
   return {
     add,
     update,
-    delete: deleteOne,
+    deleteOne,
     removItem,
     isLoading,
   };
