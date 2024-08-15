@@ -486,3 +486,17 @@ export const updateOrder = async ({
 }) => {
   return await db.update(orders).set(body).where(eq(orders.id, id));
 };
+
+export const setOrderStatus = async ({
+  orderId,
+  status,
+}: {
+  orderId: string;
+  status: OrderStatus[number];
+}) => {
+  const result = await db
+    .update(orders)
+    .set({ status })
+    .where(eq(orders.id, orderId));
+  return result;
+};

@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 // import { useToast } from "@/components/ui/use-toast";
 import { type OrderStatus } from "@/server/db/schemas";
 import PaymentButton from "./payment/PaymentButton";
+import { api } from "@/trpc/react";
+import { toast } from "./ui/use-toast";
 // import PaymentButton from "./Payment/PaymentButton";
 
 type ActionButtonsProps = {
@@ -34,6 +36,21 @@ export default function ActionButtons({
     Completed: "Completed",
     Cancelled: "Order Cancelled",
   };
+  const setOrderStatus = api.order.setStatus.useMutation({
+    onSuccess: () =>
+      toast({
+        title: "Order Status",
+        description: "The order has been served",
+      }),
+    onError: (error) => {
+      console.error("Server Order: ", { error });
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        variant: "destructive",
+      });
+    },
+  });
 
   // const serveOrder = useMutation({
   //   mutationFn: () => serve(orderId),
@@ -107,7 +124,9 @@ export default function ActionButtons({
   //     });
   //   }
   // };
-
+  const handleClick = () => {
+    setOrderStatus.mutate({ orderId, status });
+  };
   return (
     <>
       {/* {!isPaid && <AddItem fullWidth orderId={orderId} tableId={tableId} />} */}
@@ -115,7 +134,7 @@ export default function ActionButtons({
       {status !== "In Progress" && (
         <Button
           className="w-full"
-          // onClick={handleOrderServed}
+          onClick={handleClick}
           disabled={!!isPaid && status === "Completed"}
         >
           {buttonText[status]}
