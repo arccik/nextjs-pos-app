@@ -26,6 +26,7 @@ import {
   removeItemFromOrder,
   updateOrder,
   getOneByBillId,
+  setOrderStatus,
 } from "@/server/models/order";
 
 export const orderRouter = createTRPCRouter({
@@ -121,5 +122,10 @@ export const orderRouter = createTRPCRouter({
     .input(z.object({ billId: z.string() }))
     .query(async ({ input }) => {
       return await getOneByBillId(input.billId);
+    }),
+  setStatus: protectedProcedure
+    .input(z.object({ orderId: z.string(), status: z.enum(orderStatus) }))
+    .mutation(async ({ input }) => {
+      return await setOrderStatus(input);
     }),
 });
