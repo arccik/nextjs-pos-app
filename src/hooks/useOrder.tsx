@@ -1,10 +1,9 @@
 "use client";
 import { Order } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
-import { useUrlState } from "./useUrlState";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
+import useLocalStorage from "./useLocalStorage";
 
 type AddToOrderProps = {
   itemId: string;
@@ -13,8 +12,7 @@ type AddToOrderProps = {
 };
 
 export default function useOrder(id?: string) {
-  const [orderId, setOrderId] = useState<string | undefined>(id);
-  const router = useRouter();
+  const [orderId, setOrderId] = useLocalStorage("orderId", id);
   const creteOrder = api.order.newOrder.useMutation({
     onSuccess: (data) => {
       // data && setOrderId(data.id);
@@ -44,8 +42,16 @@ export default function useOrder(id?: string) {
       return addItemToOrder.mutate([
         { itemId, quantity, orderId: isOrderExist },
       ]);
+    } else {
+      console.log("BEFORE ----- ORder Not Exist. creating Order: ", orderId);
+      const response = creteOrder.mutate();
+      console.log("AFTER ------ ORder Not Exist. creating Order: ", {
+        response,
+        oth: creteOrder.data,
+      });
+
+      return addItemToOrder.mutate([{ itemId, quantity, orderId }]);
     }
-    return creteOrder.mutate();
   };
 
   const deleteOne = (id: string) => {

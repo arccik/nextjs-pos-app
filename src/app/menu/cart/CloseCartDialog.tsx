@@ -21,7 +21,7 @@ export function CloseCartDialog({
   orderId,
   tableId,
 }: {
-  orderId: string | null;
+  orderId?: string;
   tableId?: string;
 }) {
   const router = useRouter();
