@@ -204,17 +204,18 @@ export const addItem = async (data: {
   const order = await findOrCreateOrder(data.userId, data.orderId);
   if (!order) throw new Error("Issue with the order");
   // Check if the item already exists in the order
-  const existingItem = order.orderItems?.find(
-    (item) => item.itemId === data.itemId,
-  );
-
+  const existingItem =
+    "orderItems" in order &&
+    order.orderItems?.find((item) => item.itemId === data.itemId);
+  console.log(" existingItem: ", { order, existingItem });
   if (existingItem) {
     // Update the quantity of the existing item
     existingItem.quantity += data.quantity ?? 1;
+    console.log("Existing Item::: ", existingItem);
     await db
       .update(orderItems)
-      .set(existingItem)
-      .where(eq(orderItems.orderId, existingItem.orderId));
+      .set({ quantity: existingItem.quantity })
+      .where(eq(orderItems.itemId, existingItem.itemId));
   } else {
     // Add a new item to the order
     await db.insert(orderItems).values({
@@ -235,17 +236,25 @@ async function findOrCreateOrder(
   userId: string,
   orderId?: string | null,
 ): Promise<OrderWithItems | { id: string } | undefined> {
+  console.log("findOrCreateOrder triggered!!!", { userId, orderId });
   if (!orderId) {
     const [newOrder] = await db
       .insert(orders)
       .values({ status: "Pending", userId })
       .returning({ id: orders.id });
+    if (!newOrder?.id) throw new Error("Order ID is missing");
+    const bill = await db.insert(bills).values({
+      totalAmount: 0,
+      orderId: newOrder.id,
+      userId,
+    });
     return newOrder;
   } else {
     const existingOrder = await db.query.orders.findFirst({
       where: eq(orders.id, orderId),
       with: { orderItems: true },
     });
+    console.log("Triggered Else block", { existingOrder });
     if (!existingOrder) {
       throw new Error("Order not found");
     }
