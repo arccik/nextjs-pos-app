@@ -51,6 +51,8 @@ export default function Cart({ onComplete }: CartProps) {
 
   const specialRequest = "TEST - special request: jaica";
 
+  if (!orderId) return null;
+
   //   if (selectedTable && !items.length) {
   //     return (
   //       <AlertDialog>

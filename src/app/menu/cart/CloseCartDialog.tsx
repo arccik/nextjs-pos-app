@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import useOrder from "@/hooks/useOrder";
 import { api } from "@/trpc/react";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
@@ -25,20 +26,19 @@ export function CloseCartDialog({
   tableId?: string;
 }) {
   const router = useRouter();
+  const { deleteOne } = useOrder();
   //   const { setSelectedTable, resetItems, addSpecialRequest } = useStore();
   const unselectTable = api.table.unselectTable.useMutation({
     onSuccess: () => toast({ title: "Table Unselected" }),
   });
-  const deleteOrder = api.order.deleteOne.useMutation({
-    onSuccess: () => toast({ title: "Order Deleted!" }),
-  });
 
   const handleCloseDialog = () => {
+    console.log("handleCloseDialog", { orderId, tableId });
     if (orderId) {
-      deleteOrder.mutate({ id: orderId });
-    } else {
-      unselectTable.mutate({ tableId });
+      deleteOne(orderId);
     }
+    // deleteOrder.mutate({ id: orderId });
+    // unselectTable.mutate({ tableId });
     router.refresh();
   };
 
