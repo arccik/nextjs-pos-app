@@ -11,7 +11,7 @@ export const getOneById = async (billId: string) => {
     with: { payments: true, user: { columns: { name: true, role: true } } },
   });
 };
- 
+
 export const getOneByOrderId = async (orderId: string) => {
   return await db.query.bills.findFirst({
     where: eq(bills.orderId, orderId),
@@ -82,14 +82,16 @@ export const updateBill = async ({
   userId: string;
   tipsAmount?: number;
 }) => {
+  console.log("Updating bill: ", { orderId, userId, tipsAmount });
   const order = await getOneOrder(orderId);
-  if (!order || !("orderItems" in order)) return { error: "Order not found" };
+  if (!order || !("orderItems" in order)) throw new Error("Order not found");
 
   let totalAmount = tipsAmount ? tipsAmount : 0;
   for (const orderItem of order.orderItems) {
     totalAmount += orderItem.quantity * Number(orderItem.items.price);
   }
   const bill = await getOneByOrderId(orderId);
+  console.log('Update bill Stage II ', bill)
   if (bill) {
     return await db
       .update(bills)

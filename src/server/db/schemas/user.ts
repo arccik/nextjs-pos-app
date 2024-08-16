@@ -43,12 +43,12 @@ export const users = sqliteTable("user", {
   // createdAt: int("created_at", { mode: "timestamp" })
   //   .default(sql`CURRENT_TIMESTAMP`)
   //   .notNull(),
-  createdAt: integer("created_at", { mode: "timestamp_ms" }).$default(
-    () => new Date(),
-  ),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).$default(
-    () => new Date(),
-  ),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
 });
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -183,8 +183,6 @@ export type UpdateUser = z.infer<typeof updateUserSchema>;
 export type User = typeof users.$inferSelect;
 // export type NewUser = typeof users.$inferInsert;
 export type NewUser = z.infer<typeof newUserSchema>;
-
-
 
 export const userSchema = createSelectSchema(users);
 export const newUserSchema = createInsertSchema(users);

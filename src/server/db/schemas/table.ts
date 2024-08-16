@@ -31,11 +31,11 @@ export const tables = sqliteTable(
       .default("available")
       .notNull(),
     createdAt: integer("created_at", { mode: "timestamp" })
-      .default(sql`(CURRENT_DATE)`)
+      .$default(() => new Date())
       .notNull(),
-    updatedAt: integer("updated_at", { mode: "timestamp" }).$onUpdate(
-      () => new Date(),
-    ),
+    updatedAt: integer("updated_at", { mode: "timestamp" })
+      .$onUpdate(() => new Date())
+      .notNull(),
   },
   (t) => ({
     unq: unique().on(t.number, t.prefix),

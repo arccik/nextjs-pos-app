@@ -27,12 +27,12 @@ export const bills = sqliteTable(
     userId: text("userId", { length: 255 })
       .notNull()
       .references(() => users.id),
-    createdAt: integer("created_at", { mode: "timestamp_ms" }).$default(
-      () => new Date(),
-    ),
-    updatedAt: integer("updated_at", { mode: "timestamp_ms" }).$default(
-      () => new Date(),
-    ),
+    createdAt: integer("created_at", { mode: "timestamp_ms" })
+      .$default(() => new Date())
+      .notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+      .$default(() => new Date())
+      .notNull(),
     orderId: text("order_id")
       .notNull()
       .references(() => orders.id),

@@ -18,12 +18,12 @@ export const rotas = sqliteTable("rota", {
     .notNull()
     .references(() => users.id),
   date: int("created_at", { mode: "timestamp" }).notNull(),
-  createdAt: integer("created_at", { mode: "timestamp_ms" }).$default(
-    () => new Date(),
-  ),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).$default(
-    () => new Date(),
-  ),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
 });
 
 export const rotaRelations = relations(rotas, ({ one }) => ({

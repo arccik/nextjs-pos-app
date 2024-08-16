@@ -1,4 +1,5 @@
 import {
+  Bill,
   Item,
   NewOrderItem,
   Order,
@@ -228,6 +229,9 @@ export function formatId(id: string) {
   return id.slice(-4);
 }
 
-
-
-
+export const countTotal = (bill: Bill | null) => {
+  if (!bill) return 0;
+  let result = bill.totalAmount ?? 0;
+  result += bill.serviceFee ?? 0;
+  return result;
+};

@@ -42,7 +42,7 @@ export default function Cart({ onComplete }: CartProps) {
     undefined,
   );
 
-  const { data, refetch } = api.order.getOrderWithItems.useQuery(
+  const { data } = api.order.getOrderWithItems.useQuery(
     { id: orderId! },
     { enabled: !!orderId },
   );
@@ -89,15 +89,11 @@ export default function Cart({ onComplete }: CartProps) {
   return (
     <Card className="max-w-full">
       <CardHeader>
-        {orderId && (
-          <>
-            <CardTitle className="flex items-center">
-              <Utensils size="1rem" className="mr-2" />
-              Order #{orderId.slice(-9)}
-            </CardTitle>
-            {/* <AddOrderSpecialRequest orderId={orderId} /> */}
-          </>
-        )}
+        <CardTitle className="flex items-center">
+          <Utensils size="1rem" className="mr-2" />
+          Order #{orderId.slice(-9)}
+        </CardTitle>
+        {/* <AddOrderSpecialRequest orderId={orderId} /> */}
       </CardHeader>
       <CardContent className="grid gap-4">
         {!selectedTable && (

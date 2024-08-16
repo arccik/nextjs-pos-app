@@ -61,7 +61,7 @@ export const orderRouter = createTRPCRouter({
     .input(
       z.object({
         itemId: z.string(),
-        orderId: z.string().nullable(),
+        orderId: z.string().optional(),
         quantity: z.number().optional(),
       }),
     )

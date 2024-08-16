@@ -200,41 +200,58 @@ export const addItem = async (data: {
   itemId: string;
   quantity?: number;
 }) => {
-  let order: { id: string } | undefined;
-  if (!data.orderId) {
-    [order] = await db
-      .insert(orders)
-      .values({ status: "Pending", userId: data.userId })
-      .returning({ id: orders.id });
+  // Find the existing order or create a new one
+  const order = await findOrCreateOrder(data.userId, data.orderId);
+  if (!order) throw new Error("Issue with the order");
+  // Check if the item already exists in the order
+  const existingItem = order.orderItems?.find(
+    (item) => item.itemId === data.itemId,
+  );
+
+  if (existingItem) {
+    // Update the quantity of the existing item
+    existingItem.quantity += data.quantity ?? 1;
+    await db
+      .update(orderItems)
+      .set(existingItem)
+      .where(eq(orderItems.orderId, existingItem.orderId));
   } else {
-    const selectOrder = await db.query.orders.findFirst({
-      where: eq(orders.id, data.orderId),
-      with: { orderItems: true },
+    // Add a new item to the order
+    await db.insert(orderItems).values({
+      quantity: data.quantity,
+      itemId: data.itemId,
+      orderId: order.id,
     });
-    if (!selectOrder) throw new Error("Order not found");
-    const itemExist = selectOrder?.orderItems.find(
-      (item) => item.itemId === data.itemId,
-    );
-    if (itemExist) {
-      itemExist.quantity = +1;
-      await db
-        .update(orderItems)
-        .set(itemExist)
-        .where(eq(orderItems.orderId, itemExist.orderId));
-    }
-    if (selectOrder && order) order["id"] = selectOrder?.id;
-    return order;
   }
 
-  console.log("ADD Items !!!!! > << order", order);
-  if (!order) throw new Error("Order ID is missing");
-  await db
-    .insert(orderItems)
-    .values({ quantity: data.quantity, itemId: data.itemId, orderId: order.id })
-    .returning();
+  // Update the bill (assuming updateBill is a separate function)
   await updateBill({ orderId: order.id, userId: data.userId });
+
+  // Return the updated order ID
   return { id: order.id };
 };
+
+async function findOrCreateOrder(
+  userId: string,
+  orderId?: string | null,
+): Promise<OrderWithItems | { id: string } | undefined> {
+  if (!orderId) {
+    const [newOrder] = await db
+      .insert(orders)
+      .values({ status: "Pending", userId })
+      .returning({ id: orders.id });
+    return newOrder;
+  } else {
+    const existingOrder = await db.query.orders.findFirst({
+      where: eq(orders.id, orderId),
+      with: { orderItems: true },
+    });
+    if (!existingOrder) {
+      throw new Error("Order not found");
+    }
+    return existingOrder;
+  }
+}
 
 export const deleteOne = async (id: string) => {
   return await db.delete(orders).where(eq(orders.id, id));

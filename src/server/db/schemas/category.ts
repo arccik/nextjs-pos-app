@@ -10,12 +10,12 @@ export const categories = sqliteTable("category", {
     .primaryKey()
     .$defaultFn(() => uuid()),
   name: text("name", { length: 255 }).notNull(),
-  createdAt: integer("created_at", { mode: "timestamp_ms" }).$default(
-    () => new Date(),
-  ),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).$default(
-    () => new Date(),
-  ),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
 });
 
 export const categoriesSchema = createSelectSchema(categories);

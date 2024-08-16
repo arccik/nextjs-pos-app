@@ -31,12 +31,12 @@ export const reservations = sqliteTable("reservations", {
     .notNull(),
   scheduledAt: text("scheduled_at", { length: 255 }).notNull(),
   expireAt: text("expire_at", { length: 255 }).notNull(),
-  createdAt: integer("created_at", { mode: "timestamp_ms" }).$default(
-    () => new Date(),
-  ),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).$default(
-    () => new Date(),
-  ),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
 });
 
 export const tablesRelations = relations(tables, ({ many }) => ({

@@ -33,12 +33,12 @@ export const venueSettings = sqliteTable("venue_settings", {
     mode: "boolean",
   }),
   serviceFee: integer("service_fee"),
-  createdAt: integer("created_at", { mode: "timestamp_ms" }).$default(
-    () => new Date(),
-  ),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).$default(
-    () => new Date(),
-  ),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
 });
 
 export const venueSettingsSchema = createSelectSchema(venueSettings).extend({

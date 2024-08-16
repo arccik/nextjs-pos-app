@@ -12,17 +12,12 @@ type AddToOrderProps = {
 };
 
 export default function useOrder(id?: string) {
-  // const [orderId, setOrderId] = useState<string | undefined>(id);
   const [orderId, setOrderId] = useLocalStorage("orderId", id);
-  const router = useRouter();
   const utils = api.useUtils();
-  const creteOrder = api.order.newOrder.useMutation({
+  const addItem = api.order.addItems.useMutation({
     onSuccess: (data) => {
-      // data && setOrderId(data.id);
-      // router.push(`/${data?.id}`);
       console.log("CREATED ORDER: ", { data });
 
-      // router.replace(`?orderId=${data?.id}`);
       setOrderId(data?.id);
       utils.order.invalidate();
 
@@ -71,26 +66,27 @@ export default function useOrder(id?: string) {
   });
 
   const add = ({ itemId, quantity, id }: AddToOrderProps) => {
-    toast({
-      title: "Order creating...",
-      description: "Your order has been created successfully",
-    });
+    // toast({
+    //   title: "Order creating...",
+    //   description: "Your order has been created successfully",
+    // });
     const isOrderExist = id || orderId;
     console.log("IS EXIST : ", { isOrderExist });
-    if (isOrderExist) {
-      return addItemToOrder.mutate([
-        { itemId, quantity, orderId: isOrderExist },
-      ]);
-    } else {
-      console.log("BEFORE ----- ORder Not Exist. creating Order: ", orderId);
-      const response = creteOrder.mutate();
-      console.log("AFTER ------ ORder Not Exist. creating Order: ", {
-        response,
-        oth: creteOrder.data,
-      });
+    addItem.mutate({ itemId, orderId: id, quantity });
+    // if (isOrderExist) {
+    //   return addItemToOrder.mutate([
+    //     { itemId, quantity, orderId: isOrderExist },
+    //   ]);
+    // } else {
+    //   console.log("BEFORE ----- ORder Not Exist. creating Order: ", orderId);
+    //   const response = creteOrder.mutate();
+    //   console.log("AFTER ------ ORder Not Exist. creating Order: ", {
+    //     response,
+    //     oth: creteOrder.data,
+    //   });
 
-      return addItemToOrder.mutate([{ itemId, quantity, orderId }]);
-    }
+    //   return addItemToOrder.mutate([{ itemId, quantity, orderId }]);
+    // }
   };
 
   const deleteOne = (id: string) => {
@@ -113,7 +109,7 @@ export default function useOrder(id?: string) {
     updateOrder.mutate({ id, body });
   };
 
-  const isLoading = creteOrder.isPending || addItemToOrder.isPending;
+  const isLoading = addItem.isPending || addItemToOrder.isPending;
   return {
     add,
     update,
