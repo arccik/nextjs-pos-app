@@ -502,6 +502,8 @@ export const getPendingOrder = async (userId: string) => {
   });
 };
 
+// New Methods FOR New Design are below
+
 export const updateOrder = async ({
   id,
   body,
@@ -525,3 +527,11 @@ export const setOrderStatus = async ({
     .where(eq(orders.id, orderId));
   return result;
 };
+
+export const removeSpecialRequest = async (orderId: string) => {
+  const result = await db
+    .update(orders)
+    .set({ specialRequest: null })
+    .where(eq(orders.id, orderId));
+  return result;
+}

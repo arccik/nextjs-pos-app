@@ -26,16 +26,11 @@ import SelectTable from "./SelectedTable";
 
 import TableIcon from "@/components/navbar/TableIcon";
 import { ClockIcon, Edit2, Utensils } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
-import { useContext } from "react";
 import { api } from "@/trpc/react";
 import useLocalStorage from "@/hooks/useLocalStorage";
 
-type CartProps = {
-  onComplete?: () => void;
-};
-export default function Cart({ onComplete }: CartProps) {
+export default function Cart() {
   const [orderId] = useLocalStorage<string | undefined>("orderId", undefined);
   const [selectedTable, setSelectedTable] = useLocalStorage<string | undefined>(
     "table",
@@ -47,7 +42,7 @@ export default function Cart({ onComplete }: CartProps) {
     { enabled: !!orderId },
   );
   const items = data?.orderItems;
-  console.log("CARD << ACTIVE ORDER : ", orderId);
+  console.log("CARD << ACTIVE ORDER : ", data);
 
   const specialRequest = "TEST - special request: jaica";
 
@@ -93,7 +88,10 @@ export default function Cart({ onComplete }: CartProps) {
           <Utensils size="1rem" className="mr-2" />
           Order #{orderId.slice(-9)}
         </CardTitle>
-        {/* <AddOrderSpecialRequest orderId={orderId} /> */}
+        <AddOrderSpecialRequest
+          orderId={orderId}
+          request={data?.specialRequest}
+        />
       </CardHeader>
       <CardContent className="grid gap-4">
         {!selectedTable && (

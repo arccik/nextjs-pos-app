@@ -27,6 +27,7 @@ import {
   updateOrder,
   getOneByBillId,
   setOrderStatus,
+  removeSpecialRequest,
 } from "@/server/models/order";
 
 export const orderRouter = createTRPCRouter({
@@ -94,6 +95,11 @@ export const orderRouter = createTRPCRouter({
     .input(z.object({ request: z.string(), orderId: z.string() }))
     .mutation(async ({ input }) => {
       return await addSpecialRequest(input);
+    }),
+  removeSpecialRequest: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      return await removeSpecialRequest(input);
     }),
   getSpecialRequest: protectedProcedure
     .input(z.object({ orderId: z.string() }))

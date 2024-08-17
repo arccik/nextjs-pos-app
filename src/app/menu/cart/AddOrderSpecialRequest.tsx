@@ -7,48 +7,62 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { Edit, Trash } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
-export default function AddOrderSpecialRequest({
-  orderId,
-}: {
+type Props = {
   orderId: string;
-}) {
-  const [inputValue, setInputValue] = useState("");
+  request?: string | null;
+};
 
-  const addSpecialRequest = api.order.addSpecialRequest.useMutation({
+export default function AddOrderSpecialRequest({ orderId, request }: Props) {
+  const [inputValue, setInputValue] = useState(request);
+  const [showDialog, setShowDialog] = useState(false);
+
+  const addRequest = api.order.addSpecialRequest.useMutation({
     onSuccess: () => {
-      setInputValue("");
-      alert('REquest Added!')
+      setShowDialog(false);
     },
   });
-  const { data } = api.order.getSpecialRequest.useQuery(
-    { orderId },
-    { enabled: !!orderId },
-  );
 
-  const handleSubmit = () => {
-    addSpecialRequest.mutate({ request: inputValue, orderId });
+  const removeRequest = api.order.removeSpecialRequest.useMutation({
+    onSuccess: () => {
+      setShowDialog(false);
+      setInputValue(null);
+    },
+  });
+
+  const handleSave = () => {
+    if (!inputValue) return;
+    addRequest.mutate({ request: inputValue, orderId });
   };
 
-  if (data?.specialRequest) {
-    return (
-      <CardDescription>
-        Ready for pickup. Please deliver to the customer in 5 minutes.
-      </CardDescription>
-    );
-  }
+  const handleDelete = () => {
+    removeRequest.mutate(orderId);
+  };
+
   return (
-    <Dialog>
-      <DialogTrigger>
-        <Button size="sm" className="font-semibold" variant="link">
-          Add Special Request
-        </Button>
+    <Dialog open={showDialog} onOpenChange={setShowDialog}>
+      <DialogTrigger asChild>
+        {inputValue === null ? (
+          <Button size="sm" variant="link" className="self-start">
+            Add Special Request
+          </Button>
+        ) : (
+          <CardDescription
+            className="flex max-w-full gap-1"
+            onClick={() => setShowDialog((prev) => !prev)}
+          >
+            {inputValue} <Edit size="1rem" />
+          </CardDescription>
+        )}
       </DialogTrigger>
       <DialogContent className="overflow-y-auto">
         <DialogHeader>
@@ -57,13 +71,20 @@ export default function AddOrderSpecialRequest({
             This will be visible to Other staff members
           </DialogDescription>
         </DialogHeader>
-        <div className="flex gap-4">
-          <Input
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-          />
-          <Button onClick={handleSubmit}>Submit</Button>
-        </div>
+        <Textarea
+          maxLength={100}
+          value={inputValue ?? ""}
+          onChange={(e) => setInputValue(e.target.value)}
+        />
+        <DialogFooter>
+          <div className="flex gap-4">
+            <Button onClick={handleDelete} variant="outline">
+              Delete
+              <Trash size="sm" className="ml-2" />
+            </Button>
+            <Button onClick={handleSave}>Save</Button>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

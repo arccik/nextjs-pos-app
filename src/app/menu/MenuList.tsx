@@ -1,4 +1,3 @@
-"use client";
 import {
   Accordion,
   AccordionContent,
@@ -8,18 +7,12 @@ import {
 
 import MenuItem from "./MenuItem";
 
-import Cart from "./cart/Cart";
-import { api } from "@/trpc/react";
+import { api } from "@/trpc/server";
 import DeleteCategory from "./category/DeleteCategory";
 
-type MenuListProps = {
-  closeMenu?: () => void;
-};
-export function MenuList({ closeMenu }: MenuListProps) {
-  // const categories = await api.category.getAll();
-  // const items = await api.item.getAll();
-  const { data: categories } = api.category.getAll.useQuery();
-  const { data: items } = api.item.getAll.useQuery();
+export async function MenuList() {
+  const categories = await api.category.getAll();
+  const items = await api.item.getAll();
 
   const getByCategory = (categoryId: string) => {
     if (!items) return;
@@ -28,23 +21,20 @@ export function MenuList({ closeMenu }: MenuListProps) {
 
   return (
     <Accordion type="single" collapsible>
-      {!!categories?.length &&
-        categories?.map((category) => {
-          return (
-            <AccordionItem value={String(category.id)} key={category.id}>
-              <AccordionTrigger className="text-3xl font-semibold">
-                {category.name}
-              </AccordionTrigger>
+      {categories?.map((category) => (
+        <AccordionItem value={String(category.id)} key={category.id}>
+          <AccordionTrigger className="text-3xl font-semibold">
+            {category.name}
+          </AccordionTrigger>
 
-              <AccordionContent className="space-y-5">
-                {getByCategory(category.id)?.map((item) => (
-                  <MenuItem item={item} key={item.id} />
-                ))}
-                <DeleteCategory id={category.id} name={category.name} />
-              </AccordionContent>
-            </AccordionItem>
-          );
-        })}
+          <AccordionContent className="space-y-5">
+            {getByCategory(category.id)?.map((item) => (
+              <MenuItem item={item} key={item.id} />
+            ))}
+            <DeleteCategory id={category.id} name={category.name} />
+          </AccordionContent>
+        </AccordionItem>
+      ))}
     </Accordion>
   );
 }

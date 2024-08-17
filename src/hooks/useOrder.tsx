@@ -16,14 +16,12 @@ export default function useOrder(id?: string) {
   const utils = api.useUtils();
   const addItem = api.order.addItems.useMutation({
     onSuccess: (data) => {
-      console.log("CREATED ORDER: ", { data });
-
       setOrderId(data?.id);
       utils.order.invalidate();
 
       toast({
-        title: "Order created",
-        description: "Your order has been created successfully",
+        title: "Item Added",
+        description: "Your order has been updated successfully",
       });
     },
   });

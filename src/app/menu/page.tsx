@@ -21,7 +21,7 @@ export default async function MenuPage() {
           <div>
             <MenuList />
           </div>
-          <div className="block lg:fixed lg:right-4">
+          <div>
             <Cart />
           </div>
         </div>
