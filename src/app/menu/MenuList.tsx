@@ -27,28 +27,24 @@ export function MenuList({ closeMenu }: MenuListProps) {
   };
 
   return (
-    <div className="grid flex-1 grid-cols-1 gap-5 md:grid-cols-2">
-      <div className="col-span-2">
-        <Accordion type="single" collapsible className="mb-10 w-full">
-          {!!categories?.length &&
-            categories?.map((category) => {
-              return (
-                <AccordionItem value={String(category.id)} key={category.id}>
-                  <AccordionTrigger className="text-3xl font-semibold">
-                    {category.name}
-                  </AccordionTrigger>
+    <Accordion type="single" collapsible>
+      {!!categories?.length &&
+        categories?.map((category) => {
+          return (
+            <AccordionItem value={String(category.id)} key={category.id}>
+              <AccordionTrigger className="text-3xl font-semibold">
+                {category.name}
+              </AccordionTrigger>
 
-                  <AccordionContent className="space-y-5">
-                    {getByCategory(category.id)?.map((item) => (
-                      <MenuItem item={item} key={item.id} />
-                    ))}
-                    <DeleteCategory id={category.id} name={category.name} />
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-        </Accordion>
-      </div>
-    </div>
+              <AccordionContent className="space-y-5">
+                {getByCategory(category.id)?.map((item) => (
+                  <MenuItem item={item} key={item.id} />
+                ))}
+                <DeleteCategory id={category.id} name={category.name} />
+              </AccordionContent>
+            </AccordionItem>
+          );
+        })}
+    </Accordion>
   );
 }

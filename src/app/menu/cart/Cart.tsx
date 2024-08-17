@@ -87,7 +87,7 @@ export default function Cart({ onComplete }: CartProps) {
   //   }
 
   return (
-    <Card className="max-w-full">
+    <Card>
       <CardHeader>
         <CardTitle className="flex items-center">
           <Utensils size="1rem" className="mr-2" />

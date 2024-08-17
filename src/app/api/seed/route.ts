@@ -167,7 +167,7 @@ async function seedDatabase() {
         isAvailable: true,
       },
       {
-        imageUrl: "/img/food.png",
+        imageUrl: "/img/food.jpg",
         name: "Margherita Pizza",
         description:
           "Thin-crust pizza with fresh basil, tomato sauce, and mozzarella cheese",
@@ -181,7 +181,7 @@ async function seedDatabase() {
         isAvailable: true,
       },
       {
-        imageUrl: "/img/food.png",
+        imageUrl: "/img/food.jpg",
         name: "Beef Burger",
         description:
           "Juicy beef patty with lettuce, tomato, and onion on a brioche bun",
@@ -196,7 +196,7 @@ async function seedDatabase() {
       },
       {
         name: "Pad Thai",
-        imageUrl: "/img/food.png",
+        imageUrl: "/img/food.jpg",
         description:
           "Stir-fried rice noodles with shrimp, eggs, and bean sprouts in a tangy tamarind sauce",
         price: 14.99,
@@ -209,7 +209,7 @@ async function seedDatabase() {
         isAvailable: true,
       },
       {
-        imageUrl: "/img/food.png",
+        imageUrl: "/img/food.jpg",
         name: "Vegetable Curry",
         description:
           "Assorted vegetables in a rich, creamy coconut curry sauce",
@@ -223,7 +223,7 @@ async function seedDatabase() {
         isAvailable: true,
       },
       {
-        imageUrl: "/img/food.png",
+        imageUrl: "/img/food.jpg",
         name: "Grilled Salmon",
         description:
           "Fresh salmon fillet grilled to perfection, served with roasted potatoes and asparagus",
@@ -237,7 +237,7 @@ async function seedDatabase() {
         isAvailable: true,
       },
       {
-        imageUrl: "/img/food.png",
+        imageUrl: "/img/food.jpg",
         name: "Falafel Wrap",
         description:
           "Crispy falafel balls wrapped in pita bread with lettuce, tomato, and tahini sauce",
@@ -251,7 +251,7 @@ async function seedDatabase() {
         isAvailable: true,
       },
       {
-        imageUrl: "/img/food.png",
+        imageUrl: "/img/food.jpg",
         name: "Beef Tacos",
         description:
           "Seasoned ground beef in soft tortillas topped with lettuce, cheese, and salsa",
@@ -265,7 +265,7 @@ async function seedDatabase() {
         isAvailable: true,
       },
       {
-        imageUrl: "/img/food.png",
+        imageUrl: "/img/food.jpg",
         name: "Mushroom Risotto",
         description:
           "Creamy Arborio rice with sautéed mushrooms and Parmesan cheese",
@@ -279,7 +279,7 @@ async function seedDatabase() {
         isAvailable: true,
       },
       {
-        imageUrl: "/img/food.png",
+        imageUrl: "/img/food.jpg",
         name: "Chocolate Lava Cake",
         description:
           "Warm, gooey chocolate cake with a molten center, served with vanilla ice cream",

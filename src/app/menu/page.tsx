@@ -1,16 +1,8 @@
-"use client";
-import { api } from "@/trpc/react";
 import { MenuList } from "./MenuList";
 import Cart from "./cart/Cart";
 import AddNewCategoryButton from "./category/AddNewCategoryButton";
-import useLocalStorage from "@/hooks/useLocalStorage";
 
-export default function MenuPage() {
-  // const [orderId] = useLocalStorage<string | undefined>("orderId", undefined);
-  // const { data, refetch } = api.order.getOrderWithItems.useQuery(
-  //   { id: orderId! },
-  //   { enabled: !!orderId, retry },
-  // );
+export default async function MenuPage() {
   return (
     <section className="grid w-full grid-flow-row py-12 ">
       <div className="grid gap-8 px-4 md:container md:px-6">
@@ -25,9 +17,11 @@ export default function MenuPage() {
             </p>
           </div>
         </div>
-        <div className="flex flex-col md:flex-row">
-          <MenuList />
-          <div className="right-5 top-20  col-span-1 m-4 md:col-span-2">
+        <div className="grid grid-flow-row gap-4 md:grid-flow-col md:grid-cols-2">
+          <div>
+            <MenuList />
+          </div>
+          <div className="block lg:fixed lg:right-4">
             <Cart />
           </div>
         </div>
