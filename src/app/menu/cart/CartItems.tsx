@@ -10,11 +10,20 @@ import {
 } from "@/components/ui/table";
 
 import { formatCurrency } from "@/lib/utils";
+import { Item, OrderItem } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import { useMemo } from "react";
 
 type CartItemsProps = {
-  items: { quantity: number; id: string; name: string; price: number }[];
+  items: {
+    itemId: string;
+    quantity: number;
+    items: {
+      name: string;
+      price: number;
+      imageUrl: string | null;
+    };
+  }[];
 };
 export default function CartItems({ items }: CartItemsProps) {
   const { data: settings } = api.settings.get.useQuery();
@@ -23,7 +32,7 @@ export default function CartItems({ items }: CartItemsProps) {
   const total = useMemo(
     () =>
       items.reduce<number>((total, item) => {
-        return (total += Number(item.price) * item.quantity);
+        return (total += Number(item.items.price) * item.quantity);
       }, 0),
     [items],
   );
@@ -42,12 +51,12 @@ export default function CartItems({ items }: CartItemsProps) {
       </TableHeader>
       <TableBody className="mt-5">
         {items.map((item) => (
-          <TableRow key={item.id}>
-            <TableCell className="font-medium">{item.name}</TableCell>
+          <TableRow key={item.itemId}>
+            <TableCell className="font-medium">{item.items.name}</TableCell>
             <TableCell className="font-medium">{item.quantity}</TableCell>
-            <TableCell className="font-medium">{item.price}</TableCell>
+            <TableCell className="font-medium">{item.items.price}</TableCell>
             <TableCell className="text-right font-medium">
-              {(item.quantity * Number(item.price))?.toFixed(2)}
+              {(item.quantity * Number(item.items.price))?.toFixed(2)}
             </TableCell>
           </TableRow>
         ))}

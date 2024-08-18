@@ -1,17 +1,13 @@
 "use client";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import { MenuList } from "./MenuList";
 import Cart from "./cart/Cart";
 import AddNewCategoryButton from "./category/AddNewCategoryButton";
-import { type SelectedTable } from "../waiter/ChooseTable";
 import SelectedTableCard from "./cart/SelectedTableCard";
+import { api } from "@/trpc/react";
+import useOrder from "@/hooks/useOrder";
 
 export default function MenuPage() {
-  const [orderId] = useLocalStorage<string | undefined>("orderId", undefined);
-  const [selectedTable, setSelectedTable] = useLocalStorage<SelectedTable>(
-    "table",
-    null,
-  );
+  const { selectedTable } = useOrder();
   return (
     <section className="grid w-full grid-flow-row py-12 ">
       <div className="grid gap-8 px-4 md:container md:px-6">
@@ -29,15 +25,10 @@ export default function MenuPage() {
         <div className="grid grid-flow-row gap-4 md:grid-flow-col md:grid-cols-2">
           <MenuList />
           <div>
-            {orderId && (
-              <Cart orderId={orderId} selectedTable={selectedTable} />
-            )}
-            {!orderId && selectedTable && (
-              <SelectedTableCard
-                tableNumber={selectedTable.number}
-                unsetTable={() => setSelectedTable(null)}
-              />
-            )}
+            <Cart />
+            {/* {selectedTable && (
+              <SelectedTableCard tableNumber={selectedTable.number} />
+            )} */}
           </div>
         </div>
       </div>

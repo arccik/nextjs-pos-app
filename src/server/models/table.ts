@@ -116,16 +116,15 @@ export const unsetSelectedTable = async ({
 };
 
 export const getSelectedTable = async (userId: string) => {
-  const result = await db.query.tables.findFirst({
-    where: eq(tables.selectedBy, userId),
-  });
-  return result !== undefined ? result : null;
+  return await db.select().from(tables).where(eq(tables.selectedBy, userId));
+  // return await db.query.tables.findFirst({
+  //   where: eq(tables.selectedBy, userId),
+  // });
 };
 
-export const unselectTable = async (tableId: string) => {
+export const unselectTable = async (userId: string) => {
   return await db
     .update(tables)
     .set({ selectedBy: null })
-    .where(eq(tables.id, tableId))
-    .returning();
+    .where(eq(tables.selectedBy, userId));
 };

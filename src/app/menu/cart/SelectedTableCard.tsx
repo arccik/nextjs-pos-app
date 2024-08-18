@@ -13,14 +13,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { api } from "@/trpc/react";
 import { Trash2Icon } from "lucide-react";
 
 type Props = {
   tableNumber: number;
-  unsetTable: () => void;
 };
 
-export default function SelectedTableCard({ tableNumber, unsetTable }: Props) {
+export default function SelectedTableCard({ tableNumber }: Props) {
+  const { mutate: unselectTable } = api.table.unselectTable.useMutation();
   return (
     <AlertDialog>
       <Card>
@@ -44,7 +45,9 @@ export default function SelectedTableCard({ tableNumber, unsetTable }: Props) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={unsetTable}>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={() => unselectTable()}>
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

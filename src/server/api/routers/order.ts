@@ -28,6 +28,8 @@ import {
   getOneByBillId,
   setOrderStatus,
   removeSpecialRequest,
+  getSelectedByUser,
+  unselectOrder,
 } from "@/server/models/order";
 
 export const orderRouter = createTRPCRouter({
@@ -133,5 +135,13 @@ export const orderRouter = createTRPCRouter({
     .input(z.object({ orderId: z.string(), status: z.enum(orderStatus) }))
     .mutation(async ({ input }) => {
       return await setOrderStatus(input);
+    }),
+  getSelectedByUser: protectedProcedure.query(async ({ ctx }) => {
+    return await getSelectedByUser(ctx.session.user.id);
+  }),
+  unselectOrder: protectedProcedure
+    .input(z.object({ orderId: z.string() }))
+    .mutation(async ({ input }) => {
+      return await unselectOrder(input.orderId);
     }),
 });

@@ -29,8 +29,13 @@ export const orders = sqliteTable("orders", {
     .$defaultFn(() => uuid()),
   userId: text("userId", { length: 255 })
     .notNull()
-    .references(() => users.id),
-  tableId: text("table_id").references(() => tables.id),
+    .references(() => users.id, { onDelete: "set null" }),
+  selectedBy: text("selected_by", { length: 255 }).references(() => users.id, {
+    onDelete: "set null",
+  }),
+  tableId: text("table_id").references(() => tables.id, {
+    onDelete: "set null",
+  }),
   isPaid: integer("is_paid", { mode: "boolean" }).default(false).notNull(),
   status: text("order_status", { enum: orderStatus })
     .default("Pending")
@@ -50,10 +55,10 @@ export const orderItems = sqliteTable(
   {
     orderId: text("order_id")
       .notNull()
-      .references(() => orders.id),
+      .references(() => orders.id, { onDelete: "cascade" }),
     itemId: text("item_id")
       .notNull()
-      .references(() => items.id),
+      .references(() => items.id, { onDelete: "cascade" }),
     quantity: integer("quantity").notNull().default(1),
   },
   (t) => ({
@@ -67,8 +72,8 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
     references: [tables.id],
   }),
   user: one(users, {
-    fields: [orders.userId],
-    references: [users.id],
+    fields: [orders.userId, orders.selectedBy],
+    references: [users.id, users.id],
   }),
   bill: one(bills, {
     fields: [orders.billId],

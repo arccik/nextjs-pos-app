@@ -71,6 +71,48 @@
       "when": 1723874990825,
       "tag": "0009_black_doctor_spectrum",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1723961917834,
+      "tag": "0010_naive_millenium_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1723985573747,
+      "tag": "0011_purple_blindfold",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1723986190679,
+      "tag": "0012_loving_northstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1723986408782,
+      "tag": "0013_square_pandemic",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1723986542375,
+      "tag": "0014_absurd_master_mold",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1723986622478,
+      "tag": "0015_lean_callisto",
+      "breakpoints": true
     }
   ]
 }

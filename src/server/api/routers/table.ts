@@ -32,17 +32,15 @@ export const tableRouter = createTRPCRouter({
     .input(z.string())
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
-      console.log("Set TABLE ::: ", { user: ctx.session.user.id, input });
       return await setSelectedTable({ id: input, userId });
     }),
   getSelectedTable: protectedProcedure.query(async ({ ctx }) => {
-    return await getSelectedTable(ctx.session.user.id);
+    const [result] = await getSelectedTable(ctx.session.user.id);
+    return result;
   }),
-  unselectTable: protectedProcedure
-    .input(z.object({ tableId: z.string() }))
-    .mutation(async ({ input }) => {
-      return await unselectTable(input.tableId);
-    }),
+  unselectTable: protectedProcedure.mutation(async ({ ctx }) => {
+    return await unselectTable(ctx.session.user.id);
+  }),
   getAllByStatus: protectedProcedure
     .input(z.enum(tableStatusEnum))
     .query(async ({ input }) => await getAllByStatus(input)),

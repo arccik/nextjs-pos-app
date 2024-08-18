@@ -1,9 +1,7 @@
 "use client";
 import { Order } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
-import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
-import useLocalStorage from "./useLocalStorage";
 
 type AddToOrderProps = {
   itemId: string;
@@ -11,12 +9,15 @@ type AddToOrderProps = {
   id?: string;
 };
 
-export default function useOrder(id?: string) {
-  const [orderId, setOrderId] = useLocalStorage("orderId", id);
+export default function useOrder() {
+  const { data: order, refetch: refetchOrder } =
+    api.order.getSelectedByUser.useQuery();
+  const { data: table, refetch: refetchTable } =
+    api.table.getSelectedTable.useQuery();
   const utils = api.useUtils();
+
   const addItem = api.order.addItems.useMutation({
-    onSuccess: (data) => {
-      setOrderId(data?.id);
+    onSuccess: () => {
       utils.order.invalidate();
 
       toast({
@@ -36,7 +37,6 @@ export default function useOrder(id?: string) {
   });
   const deleteOrder = api.order.deleteOne.useMutation({
     onSuccess: () => {
-      setOrderId(undefined);
       toast({
         title: "Order deleted",
         description: "Your order has been deleted successfully",
@@ -63,12 +63,29 @@ export default function useOrder(id?: string) {
     },
   });
 
+  const unselect = api.table.unselectTable.useMutation({
+    onSuccess: () => {
+      toast({ title: "Table Unselected" });
+
+      utils.order.invalidate();
+      utils.table.invalidate();
+    },
+    onError: (err) => {
+      console.log("ERROR:UNSELECTING ", err);
+    },
+  });
+  const setSelectedTable = api.table.setSelectedTable.useMutation({
+    onSuccess: () => {
+      toast({ title: "Table Selected" });
+      refetchOrder();
+      refetchTable();
+      utils.order.invalidate();
+      utils.table.invalidate();
+    },
+  });
+
   const add = ({ itemId, quantity, id }: AddToOrderProps) => {
-    // toast({
-    //   title: "Order creating...",
-    //   description: "Your order has been created successfully",
-    // });
-    const isOrderExist = id || orderId;
+    const isOrderExist = id || order?.id;
     console.log("IS EXIST : ", { isOrderExist });
     addItem.mutate({ itemId, orderId: id, quantity });
     // if (isOrderExist) {
@@ -107,8 +124,34 @@ export default function useOrder(id?: string) {
     updateOrder.mutate({ id, body });
   };
 
+  const selectTable = (tableId: string) => {
+    console.log("Aaaa ");
+    setSelectedTable.mutate(tableId);
+    if (order?.id) {
+      updateOrder.mutate({
+        id: order.id,
+        body: { tableId, userId: order?.userId },
+      });
+    }
+  };
+
+  const unselectTable = () => {
+    unselect.mutate();
+    if (order?.id) {
+      updateOrder.mutate({
+        id: order.id,
+        body: { tableId: null, userId: order?.userId },
+      });
+      utils.order.invalidate();
+    }
+  };
+
   const isLoading = addItem.isPending || addItemToOrder.isPending;
   return {
+    selectedOrder: order,
+    selectedTable: table,
+    selectTable,
+    unselectTable,
     add,
     update,
     deleteOne,

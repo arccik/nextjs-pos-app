@@ -112,6 +112,7 @@ export const getAll = async () => {
   });
 };
 type Unpromisify<T> = T extends Promise<infer U> ? U : T;
+
 export type OrderWithItems = Unpromisify<
   ReturnType<typeof getOrdersWithItems>
 >[0];
@@ -202,7 +203,7 @@ export const addItem = async (data: {
 }) => {
   // Find the existing order or create a new one
   const order = await findOrCreateOrder(data.userId, data.orderId);
-  if (!order) throw new Error("Issue with the order");
+  if (!order) throw new Error("Issue findOrCreateOrder");
   // Check if the item already exists in the order
   const existingItem =
     "orderItems" in order &&
@@ -237,27 +238,39 @@ async function findOrCreateOrder(
   orderId?: string | null,
 ): Promise<OrderWithItems | { id: string } | undefined> {
   console.log("findOrCreateOrder triggered!!!", { userId, orderId });
+  const selectedOrder = await getSelectedByUser(userId);
+  if (selectedOrder) return selectedOrder;
   if (!orderId) {
     const [newOrder] = await db
       .insert(orders)
-      .values({ status: "Pending", userId })
+      .values({ status: "Pending", userId, selectedBy: userId })
       .returning({ id: orders.id });
-    if (!newOrder?.id) throw new Error("Order ID is missing");
-    const bill = await db.insert(bills).values({
+    if (!newOrder?.id) throw new Error("Issue creating new order.");
+    await db.insert(bills).values({
       totalAmount: 0,
       orderId: newOrder.id,
       userId,
     });
     return newOrder;
   } else {
-    const existingOrder = await db.query.orders.findFirst({
-      where: eq(orders.id, orderId),
-      with: { orderItems: true },
-    });
+    // combined findFirst and update. Once order updated it will be returned; if not found - undefined will be returned
+    const [existingOrder] = await db
+      .update(orders)
+      .set({ selectedBy: userId })
+      .where(eq(orders.id, orderId))
+      .returning();
+    // const existingOrder = await db.query.orders.findFirst({
+    //   where: eq(orders.id, orderId),
+    //   with: { orderItems: true },
+    // });
     console.log("Triggered Else block", { existingOrder });
     if (!existingOrder) {
       throw new Error("Order not found");
     }
+    // const [res] = await db
+    //   .update(orders)
+    //   .set({ selectedBy: userId })
+    //   .where(eq(orders.id, orderId)).returning();
     return existingOrder;
   }
 }
@@ -534,4 +547,38 @@ export const removeSpecialRequest = async (orderId: string) => {
     .set({ specialRequest: null })
     .where(eq(orders.id, orderId));
   return result;
-}
+};
+
+export type OrderItemsBill = Unpromisify<ReturnType<typeof getSelectedByUser>>;
+
+export const getSelectedByUser = async (userId: string) => {
+  return await db.query.orders.findFirst({
+    where: and(eq(orders.selectedBy, userId)),
+    with: {
+      table: true,
+      bill: true,
+      orderItems: {
+        columns: {
+          orderId: false,
+        },
+        with: {
+          items: {
+            columns: {
+              price: true,
+              name: true,
+              imageUrl: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+export const unselectOrder = async (orderId: string) => {
+  const result = await db
+    .update(orders)
+    .set({ selectedBy: null })
+    .where(eq(orders.id, orderId));
+  return result;
+};

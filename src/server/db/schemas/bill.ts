@@ -35,7 +35,7 @@ export const bills = sqliteTable(
       .notNull(),
     orderId: text("order_id")
       .notNull()
-      .references(() => orders.id),
+      .references(() => orders.id, { onDelete: "cascade" }),
   },
   (t) => ({ unq: unique().on(t.userId, t.orderId) }),
 );

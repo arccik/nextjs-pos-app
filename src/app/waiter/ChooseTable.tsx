@@ -1,15 +1,13 @@
 "use client";
 
-import type { Table, TableStatus } from "@/server/db/schemas/table";
+import type { TableStatus } from "@/server/db/schemas/table";
 import { Button } from "@/components/ui/button";
 import { BrushIcon, Check, XIcon } from "lucide-react";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import { cn } from "@/lib/utils";
-import { toast } from "@/components/ui/use-toast";
-
-import useLocalStorage from "@/hooks/useLocalStorage";
+import useOrder from "@/hooks/useOrder";
 
 type ChooseTableProps = {
   close: () => void;
@@ -22,47 +20,22 @@ export type SelectedTable = {
 
 export default function ChooseTable({ close }: ChooseTableProps) {
   const router = useRouter();
-  const [openTable, setOpenTable] = useLocalStorage<SelectedTable>(
-    "table",
-    null,
-  );
+
+  const { selectedOrder, unselectTable, selectTable } = useOrder();
   const {
     data: tables,
     isLoading: isTablesLoading,
     refetch: refetchTables,
   } = api.table.getAll.useQuery();
 
-  const { data: selectedTable, refetch: refetchSelectedTable } =
-    api.table.getSelectedTable.useQuery();
-
-  const select = api.table.setSelectedTable.useMutation({
-    onSuccess: () => {
-      toast({ title: `Table Selected` });
-      refetchSelectedTable();
-      refetchTables();
-      router.push("/menu");
-    },
-  });
-
-  const unselect = api.table.unselectTable.useMutation({
-    onSuccess: () => {
-      toast({ title: "Table Unselected" });
-      refetchSelectedTable();
-      refetchTables();
-      router.refresh();
-    },
-  });
-
-  const handleTableSelect = (table: SelectedTable) => {
-    // select.mutate(tableId);
-    setOpenTable(table);
+  const handleTableSelect = (tableId: string) => {
+    selectTable(tableId);
     router.push("/menu");
     close();
   };
 
-  const handleTableDiselect = (tableId?: string) => {
-    // unselect.mutate({ tableId });
-    setOpenTable(null);
+  const handleTableDiselect = () => {
+    unselectTable();
     // close();
   };
 
@@ -73,13 +46,12 @@ export default function ChooseTable({ close }: ChooseTableProps) {
     reserved: "🔒",
   };
 
-  if (openTable?.id) {
+  if (selectedOrder?.table) {
     return (
       <div className="flex items-center justify-center gap-4">
-        <p>You Have selected table number {openTable.number}</p>
+        <p>You Have selected table number {selectedOrder?.table.number}</p>
         <Button size="icon" onClick={() => handleTableDiselect()}>
           <XIcon />
-          {unselect.isPending && <Loading />}
         </Button>
       </div>
     );
@@ -93,9 +65,7 @@ export default function ChooseTable({ close }: ChooseTableProps) {
           <Button
             variant="outline"
             disabled={table.status !== "available" || !!table.selectedBy}
-            onClick={() =>
-              handleTableSelect({ id: table.id, number: table.number })
-            }
+            onClick={() => handleTableSelect(table.id)}
             key={table.id}
             className={cn(
               "grid size-32 cursor-pointer place-content-center gap-2 rounded-xl border-2 p-2",

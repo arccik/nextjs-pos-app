@@ -2,28 +2,22 @@
 import { Button } from "@/components/ui/button";
 
 import { type Item } from "@/server/db/schemas/item";
-import { api } from "@/trpc/react";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import QuantityButtons from "./QuantityButtons";
 import useOrder from "@/hooks/useOrder";
-import useLocalStorage from "@/hooks/useLocalStorage";
 
 type AddItemToOrderButtonProps = {
   item: Item;
+  orderId?: string;
 };
 
 export default function AddItemToOrderButton({
   item,
+  orderId,
 }: AddItemToOrderButtonProps) {
-  const utils = api.useUtils();
-
   const [quantity, setQuantity] = useState(1);
   const { add } = useOrder();
-  const [orderId, _] = useLocalStorage<string | undefined>(
-    "orderId",
-    undefined,
-  );
 
   console.log("Use Local Storage Data", orderId);
 
@@ -34,7 +28,7 @@ export default function AddItemToOrderButton({
     itemId: string;
     quantity: number;
   }) => {
-    add({ itemId, quantity, id: orderId ?? undefined });
+    add({ itemId, quantity, id: orderId });
   };
 
   return (
