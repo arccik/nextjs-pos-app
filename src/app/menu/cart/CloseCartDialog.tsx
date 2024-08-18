@@ -16,15 +16,8 @@ import useOrder from "@/hooks/useOrder";
 import { api } from "@/trpc/react";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
-// import { useStore } from "@/store";
 
-export function CloseCartDialog({
-  orderId,
-  tableId,
-}: {
-  orderId?: string;
-  tableId?: string;
-}) {
+export function CloseCartDialog({ orderId }: { orderId?: string }) {
   const router = useRouter();
   const { deleteOne } = useOrder();
   //   const { setSelectedTable, resetItems, addSpecialRequest } = useStore();
@@ -33,7 +26,6 @@ export function CloseCartDialog({
   });
 
   const handleCloseDialog = () => {
-    console.log("handleCloseDialog", { orderId, tableId });
     if (orderId) {
       deleteOne(orderId);
     }

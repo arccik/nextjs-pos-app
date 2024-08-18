@@ -1,8 +1,17 @@
+"use client";
+import useLocalStorage from "@/hooks/useLocalStorage";
 import { MenuList } from "./MenuList";
 import Cart from "./cart/Cart";
 import AddNewCategoryButton from "./category/AddNewCategoryButton";
+import { type SelectedTable } from "../waiter/ChooseTable";
+import SelectedTableCard from "./cart/SelectedTableCard";
 
-export default async function MenuPage() {
+export default function MenuPage() {
+  const [orderId] = useLocalStorage<string | undefined>("orderId", undefined);
+  const [selectedTable, setSelectedTable] = useLocalStorage<SelectedTable>(
+    "table",
+    null,
+  );
   return (
     <section className="grid w-full grid-flow-row py-12 ">
       <div className="grid gap-8 px-4 md:container md:px-6">
@@ -18,11 +27,17 @@ export default async function MenuPage() {
           </div>
         </div>
         <div className="grid grid-flow-row gap-4 md:grid-flow-col md:grid-cols-2">
+          <MenuList />
           <div>
-            <MenuList />
-          </div>
-          <div>
-            <Cart />
+            {orderId && (
+              <Cart orderId={orderId} selectedTable={selectedTable} />
+            )}
+            {!orderId && selectedTable && (
+              <SelectedTableCard
+                tableNumber={selectedTable.number}
+                unsetTable={() => setSelectedTable(null)}
+              />
+            )}
           </div>
         </div>
       </div>

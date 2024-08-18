@@ -15,12 +15,17 @@ type ChooseTableProps = {
   close: () => void;
 };
 
+export type SelectedTable = {
+  id: string;
+  number: number;
+} | null;
+
 export default function ChooseTable({ close }: ChooseTableProps) {
   const router = useRouter();
-  const [openTable, setOpenTable] = useLocalStorage<{
-    id: string;
-    number: number;
-  } | null>("table");
+  const [openTable, setOpenTable] = useLocalStorage<SelectedTable>(
+    "table",
+    null,
+  );
   const {
     data: tables,
     isLoading: isTablesLoading,
@@ -48,16 +53,16 @@ export default function ChooseTable({ close }: ChooseTableProps) {
     },
   });
 
-  const handleTableSelect = (table: { id: string; number: number }) => {
+  const handleTableSelect = (table: SelectedTable) => {
     // select.mutate(tableId);
-    setOpenTable({ table });
+    setOpenTable(table);
     router.push("/menu");
     close();
   };
 
   const handleTableDiselect = (tableId?: string) => {
     // unselect.mutate({ tableId });
-    setOpenTable({ table: null });
+    setOpenTable(null);
     // close();
   };
 

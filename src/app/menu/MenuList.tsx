@@ -1,3 +1,4 @@
+"use client";
 import {
   Accordion,
   AccordionContent,
@@ -7,17 +8,23 @@ import {
 
 import MenuItem from "./MenuItem";
 
-import { api } from "@/trpc/server";
+import { api } from "@/trpc/react";
 import DeleteCategory from "./category/DeleteCategory";
+import Loading from "@/components/Loading";
 
-export async function MenuList() {
-  const categories = await api.category.getAll();
-  const items = await api.item.getAll();
+export function MenuList() {
+  // const categories = await api.category.getAll();
+  // const items = await api.item.getAll();
+  const { data: categories, isLoading: isCategoryLoading } =
+    api.category.getAll.useQuery();
+  const { data: items, isLoading: isItemsLoading } = api.item.getAll.useQuery();
 
   const getByCategory = (categoryId: string) => {
     if (!items) return;
     return items.filter((item) => item.categoryId == categoryId);
   };
+
+  if (isCategoryLoading || isItemsLoading) return <Loading />;
 
   return (
     <Accordion type="single" collapsible>

@@ -34,9 +34,7 @@ export default function AddItemToOrderButton({
     itemId: string;
     quantity: number;
   }) => {
-    const res = add({ itemId, quantity, id: orderId ?? undefined });
-    utils.order.invalidate();
-    console.log("add item to the order", { itemId, quantity, orderId, res });
+    add({ itemId, quantity, id: orderId ?? undefined });
   };
 
   return (

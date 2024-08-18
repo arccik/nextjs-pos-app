@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Card,
   CardContent,
@@ -7,80 +6,60 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+
 import { Button } from "@/components/ui/button";
 
 import { CloseCartDialog } from "./CloseCartDialog";
 import CartItems from "./CartItems";
-import SelectTable from "./SelectedTable";
 
 import TableIcon from "@/components/navbar/TableIcon";
 import { ClockIcon, Edit2, Utensils } from "lucide-react";
 import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
 import { api } from "@/trpc/react";
+import SelectTable from "@/app/waiter/SelectTable";
+import { type SelectedTable } from "@/app/waiter/ChooseTable";
+import Loading from "@/components/Loading";
 import useLocalStorage from "@/hooks/useLocalStorage";
 
-export default function Cart() {
-  const [orderId] = useLocalStorage<string | undefined>("orderId", undefined);
-  const [selectedTable, setSelectedTable] = useLocalStorage<string | undefined>(
-    "table",
-    undefined,
-  );
+type CartProps = {
+  orderId: string;
+  selectedTable?: SelectedTable;
+};
 
-  const { data } = api.order.getOrderWithItems.useQuery(
+export default function Cart({ orderId, selectedTable }: CartProps) {
+  const [__, setTable] = useLocalStorage("table", null);
+  const [_, setOrder] = useLocalStorage("orderId", null);
+  const { data, isLoading, refetch } = api.order.getOrderWithItems.useQuery(
     { id: orderId! },
     { enabled: !!orderId },
   );
+  const update = api.order.updateOrder.useMutation({
+    onSuccess: (res) => {
+      console.log("SUCCESS !!! ", res);
+      setTable(null);
+      setOrder(null);
+      refetch();
+    },
+    onError: (err) => {
+      console.log("ERROR !!! ", err);
+    },
+  });
   const items = data?.orderItems;
-  console.log("CARD << ACTIVE ORDER : ", data);
 
-  const specialRequest = "TEST - special request: jaica";
+  const handleSubmitOrder = () => {
+    console.log("submitting order", data);
+    update.mutate({
+      id: orderId,
+      body: {
+        tableId: selectedTable?.id,
+        userId: data?.userId!,
+        status: "In Progress",
+      },
+    });
+  };
 
+  if (isLoading) return <Loading />;
   if (!orderId) return null;
-
-  //   if (selectedTable && !items.length) {
-  //     return (
-  //       <AlertDialog>
-  //         <Card>
-  //           <CardContent className=" mt-auto flex items-center gap-2 border-none text-base">
-  //             <TableIcon className="size-8 dark:text-gray-400" />
-  //             <CardTitle className="mt-auto text-base">{`Table  ${selectedTable.number || selectedTable.tableId} selected `}</CardTitle>
-  //             <AlertDialogTrigger asChild>
-  //               <Button className="ml-auto bg-red-500" size="icon">
-  //                 <Trash2Icon className="size-4" />
-  //               </Button>
-  //             </AlertDialogTrigger>
-  //           </CardContent>
-  //         </Card>
-
-  //         <AlertDialogContent>
-  //           <AlertDialogHeader>
-  //             <AlertDialogTitle>Confirm table removal?</AlertDialogTitle>
-  //             <AlertDialogDescription>
-  //               This action cannot be undone.
-  //             </AlertDialogDescription>
-  //           </AlertDialogHeader>
-  //           <AlertDialogFooter>
-  //             <AlertDialogCancel>Cancel</AlertDialogCancel>
-  //             <AlertDialogAction onClick={() => setSelectedTable(null)}>
-  //               Continue
-  //             </AlertDialogAction>
-  //           </AlertDialogFooter>
-  //         </AlertDialogContent>
-  //       </AlertDialog>
-  //     );
-  //   }
-
   return (
     <Card>
       <CardHeader>
@@ -94,24 +73,22 @@ export default function Cart() {
         />
       </CardHeader>
       <CardContent className="grid gap-4">
-        {!selectedTable && (
+        {selectedTable ? (
           <div className="flex items-center gap-4">
             <ClockIcon className="h-6 w-6" />
             <div className="grid gap-1 text-sm">
               <div className="flex items-center gap-2">
-                <p className="font-semibold">Table #{selectedTable}</p>
+                <p className="font-semibold">Table #{selectedTable.number}</p>
                 <SelectTable buttonTrigger={<Edit2 size="1rem" />} />
               </div>
-              {specialRequest && (
+              {true && (
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Special requests: {specialRequest}
+                  Special requests: {true}
                 </p>
               )}
             </div>
           </div>
-        )}
-
-        {!selectedTable && (
+        ) : (
           <SelectTable
             buttonTrigger={
               <Button
@@ -128,11 +105,10 @@ export default function Cart() {
         {items && <CartItems items={items} />}
       </CardContent>
       <CardFooter className="flex flex-col justify-center gap-4 p-4">
-        {/* <AddSpecialRequest orderId={activeOrder} /> */}
         <div className="flex w-full gap-5">
-          <CloseCartDialog orderId={orderId} tableId={selectedTable} />
+          <CloseCartDialog orderId={orderId} />
           <Button
-            // onClick={handleSubmitOrder}
+            onClick={handleSubmitOrder}
             // disabled={saveOrder.isPending || addMoreItemsToOrder.isPending}
             className="w-full"
           >

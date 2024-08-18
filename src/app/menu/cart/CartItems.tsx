@@ -1,3 +1,4 @@
+"use client";
 import {
   TableHead,
   TableRow,
@@ -7,10 +8,10 @@ import {
   Table,
   TableFooter,
 } from "@/components/ui/table";
-import type { Item } from "@/server/db/schemas/item";
 
 import { formatCurrency } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { useMemo } from "react";
 
 type CartItemsProps = {
   items: { quantity: number; id: string; name: string; price: number }[];
@@ -19,24 +20,13 @@ export default function CartItems({ items }: CartItemsProps) {
   const { data: settings } = api.settings.get.useQuery();
 
   const serviceFee = settings?.serviceFee;
-  const total = items.reduce<number>((total, item) => {
-    return (total += Number(item.price) * item.quantity);
-  }, 0);
-
-  // orderWithItems?.orderItems.reduce<number>((total, item) => {
-  //     return (total += Number(item.price));
-  //   }, 0) + serviceFee;
-
-  // type ItemWithQuantity = Item & { quantity: number };
-  // const combinedItems = items.reduce((acc, item) => {
-  //   const existing = acc.find((i) => i.id === item.id);
-  //   if (existing) {
-  //     existing.quantity += 1;
-  //   } else {
-  //     acc.push({ ...item, quantity: 1 });
-  //   }
-  //   return acc;
-  // }, [] as ItemWithQuantity[]);
+  const total = useMemo(
+    () =>
+      items.reduce<number>((total, item) => {
+        return (total += Number(item.price) * item.quantity);
+      }, 0),
+    [items],
+  );
 
   return (
     <Table className="mb-5">

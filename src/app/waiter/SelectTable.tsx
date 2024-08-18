@@ -17,7 +17,7 @@ type NewCustomerProps = {
   buttonTrigger?: React.ReactNode;
 };
 
-export default function NewCustomer({ buttonTrigger }: NewCustomerProps) {
+export default function SelectTable({ buttonTrigger }: NewCustomerProps) {
   const [show, setShow] = useState(false);
 
   return (
@@ -27,8 +27,8 @@ export default function NewCustomer({ buttonTrigger }: NewCustomerProps) {
       </DialogTrigger>
       <DialogContent className="overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>New Customer</DialogTitle>
-          <DialogDescription>Choose Table</DialogDescription>
+          <DialogTitle>Select table</DialogTitle>
+          <DialogDescription>Choose available table</DialogDescription>
         </DialogHeader>
         <ChooseTable close={() => setShow(false)} />
       </DialogContent>

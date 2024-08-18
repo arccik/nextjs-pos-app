@@ -12,7 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Edit, Trash } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
