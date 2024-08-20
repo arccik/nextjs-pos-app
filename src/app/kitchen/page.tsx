@@ -1,18 +1,16 @@
+"use client";
 import { Card } from "@/components/ui/card";
-// import { useQuery } from "@tanstack/react-query";
-// import { getOrderItems } from "@/api/orders";
-// import Loading from "@/components/layout/Loading";
-// import Error from "@/components/layout/Error";
-// import { columns } from "./columns";
-// import { DataTable } from "@/components/Data-table";
 
 import KitchenOrderDisplay from "./KitchenOrderDisplay";
 import { db } from "@/server/db";
 import { items, orderItems, orders, tables, users } from "@/server/db/schemas";
 import { getTableColumns, eq } from "drizzle-orm";
-import { api } from "@/trpc/server";
+import { api } from "@/trpc/react";
+import { DataTable } from "@/components/DataTable";
+import { columns } from "./columns";
+import Loading from "@/components/Loading";
 
-export default async function KitchenPage() {
+export default function KitchenPage() {
   //   const { data, isLoading, isError } = useQuery({
   //     queryKey: ["orders"],
   //     queryFn: getOrderItems,
@@ -32,15 +30,14 @@ export default async function KitchenPage() {
   //   .leftJoin(items, eq(orderItems.itemId, items.id))
   //   .leftJoin(users, eq(orders.userId, users.id))
   //   .leftJoin(tables, eq(orders.tableId, tables.id));
-  const data = await api.order.getAll("Pending");
+  const { data, isLoading } = api.order.getAll.useQuery("Pending");
   console.log("Must be server compoonenntS:: >>> >> .> .> >>>>> ..>> ", data);
   return (
     <main className="sm:p-2">
       <Card className="p-5">
         <h1 className="text-4xl font-bold">Kitchen</h1>
         <p className="mt-2 text-gray-400">This is the kitchen page.</p>
-        {/* {isLoading && <Loading />}
-        {isError && <Error message="Fail to fetch Penging orders" />} */}
+        {isLoading && <Loading />}
         {/* {data && (
           <DataTable data={data} columns={columns} searchField="orderId" />
         )} */}
@@ -49,8 +46,9 @@ export default async function KitchenPage() {
             No orders to display
           </p>
         ) : (
-          // <KitchenOrderDisplay data={data} />
-          <pre>{JSON.stringify(data, undefined, 2)}</pre>
+          <KitchenOrderDisplay data={data} />
+          // <p>gello</p>
+          // <pre>{JSON.stringify(data, undefined, 2)}</pre>
         )}
       </Card>
     </main>

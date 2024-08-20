@@ -104,11 +104,35 @@ export const getAllByStatus = async (status: OrderStatus[number]) => {
   });
 };
 
-export const getAll = async () => {
+export type MainOrder = Unpromisify<ReturnType<typeof getAll>>[0];
+
+export const getAll = async (status?: OrderStatus[number]) => {
   // const options: Record<string, SQL<unknown>> = {};
+  // where: eq(orders.status, status),
 
   return await db.query.orders.findMany({
-    with: { user: true, bill: true, orderItems: { with: { items: true } } },
+    where: status ? eq(orders.status, status) : undefined,
+    orderBy: (orders, { asc }) => [asc(orders.createdAt)],
+
+    with: {
+      user: true,
+      bill: true,
+      table: true,
+      orderItems: {
+        columns: {
+          orderId: false,
+        },
+        with: {
+          items: {
+            columns: {
+              price: true,
+              name: true,
+              imageUrl: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 type Unpromisify<T> = T extends Promise<infer U> ? U : T;
@@ -120,8 +144,9 @@ export type OrderWithItems = Unpromisify<
 export const getOrdersWithItems = async (status?: OrderStatus[number]) => {
   const result = await db.query.orders.findMany({
     where: status ? eq(orders.status, status) : undefined,
-    orderBy: (orders, { asc }) => [asc(orders.id)],
+    orderBy: (orders, { asc }) => [asc(orders.createdAt)],
     with: {
+      table: true,
       bill: true,
       orderItems: {
         columns: {
@@ -552,7 +577,7 @@ export const removeSpecialRequest = async (orderId: string) => {
 export type OrderItemsBill = Unpromisify<ReturnType<typeof getSelectedByUser>>;
 
 export const getSelectedByUser = async (userId: string) => {
-  return await db.query.orders.findFirst({
+  const result = await db.query.orders.findFirst({
     where: and(eq(orders.selectedBy, userId)),
     with: {
       table: true,
@@ -573,6 +598,7 @@ export const getSelectedByUser = async (userId: string) => {
       },
     },
   });
+  return result || null;
 };
 
 export const unselectOrder = async (orderId: string) => {

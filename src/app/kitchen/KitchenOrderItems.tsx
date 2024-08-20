@@ -1,6 +1,8 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { OrderItem } from "@/server/db/schemas";
+import { OrderWithItems } from "@/server/models/order";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { useState } from "react";
 
@@ -11,7 +13,7 @@ type Item = {
 };
 
 type KitchenOrderItemsProps = {
-  items: Item[];
+  items: OrderWithItems["orderItems"];
   orderId: string;
 };
 export default function KitchenOrderItems({ items }: KitchenOrderItemsProps) {
@@ -29,18 +31,19 @@ export default function KitchenOrderItems({ items }: KitchenOrderItemsProps) {
     <ul>
       {items.map((item) => (
         <li
-          key={item.name}
+          key={item.itemId}
           className={cn(
             "flex items-center justify-between p-2",
-            checked?.includes(item.id) && "rounded-md backdrop-brightness-95",
+            checked?.includes(item.itemId) &&
+              "rounded-md backdrop-brightness-95",
           )}
         >
-          <span>{item.name}</span>
+          <span>{item.items.name}</span>
           <div className="flex items-center  gap-4 p-2">
             <span className="text-gray-500">x{item.quantity}</span>
             <Checkbox
               className="size-10 accent-emerald-50"
-              onCheckedChange={(checked) => handleChecked(checked, item.id)}
+              onCheckedChange={(checked) => handleChecked(checked, item.itemId)}
             />
           </div>
         </li>

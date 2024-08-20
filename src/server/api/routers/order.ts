@@ -47,8 +47,8 @@ export const orderRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(z.enum(orderStatus).optional())
     .query(async ({ input }) => {
-      if (input) return await getAllByStatus(input);
-      return await getAll();
+      // if (input) return await getAllByStatus(input);
+      return await getAll(input);
     }),
   getOrderWithItems: protectedProcedure
     .input(z.object({ id: z.string() }))

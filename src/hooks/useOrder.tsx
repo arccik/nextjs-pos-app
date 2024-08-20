@@ -41,7 +41,8 @@ export default function useOrder() {
         title: "Order deleted",
         description: "Your order has been deleted successfully",
       });
-      utils.order.invalidate();
+      // utils.order.invalidate();
+      refetchOrder();
     },
   });
   const removeItemFromOrder = api.order.removeItemFromOrder.useMutation({

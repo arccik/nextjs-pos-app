@@ -7,33 +7,28 @@ import {
   Card,
 } from "@/components/ui/card";
 
-import { type OrderWithItems } from "@/server/models/order";
+import { MainOrder, type OrderWithItems } from "@/server/models/order";
 
 import DisplayOrderItems from "./DisplayOrderItems";
 import CountDownOpenOrder from "./CountDownOpenOrder";
-import {
-  countTotal,
-  formatCurrency,
-  formatId,
-  summarizePrice,
-} from "@/lib/utils";
+import { countTotal, formatCurrency, formatId } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
 // import ActionButtons from "@/components/ActionButtons";
 import { HandPlatter } from "lucide-react";
 import TableIcon from "@/components/navbar/TableIcon";
-// import { useVenueSettings } from "@/hooks/useVenueSettings";
 import Link from "next/link";
 import { useState } from "react";
+import ActionButtons from "@/components/ActionButtons";
 
 type OrderCardProps = {
-  order: OrderWithItems;
+  order: MainOrder;
 };
 
 export default function OrderCard({ order }: OrderCardProps) {
   const [showDetails, setShowDetails] = useState(false);
-
-  const tableNumber = order.tableId;
+  console.log("AAAAA  << << << < < < << ", order);
+  const tableNumber = order.table?.number;
   const serviceFee = order.bill?.serviceFee;
   const total = countTotal(order.bill);
   return (
@@ -110,21 +105,16 @@ export default function OrderCard({ order }: OrderCardProps) {
               <div className="text-right">{formatCurrency(serviceFee)}</div>
             </div>
           )}
-
-          <div className="flex items-center justify-between">
-            <div>Total</div>
-            <div>{formatCurrency(total)}</div>
-          </div>
         </CardContent>
       )}
       <CardFooter className="flex flex-col justify-center gap-4 p-4">
-        {/* <ActionButtons
+        <ActionButtons
           status={order.status}
           orderId={order.id}
           isPaid={order.isPaid}
           tableId={order.tableId}
           totalAmount={total}
-        /> */}
+        />
       </CardFooter>
     </Card>
   );

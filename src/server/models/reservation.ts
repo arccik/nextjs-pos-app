@@ -15,53 +15,28 @@ import {
 import { generateTimeSlots } from "@/lib/utils";
 
 export const getAll = async () => {
-  try {
-    return await db.select().from(reservations).execute();
-  } catch (error_1) {
-    console.error(error_1);
-    return { error: "[db:getAllReservation] Went wrong.." };
-  }
+  return await db.select().from(reservations);
 };
 
 export const getOne = async (id: string) => {
-  try {
-    return await db.select().from(reservations).where(eq(reservations.id, id));
-  } catch (error_1) {
-    console.error(error_1);
-    return { error: "[db:getOneReservation] Went wrong.." };
-  }
+  return await db.select().from(reservations).where(eq(reservations.id, id));
 };
 
 export const create = async (body: NewReservation) => {
-  try {
-    return await db
-      .insert(reservations)
-      .values(body)
-      .returning({ id: reservations.id });
-  } catch (error_1) {
-    console.error(error_1);
-    return { error: "[db:createReservation] Went wrong.." };
-  }
+  return await db
+    .insert(reservations)
+    .values(body)
+    .returning({ id: reservations.id });
 };
 export const deleteOne = async (id: string) => {
-  try {
-    return await db.delete(reservations).where(eq(reservations.id, id));
-  } catch (error_1) {
-    console.error(error_1);
-    return { error: "[db:deleteOneReservation] Went wrong.." };
-  }
+  return await db.delete(reservations).where(eq(reservations.id, id));
 };
 export const update = async (body: Reservation) => {
-  try {
-    return await db
-      .update(reservations)
-      .set(body)
-      .where(eq(reservations.id, body.id))
-      .returning({ id: reservations.id });
-  } catch (error_1) {
-    console.error(error_1);
-    return { error: "[db:updateReservation] Went wrong.." };
-  }
+  return await db
+    .update(reservations)
+    .set(body)
+    .where(eq(reservations.id, body.id))
+    .returning({ id: reservations.id });
 };
 export const timeSlots = async ({ tableId, date }: GetTimeSlot) => {
   const settings: StoreSettings[] = await db

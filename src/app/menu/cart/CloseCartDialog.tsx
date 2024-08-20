@@ -18,20 +18,12 @@ import { Cross1Icon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 export function CloseCartDialog({ orderId }: { orderId?: string }) {
-  const router = useRouter();
   const { deleteOne } = useOrder();
-  //   const { setSelectedTable, resetItems, addSpecialRequest } = useStore();
-  const unselectTable = api.table.unselectTable.useMutation({
-    onSuccess: () => toast({ title: "Table Unselected" }),
-  });
 
   const handleCloseDialog = () => {
     if (orderId) {
       deleteOne(orderId);
     }
-    // deleteOrder.mutate({ id: orderId });
-    // unselectTable.mutate({ tableId });
-    router.refresh();
   };
 
   return (

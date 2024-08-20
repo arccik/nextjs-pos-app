@@ -1,11 +1,12 @@
+"use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { type NewReservation } from "@server/src/schemas";
 import { UseFormReturn } from "react-hook-form";
 import { useState } from "react";
 import ReservationInfo from "./stages/ReservationInfo";
 import CustomerInfo from "./stages/CustomerInfo";
 import Confirmation from "./stages/Confirmation";
 import StageButtons from "./stages/StageButtons";
+import type { NewReservation } from "@/server/db/schemas";
 
 export type ReservationStepsProps = {
   form: UseFormReturn<NewReservation>;
@@ -35,7 +36,11 @@ export default function ReservationSteps({ form }: ReservationStepsProps) {
       <TabsContent value="3">
         <Confirmation form={form} />
       </TabsContent>
-      <StageButtons setSelectedTab={setSelectedTab} selectedTab={selectedTab} form={form} />
+      <StageButtons
+        setSelectedTab={setSelectedTab}
+        selectedTab={selectedTab}
+        form={form}
+      />
     </Tabs>
   );
 }

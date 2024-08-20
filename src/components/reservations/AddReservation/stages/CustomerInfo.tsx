@@ -1,3 +1,4 @@
+"use client";
 import { type ReservationStepsProps } from "../ReservationSteps";
 import { Input } from "@/components/ui/input";
 import {

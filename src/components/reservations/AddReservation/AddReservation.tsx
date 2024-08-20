@@ -1,4 +1,7 @@
 "use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -6,10 +9,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import NewResetvation from "./ReservationForm";
 import { PlusIcon } from "lucide-react";
+import NewResetvation from "./ReservationForm";
 
 export default function AddReservation() {
   const [isOpen, setIsOpen] = useState(false);

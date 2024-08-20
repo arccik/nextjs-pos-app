@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { ReservationStepsProps } from "../ReservationSteps";
 import {
@@ -33,16 +34,18 @@ import { useQuery } from "@tanstack/react-query";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { getAll } from "@/server/models/table";
 import { timeSlots } from "@/server/models/reservation";
+import { api } from "@/trpc/react";
 // import Loading from "@/components/layout/Loading";
 // import Error from "@/components/layout/Error";
 // import { useVenueSettings } from "@/hooks/useVenueSettings";
 
-export default async function ReservationInfo({ form }: ReservationStepsProps) {
+export default function ReservationInfo({ form }: ReservationStepsProps) {
   //   const { venueTables } = useVenueSettings();
-  const tables = await getAll();
+  const { data: tables } = api.table.getAll.useQuery();
+  // const tables = await getAll();
   const date = form?.getValues("scheduledAt");
   const tableId = form?.getValues("tableId");
-  const slots = await timeSlots({ date, tableId });
+  // const slots = await timeSlots({ date, tableId });
   //   const { isLoading, data, isError } = useQuery<ReservationTimeSlot[]>({
   //     queryKey: ["timeSlots"],
   //     queryFn: () =>
@@ -143,7 +146,7 @@ export default async function ReservationInfo({ form }: ReservationStepsProps) {
       />
       {/* {isError && <Error message="Fail to fetch time slots" />}
       {isLoading && <Loading />} */}
-      <FormField
+      {/* <FormField
         control={form.control}
         name="expireAt"
         render={({ field }) => (
@@ -177,7 +180,7 @@ export default async function ReservationInfo({ form }: ReservationStepsProps) {
             <FormMessage />
           </FormItem>
         )}
-      />
+      /> */}
     </div>
   );
 }

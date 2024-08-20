@@ -9,8 +9,9 @@ import type {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import { makeReady } from "@/api/orders";
 import { api } from "@/trpc/react";
+import { MainOrder, OrderWithItems } from "@/server/models/order";
 
-export const columns: ColumnDef<OrderItemsWithOrderAndItems>[] = [
+export const columns: ColumnDef<OrderWithItems>[] = [
   {
     accessorKey: "orderId",
     header: "Order ID",
@@ -22,7 +23,7 @@ export const columns: ColumnDef<OrderItemsWithOrderAndItems>[] = [
     cell: (data) => {
       const item = data.row.getValue("items") as Item;
 
-      return <div className="ml-4">{item?.name}</div>;
+      return <div className="ml-4">{item?.id}</div>;
     },
   },
   {
