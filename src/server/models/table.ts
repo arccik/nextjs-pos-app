@@ -84,6 +84,10 @@ export const setSelectedTable = async ({
   id: string;
   userId: string;
 }) => {
+  const isExist = await getSelectedTable(userId);
+  if (isExist) {
+    await unselectTable(userId);
+  }
   const result = await db
     .update(tables)
     .set({ selectedBy: userId })
