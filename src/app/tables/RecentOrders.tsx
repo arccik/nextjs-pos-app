@@ -70,7 +70,7 @@ export default function RecentOrders({ tableId }: RecentOrdersProps) {
                   {new Date(order.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>{formatCurrency(order.bill?.totalAmount)}</TableCell>
-                <TableCell>{order.user?.name}</TableCell>
+                <TableCell>{order.creator?.name}</TableCell>
               </TableRow>
             ))}
           </TableBody>

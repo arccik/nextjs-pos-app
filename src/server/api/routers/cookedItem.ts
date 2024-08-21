@@ -16,9 +16,11 @@ export const cookedItemRouter = createTRPCRouter({
     .query(async ({ input }) => {
       return await getOne(input.id);
     }),
-  getAll: protectedProcedure.query(async () => {
-    return await getAll();
-  }),
+  getAll: protectedProcedure
+    .input(z.string().optional())
+    .query(async ({ input }) => {
+      return await getAll(input);
+    }),
   update: protectedProcedure
     .input(z.object({ id: z.string(), data: newCookedItemSchema.partial() }))
     .mutation(async ({ input, ctx }) => {

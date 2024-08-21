@@ -8,8 +8,14 @@ export const getOne = async (id: string) => {
     where: eq(cookedItems.id, id),
   });
 };
-export const getAll = async () => {
-  return await db.query.cookedItems.findMany();
+export const getAll = async (orderId?: string) => {
+  if (orderId) {
+    return await db.query.cookedItems.findMany({
+      where: eq(cookedItems.orderId, orderId),
+    });
+  } else {
+    return await db.query.cookedItems.findMany();
+  }
 };
 export const update = async (id: string, body: Partial<NewCookedItem>) => {
   return await db

@@ -75,5 +75,4 @@ export type TableStatus = (typeof tableStatusEnum)[number];
 export type TableWithReservation = Table & {
   reservations?: Reservation[];
   selectedBy?: string | null;
-  selector: User | null;
 };

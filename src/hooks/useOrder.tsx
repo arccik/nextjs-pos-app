@@ -2,6 +2,8 @@
 import { Order } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
+import { useEffect, useState } from "react";
+import { OrderItemsBill } from "@/server/models/order";
 
 type AddToOrderProps = {
   itemId: string;
@@ -10,11 +12,18 @@ type AddToOrderProps = {
 };
 
 export default function useOrder() {
-  const { data: order, refetch: refetchOrder } =
+  const [order, setOrder] = useState<OrderItemsBill | null>(null);
+  const { data: selectedOrder, refetch: refetchOrder } =
     api.order.getSelectedByUser.useQuery();
   const { data: table, refetch: refetchTable } =
     api.table.getSelectedTable.useQuery();
   const utils = api.useUtils();
+
+  useEffect(() => {
+    if (selectedOrder) {
+      setOrder(selectedOrder);
+    }
+  }, [selectedOrder]);
 
   const addItem = api.order.addItems.useMutation({
     onSuccess: () => {
@@ -60,6 +69,7 @@ export default function useOrder() {
         title: "Order updated",
         description: "Your order has been updated successfully",
       });
+
       utils.order.invalidate();
       utils.table.invalidate();
     },
@@ -69,8 +79,6 @@ export default function useOrder() {
     onSuccess: () => {
       toast({ title: "Table Unselected" });
 
-      refetchOrder();
-      refetchTable();
       utils.order.invalidate();
       utils.table.invalidate();
     },
@@ -81,8 +89,7 @@ export default function useOrder() {
   const setSelectedTable = api.table.setSelectedTable.useMutation({
     onSuccess: () => {
       toast({ title: "Table Selected" });
-      refetchOrder();
-      refetchTable();
+
       utils.order.invalidate();
       utils.table.invalidate();
     },
@@ -157,6 +164,8 @@ export default function useOrder() {
       id: order.id,
       body: { status: "In Progress", userId: order.userId, selectedBy: null },
     });
+
+    setOrder(null);
   };
 
   const isLoading = addItem.isPending || addItemToOrder.isPending;

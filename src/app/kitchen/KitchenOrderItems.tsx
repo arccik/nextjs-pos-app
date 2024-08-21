@@ -21,15 +21,18 @@ export default function KitchenOrderItems({
   items,
   orderId,
 }: KitchenOrderItemsProps) {
-  const [checked, setChecked] = useState<string[]>([]);
-  const { add, remove } = useCookedItem({ orderId });
+  // const [checked, setChecked] = useState<string[]>([]);
+  const { add, remove, cookedItems } = useCookedItem(orderId);
+  console.log("cookedItems", cookedItems);
+
+  const isChecked = (itemId: string) => cookedItems?.includes(itemId);
 
   const handleChecked = (e: CheckedState, itemId: string) => {
     if (e) {
       add(itemId);
-      setChecked((prev) => [...prev, itemId]);
+      // setChecked((prev) => [...prev, itemId]);
     } else {
-      setChecked((prev) => prev.filter((id) => id !== itemId));
+      // setChecked((prev) => prev.filter((id) => id !== itemId));
       remove(itemId);
     }
   };
@@ -41,8 +44,7 @@ export default function KitchenOrderItems({
           key={item.itemId}
           className={cn(
             "flex items-center justify-between p-2",
-            checked?.includes(item.itemId) &&
-              "rounded-md backdrop-brightness-95",
+            isChecked(item.itemId) && "rounded-md backdrop-brightness-95",
           )}
         >
           <span>{item.items.name}</span>
@@ -51,6 +53,7 @@ export default function KitchenOrderItems({
             <Checkbox
               className="size-10 accent-emerald-50"
               onCheckedChange={(checked) => handleChecked(checked, item.itemId)}
+              checked={isChecked(item.itemId)}
             />
           </div>
         </li>

@@ -1,25 +1,15 @@
-// import { makeReady } from "@/api/orders";
 import { Button } from "@/components/ui/button";
+import useCookedItem from "@/hooks/useCookedItem";
 import { api } from "@/trpc/react";
-// import { toast } from "@/components/ui/use-toast";
-// import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "@/components/ui/use-toast";
 
 type MakeReadyButtonProps = {
   orderId: string;
 };
 
 export default function MakeReadyButton({ orderId }: MakeReadyButtonProps) {
-  const cookedItem = api.cookedItem.create.useMutation({
-    onSuccess: (data) => {
-      console.log(data);
-    },
-  });
+  const { isAllChecked, setOrderReady } = useCookedItem(orderId);
+  if (!isAllChecked) return null;
 
-  return (
-    <Button
-    //    onClick={handleClick}
-    >
-      Order Ready
-    </Button>
-  );
+  return <Button onClick={() => setOrderReady()}>Order Ready</Button>;
 }
