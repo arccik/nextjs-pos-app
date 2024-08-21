@@ -139,7 +139,6 @@ export default function useOrder() {
         id: order.id,
         body: { tableId: null },
       });
-      utils.order.invalidate();
     }
   };
 

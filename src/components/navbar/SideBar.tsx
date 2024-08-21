@@ -16,11 +16,12 @@ import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { api } from "@/trpc/server";
+import { ModeToggle } from "../DarkModeToggle";
 
 export default function SideBar() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const isCurrentPath = (path: string) => path === pathname; 
+  const isCurrentPath = (path: string) => path === pathname;
 
   const handleLogOut = async () => {
     await signOut({ callbackUrl: "/login" });
@@ -50,6 +51,7 @@ export default function SideBar() {
                 <TooltipContent side="right">{navItem.title}</TooltipContent>
               </Tooltip>
             ))}
+            <ModeToggle />
           </nav>
           <nav className="mt-auto flex rotate-180 flex-col items-center gap-4 px-2 sm:py-4">
             <p className="text-xl font-bold uppercase [writing-mode:vertical-rl]">

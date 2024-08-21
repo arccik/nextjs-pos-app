@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TRPCReactProvider } from "@/trpc/react";
 import SideBar from "@/components/navbar/SideBar";
 import { Providers } from "./providers";
+import { ThemeProvider } from "./ThemeProvider";
 
 export const metadata = {
   title: "Point Of Sales | 4D Comfort",
@@ -20,11 +21,18 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body className="ml-0 sm:ml-20">
-        <Providers>
-          <SideBar />
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-          <Toaster />
-        </Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>
+            <SideBar />
+            <TRPCReactProvider>{children}</TRPCReactProvider>
+            <Toaster />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
