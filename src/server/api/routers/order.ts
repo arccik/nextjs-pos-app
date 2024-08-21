@@ -122,9 +122,14 @@ export const orderRouter = createTRPCRouter({
     return await getPendingOrder(ctx.session.user.id);
   }),
   updateOrder: protectedProcedure
-    .input(z.object({ id: z.string(), body: newOrderSchema }))
-    .mutation(async ({ input }) => {
-      return await updateOrder(input);
+    .input(
+      z.object({ id: z.string(), body: newOrderSchema.omit({ userId: true }) }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      return await updateOrder({
+        ...input,
+        body: { ...input, userId: ctx.session.user.id },
+      });
     }),
   getByBillId: protectedProcedure
     .input(z.object({ billId: z.string() }))

@@ -1,5 +1,5 @@
 "use client";
-import { Order } from "@/server/db/schemas";
+import { Order, OrderStatus } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
@@ -13,11 +13,15 @@ type AddToOrderProps = {
 
 export default function useOrder() {
   const [order, setOrder] = useState<OrderItemsBill | null>(null);
-  const { data: selectedOrder, refetch: refetchOrder } =
-    api.order.getSelectedByUser.useQuery();
-  const { data: table, refetch: refetchTable } =
-    api.table.getSelectedTable.useQuery();
   const utils = api.useUtils();
+  const { data: selectedOrder } = api.order.getSelectedByUser.useQuery();
+  const { data: table } = api.table.getSelectedTable.useQuery();
+  const setStatus = api.order.setStatus.useMutation({
+    onSuccess: () => {
+      toast({ title: "Order Status Changed" });
+      utils.order.invalidate();
+    },
+  });
 
   useEffect(() => {
     if (selectedOrder) {
@@ -50,8 +54,7 @@ export default function useOrder() {
         title: "Order deleted",
         description: "Your order has been deleted successfully",
       });
-      // utils.order.invalidate();
-      refetchOrder();
+      utils.order.invalidate();
     },
   });
   const removeItemFromOrder = api.order.removeItemFromOrder.useMutation({
@@ -96,23 +99,7 @@ export default function useOrder() {
   });
 
   const add = ({ itemId, quantity, id }: AddToOrderProps) => {
-    const isOrderExist = id || order?.id;
-    console.log("IS EXIST : ", { isOrderExist });
     addItem.mutate({ itemId, orderId: id, quantity });
-    // if (isOrderExist) {
-    //   return addItemToOrder.mutate([
-    //     { itemId, quantity, orderId: isOrderExist },
-    //   ]);
-    // } else {
-    //   console.log("BEFORE ----- ORder Not Exist. creating Order: ", orderId);
-    //   const response = creteOrder.mutate();
-    //   console.log("AFTER ------ ORder Not Exist. creating Order: ", {
-    //     response,
-    //     oth: creteOrder.data,
-    //   });
-
-    //   return addItemToOrder.mutate([{ itemId, quantity, orderId }]);
-    // }
   };
 
   const deleteOne = (id: string) => {
@@ -136,12 +123,11 @@ export default function useOrder() {
   };
 
   const selectTable = (tableId: string) => {
-    console.log("Aaaa ");
     setSelectedTable.mutate(tableId);
     if (order?.id) {
       updateOrder.mutate({
         id: order.id,
-        body: { tableId, userId: order?.userId },
+        body: { tableId },
       });
     }
   };
@@ -151,7 +137,7 @@ export default function useOrder() {
     if (order?.id) {
       updateOrder.mutate({
         id: order.id,
-        body: { tableId: null, userId: order?.userId },
+        body: { tableId: null },
       });
       utils.order.invalidate();
     }
@@ -162,10 +148,20 @@ export default function useOrder() {
     unselect.mutate();
     updateOrder.mutate({
       id: order.id,
-      body: { status: "In Progress", userId: order.userId, selectedBy: null },
+      body: { status: "In Progress", selectedBy: null },
     });
 
     setOrder(null);
+  };
+
+  const changeStatus = ({
+    status,
+    orderId,
+  }: {
+    status: OrderStatus[number];
+    orderId: string;
+  }) => {
+    setStatus.mutate({ orderId, status });
   };
 
   const isLoading = addItem.isPending || addItemToOrder.isPending;
@@ -180,5 +176,6 @@ export default function useOrder() {
     removItem,
     isLoading,
     proceedOrder,
+    changeStatus,
   };
 }

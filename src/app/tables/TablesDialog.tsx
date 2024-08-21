@@ -20,9 +20,7 @@ import {
 
 import TableDetails from "./TableDetails";
 import TableButton from "./TableButton";
-// import useMediaQuery from "@/hooks/useMediaQuery";
 import EmptyTable from "./Emptytable";
-// import { summarizePrice } from "@/lib/utils";
 import { format } from "date-fns";
 import { type TableWithReservation } from "@/server/db/schemas";
 import { api } from "@/trpc/react";

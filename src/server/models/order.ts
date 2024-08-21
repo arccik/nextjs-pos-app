@@ -16,7 +16,7 @@ import {
   Order,
   bills,
 } from "../db/schemas";
-import { combineItems, combineOrderItems } from "../../lib/utils";
+import { combineOrderItems } from "../../lib/utils";
 import { endOfToday, startOfToday } from "date-fns";
 import { StringOrTemplateHeader } from "@tanstack/react-table";
 import { generateBill, updateBill } from "./bill";

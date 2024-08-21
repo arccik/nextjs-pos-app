@@ -29,8 +29,8 @@ export default function TableCards({ standalone }: TabelsGridProps) {
 
   console.log("TableCards", tables);
 
-  const { data: reservations } =
-    api.reservation.getUnAssignedReservations.useQuery();
+  // const { data: reservations } =
+  //   api.reservation.getUnAssignedReservations.useQuery();
 
   return (
     <Card>
@@ -44,10 +44,10 @@ export default function TableCards({ standalone }: TabelsGridProps) {
         <ToggleGroupItem value="occupied"> Occupied</ToggleGroupItem>
         <ToggleGroupItem value="reserved"> Reserved</ToggleGroupItem>
       </ToggleGroup>
-      {!!reservations?.length &&
+      {/* {!!reservations?.length &&
         reservations.map((reservation) => (
           <p key={reservation.id}>{reservation.expireAt}</p>
-        ))}
+        ))} */}
       <CardHeader className="flex flex-col items-center justify-between sm:flex-row">
         <CardTitle className="text-xl font-semibold">Tables</CardTitle>
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -58,7 +58,7 @@ export default function TableCards({ standalone }: TabelsGridProps) {
       </CardHeader>
 
       <CardContent>
-        {tables && tables?.length > 0 ? (
+        {!!tables?.length ? (
           <div
             className={cn(
               "grid grid-flow-row grid-cols-1 gap-3 sm:grid-cols-2",

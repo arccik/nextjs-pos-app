@@ -1,11 +1,8 @@
-import { combinedOrders, formatId } from "@/lib/utils";
-import { type OrderItemsWithOrderAndItems } from "@/server/db/schemas";
-import { formatDistance, format } from "date-fns";
-import { useMemo } from "react";
+import { formatId } from "@/lib/utils";
+import { format } from "date-fns";
 import KitchenOrderItems from "./KitchenOrderItems";
 import { MainOrder } from "@/server/models/order";
 import MakeReadyButton from "./MakeReadyButton";
-// import MakeReadyButton from "./MakeReadyButton";
 
 type KitchenOrderDisplayProps = {
   data: MainOrder[];
@@ -14,8 +11,6 @@ type KitchenOrderDisplayProps = {
 export default function KitchenOrderDisplay({
   data,
 }: KitchenOrderDisplayProps) {
-  // const ordersToDisplay = useMemo(() => combinedOrders(data), [data]);
-
   return (
     <div className="mt-10 flex flex-col gap-4">
       {data?.map((order) => (

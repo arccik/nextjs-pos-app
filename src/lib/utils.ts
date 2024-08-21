@@ -16,18 +16,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const formatDate = (dateString: string) => {
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    hour12: true,
-  };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-};
 
 export function formatCurrency(
   amount?: string | number | null,
@@ -46,69 +34,6 @@ export function formatCurrency(
 
   return formatter.format(amountNumber);
 }
-
-interface CombinedOrder {
-  orderId: string;
-  tableId: string | null;
-  status: string;
-  itemId: string;
-  user: string | null;
-  createdAt: Date | null | string;
-  table: number | null;
-  items: { name: string; quantity: number; id: string }[];
-}
-export type OrderItemsWithOrderAndItems = {
-  orders: Order;
-  items: Item;
-  order_items: OrderItem;
-  users: User;
-  tables: Table;
-};
-
-export function combinedOrders(
-  data: OrderItemsWithOrderAndItems[],
-): CombinedOrder[] {
-  const combinedOrderMap: { [orderId: string]: CombinedOrder } = {};
-
-  data.forEach((orderData) => {
-    const { orders, order_items, items } = orderData;
-    const { orderId, itemId, quantity } = order_items;
-
-    if (!combinedOrderMap[orderId]) {
-      combinedOrderMap[orderId] = {
-        orderId,
-        itemId,
-        createdAt: orders.createdAt,
-        table: orderData.tables?.number,
-        user: orderData.users?.name,
-        tableId: orders.tableId,
-        status: orders.status,
-        items: [],
-      };
-    }
-
-    combinedOrderMap[orderId]?.items.push({
-      name: items.name,
-      quantity,
-      id: items.id,
-    });
-  });
-
-  return Object.values(combinedOrderMap);
-}
-
-type ItemWithQuantity = Item & { quantity: number };
-
-export const combineItems = (items: Item[]) =>
-  items.reduce((acc, item) => {
-    const existing = acc.find((i) => i.id === item.id);
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      acc.push({ ...item, quantity: 1 });
-    }
-    return acc;
-  }, [] as ItemWithQuantity[]);
 
 export type ReservationTimeSlot = {
   startTime: string;
@@ -194,20 +119,6 @@ export function formatFieldName(fieldName: string) {
   return fieldName.replace(/([A-Z])/g, " $1").trim();
 }
 
-export function summarizeOrder(items: Item[], orderId?: string) {
-  const itemMap = items.reduce(
-    (acc, product) => {
-      acc[product.id] = acc[product.id] || { itemId: product.id, quantity: 0 };
-      acc[product.id]!.quantity += 1;
-      if (orderId) acc[product.id]!.orderId = orderId;
-      return acc;
-    },
-    {} as {
-      [key: string]: { itemId: string; quantity: number; orderId?: string };
-    },
-  );
-  return Object.values(itemMap);
-}
 export type ItemToSummerize = {
   itemId: string;
   quantity: number;
@@ -217,13 +128,7 @@ export type ItemToSummerize = {
     imageUrl: string | null;
   };
 };
-export function summarizePrice(items: ItemToSummerize[]) {
-  if (!items) return null;
-  return items.reduce(
-    (total, item) => total + Number(item.items.price ?? 0),
-    0,
-  );
-}
+
 
 export function formatId(id: string) {
   return id.slice(-4);

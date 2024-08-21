@@ -43,7 +43,7 @@ export const tables = sqliteTable(
 );
 
 export const tableRelations = relations(tables, ({ one, many }) => ({
-  selectedBy: one(users, {
+  user: one(users, {
     fields: [tables.selectedBy],
     references: [users.id],
   }),
@@ -74,5 +74,5 @@ export type TableStatus = (typeof tableStatusEnum)[number];
 
 export type TableWithReservation = Table & {
   reservations?: Reservation[];
-  selectedBy?: string | null;
+  user?: User | null;
 };

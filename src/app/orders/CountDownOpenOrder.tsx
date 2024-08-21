@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 export default function CountDownOpenOrder({ date }: { date: Date }) {
   const [minustes, setMinutes] = useState<string | null>(null);
 
-  console.log("CoUNT DOwn: ", date);
 
   useEffect(() => {
     if (!date) return;

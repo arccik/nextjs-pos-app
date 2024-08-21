@@ -27,10 +27,11 @@ type OrderCardProps = {
 
 export default function OrderCard({ order }: OrderCardProps) {
   const [showDetails, setShowDetails] = useState(false);
-  console.log("AAAAA  << << << < < < << ", order);
+
   const tableNumber = order.table?.number;
   const serviceFee = order.bill?.serviceFee;
-  const total = countTotal(order.bill);
+  const total = order.bill?.totalAmount;
+
   return (
     <Card className="w-full">
       <CardHeader

@@ -7,7 +7,6 @@ import {
   Table,
   tables,
   TableStatus,
-  TableWithReservation,
 } from "../db/schemas";
 
 export const getOne = async (id: string) => {
@@ -18,7 +17,7 @@ export const getAllByStatus = async (status: TableStatus) => {
   return await db.query.tables.findMany({
     where: eq(tables.status, status),
     with: {
-      selectedBy: true,
+      user: true,
       reservations: true,
     },
   });

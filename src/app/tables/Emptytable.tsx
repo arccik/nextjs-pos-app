@@ -1,48 +1,15 @@
 "use client";
-// import { useMutation, useQuery } from "@tanstack/react-query";
 import RecentOrders from "./RecentOrders";
-// import { recentCompletedOrders } from "@/api/orders";
-// import { type OrderWithUserAndBill } from "@/server/db/schemas";
-// import Error from "../layout/Error";
 import { Button } from "@/components/ui/button";
-// import { markClean } from "@/api/tables";
-// import { useToast } from "@/components/ui/use-toast";
-// import { useStore } from "@/store";
 import { PlusIcon } from "lucide-react";
-import { api } from "@/trpc/react";
-import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
 import useOrder from "@/hooks/useOrder";
-// import { setSelectedTable } from "@/server/models/table";
 
 type EmptytableProps = { tableId: string; clean: boolean; tableNumber: number };
 
-export default function EmptyTable({
-  tableId,
-  clean,
-  tableNumber,
-}: EmptytableProps) {
+export default function EmptyTable({ tableId, clean }: EmptytableProps) {
   const { selectTable } = useOrder();
 
-  //   const { toast } = useToast();
-  //   const { setSelectedTable } = useStore();
-  const userId = 1;
-
-  //   const { data, isLoading, isError } = useQuery<OrderWithUserAndBill[]>({
-  //     queryKey: ["table", tableId],
-  //     queryFn: () => recentCompletedOrders(tableId),
-  //   });
-  //   const makeClean = useMutation({
-  //     mutationFn: () => markClean(tableId),
-  //     onSuccess: () => toast({ title: "Table marked as clean" }),
-  //     onError: (error) => {
-  //       console.error("Mark table as clean went wrong..", error);
-  //       toast({ title: "Something went wrong...", variant: "destructive" });
-  //     },
-  //   });
-
   const handleAddNewOrder = async () => {
-    // setSelectedTable({ tableId, number: tableNumber });
     selectTable(tableId);
   };
 

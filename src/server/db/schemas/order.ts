@@ -116,12 +116,6 @@ export type NewOrderWithItems = z.infer<typeof newOrderWithItemsSchema>;
 
 export type OrderStatus = typeof orderStatus;
 
-export type OrderItemsWithOrderAndItems = {
-  orders: Order;
-  items: Item;
-  order_items: OrderItem;
-  users: User;
-  tables: Table;
-};
+
 export type OrderWithUser = Order & { user: User };
 export type OrderWithUserAndBill = OrderWithUser & { bill: Bill; user: User };

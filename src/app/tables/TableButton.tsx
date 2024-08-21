@@ -2,14 +2,12 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Notebook } from "lucide-react";
 import { type TableWithReservation } from "@/server/db/schemas";
-import { useSession } from "next-auth/react";
 
 type TableButtonProps = {
   tableData: TableWithReservation;
 };
 
 export default function TableButton({ tableData }: TableButtonProps) {
-  const { data: session } = useSession();
   const isSelected = !!tableData.selectedBy;
 
   return (
@@ -38,9 +36,9 @@ export default function TableButton({ tableData }: TableButtonProps) {
           >
             {tableData.status}
           </p>
-          {tableData.selectedBy && (
+          {!!tableData.user && (
             <p className="text-xs leading-none">
-              Selected By: {tableData.selectedBy}
+              Selected By: {tableData?.user.name}
             </p>
           )}
         </div>
