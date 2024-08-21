@@ -15,6 +15,7 @@ import MobileNav from "./MobileNav";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { api } from "@/trpc/server";
 
 export default function SideBar() {
   const { data: session } = useSession();

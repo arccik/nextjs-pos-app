@@ -17,40 +17,17 @@ import { ClockIcon, Edit2, Utensils } from "lucide-react";
 import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
 import SelectTable from "@/app/waiter/SelectTable";
 import { type SelectedTable } from "@/app/waiter/ChooseTable";
-import Loading from "@/components/Loading";
 import useOrder from "@/hooks/useOrder";
 
-type CartProps = {
-  selectedTable?: SelectedTable;
-};
-
 export default function Cart() {
-  // const { data: order } = api.order.getSelectedByUser.useQuery();
-  const { selectedOrder, update } = useOrder();
-
-  console.log("USE ORDER HOOK: ", { selectedOrder });
-
-  // const update = api.order.updateOrder.useMutation({
-  //   onSuccess: (res) => {
-  //     console.log("SUCCESS !!! ", res);
-  //   },
-  //   onError: (err) => {
-  //     console.log("ERROR !!! ", err);
-  //   },
-  // });
+  const { selectedOrder, proceedOrder, selectedTable } = useOrder();
+  console.log("USE ORDER HOOK: ", { selectedOrder, selectedTable });
 
   const items = selectedOrder?.orderItems;
 
   const handleSubmitOrder = () => {
     console.log("submitting order", selectedOrder);
-    // update.mutate({
-    //   id: orderId,
-    //   body: {
-    //     tableId: selectedTable?.id,
-    //     userId: data?.userId!,
-    //     status: "In Progress",
-    //   },
-    // });
+    proceedOrder();
   };
   if (!selectedOrder) return null;
   return (

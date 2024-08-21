@@ -27,6 +27,8 @@ export default function TableCards({ standalone }: TabelsGridProps) {
     isLoading,
   } = api.table.getAllByStatus.useQuery(status);
 
+  console.log("TableCards", tables);
+
   const { data: reservations } =
     api.reservation.getUnAssignedReservations.useQuery();
 

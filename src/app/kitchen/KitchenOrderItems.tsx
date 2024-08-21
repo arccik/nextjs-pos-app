@@ -1,5 +1,6 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
+import useCookedItem from "@/hooks/useCookedItem";
 import { cn } from "@/lib/utils";
 import { OrderItem } from "@/server/db/schemas";
 import { OrderWithItems } from "@/server/models/order";
@@ -16,14 +17,20 @@ type KitchenOrderItemsProps = {
   items: OrderWithItems["orderItems"];
   orderId: string;
 };
-export default function KitchenOrderItems({ items }: KitchenOrderItemsProps) {
+export default function KitchenOrderItems({
+  items,
+  orderId,
+}: KitchenOrderItemsProps) {
   const [checked, setChecked] = useState<string[]>([]);
+  const { add, remove } = useCookedItem({ orderId });
 
   const handleChecked = (e: CheckedState, itemId: string) => {
     if (e) {
+      add(itemId);
       setChecked((prev) => [...prev, itemId]);
     } else {
       setChecked((prev) => prev.filter((id) => id !== itemId));
+      remove(itemId);
     }
   };
 

@@ -65,15 +65,20 @@ export const orderItems = sqliteTable(
     pk: primaryKey({ columns: [t.orderId, t.itemId] }),
   }),
 );
-
 export const ordersRelations = relations(orders, ({ one, many }) => ({
   table: one(tables, {
     fields: [orders.tableId],
     references: [tables.id],
   }),
-  user: one(users, {
-    fields: [orders.userId, orders.selectedBy],
-    references: [users.id, users.id],
+  creator: one(users, {
+    relationName: "creator",
+    fields: [orders.userId],
+    references: [users.id],
+  }),
+  selector: one(users, {
+    relationName: "selector",
+    fields: [orders.selectedBy],
+    references: [users.id],
   }),
   bill: one(bills, {
     fields: [orders.billId],

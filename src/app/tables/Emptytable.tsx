@@ -12,6 +12,7 @@ import { PlusIcon } from "lucide-react";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import useOrder from "@/hooks/useOrder";
 // import { setSelectedTable } from "@/server/models/table";
 
 type EmptytableProps = { tableId: string; clean: boolean; tableNumber: number };
@@ -21,15 +22,8 @@ export default function EmptyTable({
   clean,
   tableNumber,
 }: EmptytableProps) {
-  const router = useRouter();
+  const { selectTable } = useOrder();
 
-  const setSelectedTable = api.table.setSelectedTable.useMutation({
-    onSuccess: () => {
-      toast({
-        title: "Table has been selected",
-      });
-    },
-  });
   //   const { toast } = useToast();
   //   const { setSelectedTable } = useStore();
   const userId = 1;
@@ -49,8 +43,7 @@ export default function EmptyTable({
 
   const handleAddNewOrder = async () => {
     // setSelectedTable({ tableId, number: tableNumber });
-    setSelectedTable.mutate(tableId);
-    router.push(`/menu?tableId=${tableId}`);
+    selectTable(tableId);
   };
 
   return (

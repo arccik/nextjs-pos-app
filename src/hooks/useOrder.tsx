@@ -61,6 +61,7 @@ export default function useOrder() {
         description: "Your order has been updated successfully",
       });
       utils.order.invalidate();
+      utils.table.invalidate();
     },
   });
 
@@ -68,6 +69,8 @@ export default function useOrder() {
     onSuccess: () => {
       toast({ title: "Table Unselected" });
 
+      refetchOrder();
+      refetchTable();
       utils.order.invalidate();
       utils.table.invalidate();
     },
@@ -147,6 +150,15 @@ export default function useOrder() {
     }
   };
 
+  const proceedOrder = () => {
+    if (!order?.id) return;
+    unselect.mutate();
+    updateOrder.mutate({
+      id: order.id,
+      body: { status: "In Progress", userId: order.userId, selectedBy: null },
+    });
+  };
+
   const isLoading = addItem.isPending || addItemToOrder.isPending;
   return {
     selectedOrder: order,
@@ -158,5 +170,6 @@ export default function useOrder() {
     deleteOne,
     removItem,
     isLoading,
+    proceedOrder,
   };
 }

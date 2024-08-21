@@ -91,8 +91,16 @@ export const getOneByTableId = async (tableId: string) => {
           },
         },
       },
-      user: true,
+      creator: {
+        columns: {
+          id: true,
+          name: true,
+          role: true,
+          image: true,
+        },
+      },
       bill: true,
+      table: true,
     },
   });
   return order ?? null;
@@ -100,22 +108,26 @@ export const getOneByTableId = async (tableId: string) => {
 export const getAllByStatus = async (status: OrderStatus[number]) => {
   return await db.query.orders.findMany({
     where: eq(orders.status, status),
-    with: { user: true, bill: true, orderItems: { with: { items: true } } },
+    with: { creator: true, bill: true, orderItems: { with: { items: true } } },
   });
 };
 
 export type MainOrder = Unpromisify<ReturnType<typeof getAll>>[0];
 
 export const getAll = async (status?: OrderStatus[number]) => {
-  // const options: Record<string, SQL<unknown>> = {};
-  // where: eq(orders.status, status),
-
   return await db.query.orders.findMany({
     where: status ? eq(orders.status, status) : undefined,
     orderBy: (orders, { asc }) => [asc(orders.createdAt)],
 
     with: {
-      user: true,
+      creator: {
+        columns: {
+          id: true,
+          name: true,
+          role: true,
+          image: true,
+        },
+      },
       bill: true,
       table: true,
       orderItems: {
@@ -397,7 +409,7 @@ export const recentCompletedOrders = async (tableId: string) => {
     where: and(eq(orders.tableId, tableId), eq(orders.status, "Completed")),
     with: {
       bill: true,
-      user: { columns: { name: true, role: true, id: true } },
+      creator: { columns: { name: true, role: true, id: true } },
     },
   });
 };
@@ -506,7 +518,7 @@ export const getRecentOrders = async () => {
       lt(orders.createdAt, endOfToday()),
     ),
 
-    with: { user: { columns: { name: true, role: true } }, bill: true },
+    with: { creator: { columns: { name: true, role: true } }, bill: true },
   });
 };
 

@@ -53,7 +53,9 @@ export default function OrderCard({ order }: OrderCardProps) {
             )}
           </span>
         </CardTitle>
-        <CardDescription>{order.specialRequest}</CardDescription>
+        {order.specialRequest && (
+          <CardDescription>{order.specialRequest}</CardDescription>
+        )}
         <div className="flex items-center justify-between  gap-4">
           <div className="grid grid-flow-col gap-1 text-sm">
             {tableNumber ? (

@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
-import { db } from "..";
-import { NewIngredient, ingredients } from "../schemas";
+import { db } from "../db";
+import { NewIngredient, ingredients } from "../db/schemas";
 
 export const getOne = async (id: string) => {
   try {

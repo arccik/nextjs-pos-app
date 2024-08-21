@@ -18,15 +18,8 @@ export const getAllByStatus = async (status: TableStatus) => {
   return await db.query.tables.findMany({
     where: eq(tables.status, status),
     with: {
-      reservations: {
-        where: eq(reservations.tableId, tables.id),
-      },
-      selectedBy: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
+      selectedBy: true,
+      reservations: true,
     },
   });
 };
@@ -92,39 +85,31 @@ export const setSelectedTable = async ({
   id: string;
   userId: string;
 }) => {
-  console.log("SET SELECTED TABLE >>>> ", { id, userId });
   const result = await db
     .update(tables)
     .set({ selectedBy: userId })
     .where(eq(tables.id, id));
-  console.log("RESULT", result);
   return result;
 };
 
-export const unsetSelectedTable = async ({
-  id,
-  userId,
-}: {
-  id: string;
-  userId?: string;
-}) => {
+export const unsetSelectedTable = async ({ id }: { id: string }) => {
   return await db
     .update(tables)
     .set({ selectedBy: null })
-    .where(eq(tables.id, id))
-    .returning();
+    .where(eq(tables.id, id));
 };
 
 export const getSelectedTable = async (userId: string) => {
-  return await db.select().from(tables).where(eq(tables.selectedBy, userId));
-  // return await db.query.tables.findFirst({
-  //   where: eq(tables.selectedBy, userId),
-  // });
+  const result = await db.query.tables.findFirst({
+    where: eq(tables.selectedBy, userId),
+  });
+  return result ?? null;
 };
 
 export const unselectTable = async (userId: string) => {
   return await db
     .update(tables)
     .set({ selectedBy: null })
-    .where(eq(tables.selectedBy, userId));
+    .where(eq(tables.selectedBy, userId))
+    .returning();
 };

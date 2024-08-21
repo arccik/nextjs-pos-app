@@ -40,7 +40,7 @@ export default function TableButton({ tableData }: TableButtonProps) {
           </p>
           {tableData.selectedBy && (
             <p className="text-xs leading-none">
-              Selected By: {tableData.selectedBy?.name}
+              Selected By: {tableData.selector?.name}
             </p>
           )}
         </div>

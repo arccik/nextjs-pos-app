@@ -1,13 +1,8 @@
-"use client";
 import { MenuList } from "./MenuList";
 import Cart from "./cart/Cart";
 import AddNewCategoryButton from "./category/AddNewCategoryButton";
-import SelectedTableCard from "./cart/SelectedTableCard";
-import { api } from "@/trpc/react";
-import useOrder from "@/hooks/useOrder";
 
 export default function MenuPage() {
-  const { selectedTable } = useOrder();
   return (
     <section className="grid w-full grid-flow-row py-12 ">
       <div className="grid gap-8 px-4 md:container md:px-6">
@@ -26,9 +21,6 @@ export default function MenuPage() {
           <MenuList />
           <div>
             <Cart />
-            {/* {selectedTable && (
-              <SelectedTableCard tableNumber={selectedTable.number} />
-            )} */}
           </div>
         </div>
       </div>

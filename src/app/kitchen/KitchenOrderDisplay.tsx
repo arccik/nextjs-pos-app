@@ -1,9 +1,10 @@
-import { combinedOrders } from "@/lib/utils";
+import { combinedOrders, formatId } from "@/lib/utils";
 import { type OrderItemsWithOrderAndItems } from "@/server/db/schemas";
-import { formatDistance } from "date-fns";
+import { formatDistance, format } from "date-fns";
 import { useMemo } from "react";
 import KitchenOrderItems from "./KitchenOrderItems";
 import { MainOrder } from "@/server/models/order";
+import MakeReadyButton from "./MakeReadyButton";
 // import MakeReadyButton from "./MakeReadyButton";
 
 type KitchenOrderDisplayProps = {
@@ -20,19 +21,18 @@ export default function KitchenOrderDisplay({
       {data?.map((order) => (
         <div key={order.id} className="rounded-lg bg-white p-4 shadow-md">
           <div className="orders-center mb-2 flex justify-between">
-            <span className="text-lg font-semibold">Order {order.id}</span>
+            <span className="text-lg font-semibold">
+              Order {formatId(order.id)}
+            </span>
           </div>
           <div className="flex justify-between">
             <div className="text-sm text-gray-500">
               <p>
-                <b>Waiter:</b> {order.user?.name}
+                <b>Waiter:</b> {order.creator?.name}
               </p>
               <p>
                 <b>Ordered at: </b>
-                {/* {formatDistance(order.createdAt, new Date(), {
-                  addSuffix: true,
-                  includeSeconds: true,
-                })} */}
+                {format(order.createdAt, "dd-MM-yyyy / HH:mm")}
               </p>
               <span className="text-sm text-gray-500">
                 {order.table ? (
@@ -40,11 +40,11 @@ export default function KitchenOrderDisplay({
                     <b>Table</b> {order.table.number}
                   </p>
                 ) : (
-                  <p>Take Away</p>
+                  <p className="text-red-500">Take Away</p>
                 )}
               </span>
             </div>
-            {/* <MakeReadyButton orderId={order.orderId} itemId={order.itemId} /> */}
+            <MakeReadyButton orderId={order.id} />
           </div>
 
           <hr className="my-2" />

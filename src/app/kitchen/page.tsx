@@ -30,7 +30,7 @@ export default function KitchenPage() {
   //   .leftJoin(items, eq(orderItems.itemId, items.id))
   //   .leftJoin(users, eq(orders.userId, users.id))
   //   .leftJoin(tables, eq(orders.tableId, tables.id));
-  const { data, isLoading } = api.order.getAll.useQuery("Pending");
+  const { data, isLoading } = api.order.getAll.useQuery("In Progress");
   console.log("Must be server compoonenntS:: >>> >> .> .> >>>>> ..>> ", data);
   return (
     <main className="sm:p-2">
