@@ -43,14 +43,12 @@ export default function Cart() {
         />
       </CardHeader>
       <CardContent className="grid gap-4">
-        {selectedOrder.tableId ? (
+        {selectedTable ? (
           <div className="flex items-center gap-4">
             <ClockIcon className="h-6 w-6" />
             <div className="grid gap-1 text-sm">
               <div className="flex items-center gap-2">
-                <p className="font-semibold">
-                  Table #{selectedOrder.table?.number}
-                </p>
+                <p className="font-semibold">Table #{selectedTable?.number}</p>
                 <SelectTable buttonTrigger={<Edit2 size="1rem" />} />
               </div>
               {true && (

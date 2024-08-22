@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import KitchenOrderItems from "./KitchenOrderItems";
 import { MainOrder } from "@/server/models/order";
 import MakeReadyButton from "./MakeReadyButton";
+import { Card } from "@/components/ui/card";
 
 type KitchenOrderDisplayProps = {
   data: MainOrder[];
@@ -14,7 +15,7 @@ export default function KitchenOrderDisplay({
   return (
     <div className="mt-10 flex flex-col gap-4">
       {data?.map((order) => (
-        <div key={order.id} className="rounded-lg bg-white p-4 shadow-md">
+        <Card key={order.id} className="bg-primary-foreground/45 p-4 shadow-md">
           <div className="orders-center mb-2 flex justify-between">
             <span className="text-lg font-semibold">
               Order {formatId(order.id)}
@@ -44,7 +45,7 @@ export default function KitchenOrderDisplay({
 
           <hr className="my-2" />
           <KitchenOrderItems items={order.orderItems} orderId={order?.id} />
-        </div>
+        </Card>
       ))}
     </div>
   );

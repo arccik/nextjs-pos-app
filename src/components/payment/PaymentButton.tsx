@@ -23,7 +23,7 @@ import { api } from "@/trpc/react";
 
 type PaymentButtonProps = {
   orderId: string;
-  totalAmount: number;
+  totalAmount?: number;
 };
 type WhatComponentToShow = "cash" | "card" | "tip" | null;
 
@@ -63,16 +63,18 @@ export default function PaymentButton({
   return (
     <AlertDialog open={isOpen} onOpenChange={handleDialogButton}>
       <AlertDialogTrigger asChild>
-        <Button className="w-full">
+        <Button className="w-full dark:bg-gray-700 dark:text-white">
           <Banknote className="mr-2" />
           Pay
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogTitle>Payment Method</AlertDialogTitle>
-        <AlertDialogDescription>
-          Total Amount: {totalAmount}
-        </AlertDialogDescription>
+        {totalAmount && (
+          <AlertDialogDescription>
+            Total Amount: {totalAmount}
+          </AlertDialogDescription>
+        )}
         {state && (
           <Button
             onClick={() => setState(null)}

@@ -1,7 +1,8 @@
-import { and, eq } from "drizzle-orm";
+import { and, count, eq, gte } from "drizzle-orm";
 
 import { db } from "../db";
 import { NewCookedItem, cookedItems } from "../db/schemas";
+import { startOfDay } from "date-fns";
 
 export const getOne = async (id: string) => {
   return await db.query.cookedItems.findFirst({
@@ -44,3 +45,11 @@ export const deleteOne = async ({
   return result;
 };
 
+export const getTodayTotal = async () => {
+  const today = new Date();
+  const result = await db
+    .select({ count: count() })
+    .from(cookedItems)
+    .where(gte(cookedItems.createdAt, startOfDay(today)));
+  return result[0]?.count;
+};

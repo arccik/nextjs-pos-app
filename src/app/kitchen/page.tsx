@@ -7,6 +7,7 @@ import Loading from "@/components/Loading";
 
 export default function KitchenPage() {
   const { data, isLoading } = api.order.getAll.useQuery("In Progress");
+  const { data: cookedItems } = api.cookedItem.getTodayTotal.useQuery();
   return (
     <main className="sm:p-2">
       <Card className="p-5">
@@ -17,7 +18,7 @@ export default function KitchenPage() {
           </div>
           <div>
             <p className="text-2xl text-gray-400">
-              Total Orders {data?.length}
+              Total Orders {data?.length} / {cookedItems}
             </p>
           </div>
         </div>

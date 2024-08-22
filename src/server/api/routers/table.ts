@@ -8,6 +8,7 @@ import {
   setSelectedTable,
   unselectTable,
   getAllByStatus,
+  updateStatus,
 } from "@/server/models/table";
 import { z } from "zod";
 
@@ -35,7 +36,7 @@ export const tableRouter = createTRPCRouter({
       return await setSelectedTable({ id: input, userId });
     }),
   getSelectedTable: protectedProcedure.query(async ({ ctx }) => {
-   return await getSelectedTable(ctx.session.user.id);
+    return await getSelectedTable(ctx.session.user.id);
   }),
   unselectTable: protectedProcedure.mutation(async ({ ctx }) => {
     return await unselectTable(ctx.session.user.id);
@@ -43,4 +44,9 @@ export const tableRouter = createTRPCRouter({
   getAllByStatus: protectedProcedure
     .input(z.enum(tableStatusEnum))
     .query(async ({ input }) => await getAllByStatus(input)),
+  changeStatus: protectedProcedure
+    .input(z.object({ tableId: z.string(), status: z.enum(tableStatusEnum) }))
+    .mutation(async ({ input }) => {
+      return await updateStatus(input.tableId, input.status);
+    }),
 });

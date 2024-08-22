@@ -19,6 +19,7 @@ export default function useCookedItem(orderId: string) {
         description: `Item been added to the order.`,
       });
       refetchCookedItems();
+      utils.cookedItem.invalidate();
     },
   });
   const removeCookedItem = api.cookedItem.delete.useMutation({
@@ -28,6 +29,7 @@ export default function useCookedItem(orderId: string) {
         description: `Item been removed from the order.`,
       });
       refetchCookedItems();
+      utils.cookedItem.invalidate();
     },
   });
 

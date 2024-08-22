@@ -7,6 +7,7 @@ import {
   create,
   update,
   deleteOne,
+  getTodayTotal,
 } from "@/server/models/cookedItem";
 import { newCookedItemSchema } from "@/server/db/schemas";
 
@@ -39,4 +40,7 @@ export const cookedItemRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       return await create({ ...input, userId: ctx.session.user.id });
     }),
+  getTodayTotal: protectedProcedure.query(async () => {
+    return await getTodayTotal();
+  }),
 });

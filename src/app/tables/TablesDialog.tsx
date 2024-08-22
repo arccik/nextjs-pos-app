@@ -28,6 +28,7 @@ import ActionButtons from "@/components/ActionButtons";
 import Loading from "@/components/Loading";
 import useOrder from "@/hooks/useOrder";
 import { Cross1Icon } from "@radix-ui/react-icons";
+import { formatId } from "@/lib/utils";
 
 type TableDIalogProps = {
   tableData: TableWithReservation;
@@ -76,7 +77,8 @@ export default function TableDialog({ tableData }: TableDIalogProps) {
           {orderData?.userId && (
             <DialogDescription className="flex justify-between">
               <span>
-                Order {orderData.id} placed by user: {orderData?.userId}
+                Order {formatId(orderData.id)} placed by user:{" "}
+                <strong>{orderData?.creator.name}</strong>
               </span>
               <span>{format(tableData.createdAt, "dd MMM yyyy HH:mm")}</span>
             </DialogDescription>

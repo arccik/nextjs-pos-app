@@ -26,11 +26,19 @@ export default function useOrder() {
   });
 
   useEffect(() => {
-    if (selectedOrder) {
-      setOrder(selectedOrder);
+    if (!selectedOrder) return;
+    setOrder(selectedOrder);
+    if (table && table?.id) {
+      setOrder({ ...selectedOrder, table });
     }
   }, [selectedOrder]);
 
+  const changeTableStatus = api.table.changeStatus.useMutation({
+    onSuccess: async () => {
+      toast({ title: "Table Status Changed" });
+      await utils.table.invalidate();
+    },
+  });
   const addItem = api.order.addItems.useMutation({
     onSuccess: async () => {
       await utils.order.invalidate();
@@ -151,9 +159,10 @@ export default function useOrder() {
       id: order.id,
       body: { status: "In Progress", selectedBy: null },
     });
-
+    if (table?.id) {
+      changeTableStatus.mutate({ tableId: table.id, status: "occupied" });
+    }
     setOrder(null);
-    utils.order.invalidate();
   };
 
   const changeStatus = ({

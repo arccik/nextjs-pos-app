@@ -62,7 +62,7 @@ export default function ActionButtons({
         </Button>
       )}
 
-      {!isPaid && <PaymentButton orderId={orderId} totalAmount={100} />}
+      {!isPaid && <PaymentButton orderId={orderId} totalAmount={totalAmount} />}
     </>
   );
 }
