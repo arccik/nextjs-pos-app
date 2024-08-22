@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,22 +10,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Delete } from "lucide-react";
 import { useState } from "react";
-import usePayments from "@/hooks/usePayments";
+// import usePayments from "@/hooks/usePayments";
 import Dialer from "./Dialer";
 
 export default function CashPayment() {
   const [inputValue, setInputValue] = useState<string>("");
   const paymentAmount = 100; // for test
-  const { makePayment } = usePayments();
+  // const { makePayment } = usePayments();
 
   const handlePayment = () => {
-    makePayment({
-      billId: 1,
-      paymentMethod: "Cash",
-      chargedAmount: inputValue,
-      userId: 1,
-      tipAmount: "10",
-    });
+    // makePayment({
+    //   billId: 1,
+    //   paymentMethod: "Cash",
+    //   chargedAmount: inputValue,
+    //   userId: 1,
+    //   tipAmount: "10",
+    // });
   };
 
   return (

@@ -36,33 +36,33 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 210 15% 10%; /* Dark grey, close to iOS dark mode */
+    --foreground: 210 30% 98%; /* Light grey text */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 210 15% 12%; /* Slightly lighter than the background */
+    --card-foreground: 210 30% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 210 15% 12%; /* Matches card background */
+    --popover-foreground: 210 30% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 210 30% 98%; /* Light grey */
     --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 15% 18%; /* Mid grey */
+    --secondary-foreground: 210 30% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 210 15% 20%; /* Slightly lighter muted tone */
+    --muted-foreground: 210 20% 70%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 210 15% 20%; /* Matches muted background */
+    --accent-foreground: 210 30% 98%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 60% 40%; /* Softer red for destructive actions */
+    --destructive-foreground: 210 30% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 210 15% 20%; /* Matches muted background */
+    --input: 210 15% 20%; /* Matches muted background */
+    --ring: 210 20% 30%; /* Subtle ring effect */
   }
 }
 

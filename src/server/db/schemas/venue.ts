@@ -33,6 +33,7 @@ export const venueSettings = sqliteTable("venue_settings", {
     mode: "boolean",
   }),
   serviceFee: integer("service_fee"),
+  currency: text("currency"),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .$default(() => new Date())
     .notNull(),

@@ -1,21 +1,25 @@
 "use client";
-
 import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
+  AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Banknote, CreditCard } from "lucide-react";
 import CashPayment from "./CashPayment";
-import TipsButton from "./TipsButton";
-import usePayments from "@/hooks/usePayments";
+// import TipsButton from "./TipsButton";
+// import usePayments from "@/hooks/usePayments";
 import PaymentsList from "./PaymentsList";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import TipsButton from "./TipsButton";
+import { AlertDescription } from "../ui/alert";
 import { api } from "@/trpc/react";
+// import { api } from "@/trpc/react";
 
 type PaymentButtonProps = {
   orderId: string;
@@ -23,30 +27,31 @@ type PaymentButtonProps = {
 };
 type WhatComponentToShow = "cash" | "card" | "tip" | null;
 
-export default function PaymentButton({ orderId }: PaymentButtonProps) {
+export default function PaymentButton({
+  orderId,
+  totalAmount,
+}: PaymentButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [state, setState] = useState<WhatComponentToShow>(null);
   const [tipsAmount, setTipAmount] = useState<number | null>(null);
-  const {
-    data: bills,
-    isLoading,
-    isError,
-  } = api.bill.getOneByOrderId.useQuery(orderId);
-  // const { data: bills } = useQuery<BillWithPayments>({
-  //   queryKey: ["bill", orderId],
-  //   queryFn: () => getOneByOrderId(orderId),
-  //   enabled: isOpen,
-  // });
-  const { makePayment, generateBill } = usePayments();
+  const { data: settings } = api.settings.get.useQuery();
+  const currency = settings?.currency || "USD";
+  // const {
+  //   data: bills,
+  //   isLoading,
+  //   isError,
+  // } = api.bill.getOneByOrderId.useQuery(orderId);
+
+  // const { makePayment, generateBill } = usePayments();
 
   const handleDialogButton = () => {
     setIsOpen((prev) => !prev);
     if (!isOpen) {
-      generateBill({ orderId, tipsAmount });
+      // generateBill({ orderId, tipsAmount });
     }
   };
   const handlePayment = (paymentMethod: "Cash" | "Card") => {
-    if (!bills?.id) return;
+    // if (!bills?.id) return;
     // makePayment({
     //   billId: bills.id,
     //   userId: bills.userId!,
@@ -64,7 +69,10 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
-        <h1 className="font-semibold">Choose Payment method</h1>
+        <AlertDialogTitle>Payment Method</AlertDialogTitle>
+        <AlertDialogDescription>
+          Total Amount: {totalAmount}
+        </AlertDialogDescription>
         {state && (
           <Button
             onClick={() => setState(null)}
@@ -95,14 +103,15 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
             </Button>
           </div>
         )}
+
         <ScrollArea className="max-h-[300px] w-full rounded-md">
           <div className="flex flex-col gap-5 md:flex-row">
             {state === "cash" && <CashPayment />}
-            <PaymentsList
+            {/* <PaymentsList
               payments={bills?.payments}
               total={bills?.totalAmount}
               tipsAmount={tipsAmount}
-            />
+            /> */}
           </div>
         </ScrollArea>
         <AlertDialogFooter>

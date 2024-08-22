@@ -152,9 +152,8 @@ export default function useOrder() {
       body: { status: "In Progress", selectedBy: null },
     });
 
-    // setOrder(null);
-    // utils.order.invalidate();
-    refetchOrder();
+    setOrder(null);
+    utils.order.invalidate();
   };
 
   const changeStatus = ({

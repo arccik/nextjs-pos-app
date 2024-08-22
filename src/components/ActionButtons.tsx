@@ -51,7 +51,8 @@ export default function ActionButtons({
         <Button
           className={cn(
             "w-full border hover:border-slate-500 hover:bg-transparent",
-            nextStatus === "Cancelled" && "bg-red-300",
+            nextStatus === "Cancelled" &&
+              "border border-red-500/40 bg-transparent hover:border-red-400",
           )}
           variant="secondary"
           onClick={handleClick}
@@ -61,7 +62,7 @@ export default function ActionButtons({
         </Button>
       )}
 
-      {/* {!isPaid && <PaymentButton orderId={orderId} totalAmount={100} />} */}
+      {!isPaid && <PaymentButton orderId={orderId} totalAmount={100} />}
     </>
   );
 }

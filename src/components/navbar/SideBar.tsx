@@ -15,7 +15,6 @@ import MobileNav from "./MobileNav";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { api } from "@/trpc/server";
 import { ModeToggle } from "../DarkModeToggle";
 
 export default function SideBar() {
