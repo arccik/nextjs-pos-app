@@ -1,7 +1,6 @@
 "use client";
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { NewPayment } from "@/server/db/schemas";
 import { generateBill, payBill } from "@/server/models/bill";
 
 export default function usePayments() {
@@ -9,7 +8,7 @@ export default function usePayments() {
   const queryClient = useQueryClient();
 
   const makePayment = useMutation({
-    mutationFn: (data: NewPayment) => payBill(data),
+    // mutationFn: (data: NewPayment) => payBill(data),
     onSuccess: () => {
       queryClient.invalidateQueries();
       toast({

@@ -40,9 +40,9 @@ export default function SideBar() {
                   >
                     <navItem.icon
                       className={cn(
-                        "h-5 w-5 transition-all duration-300 ease-in-out",
+                        "size-5 transition-all duration-300 ease-in-out",
                         isCurrentPath(navItem.link) &&
-                          "scale-150 text-slate-900",
+                          "size-10 text-slate-900 dark:text-slate-100",
                       )}
                     />
                     <span className="sr-only">{navItem.title}</span>

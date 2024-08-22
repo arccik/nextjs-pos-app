@@ -123,12 +123,15 @@ export const orderRouter = createTRPCRouter({
   }),
   updateOrder: protectedProcedure
     .input(
-      z.object({ id: z.string(), body: newOrderSchema.omit({ userId: true }) }),
+      z.object({
+        id: z.string(),
+        body: newOrderSchema.extend({ userId: z.string().optional() }),
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       return await updateOrder({
-        ...input,
-        body: { ...input, userId: ctx.session.user.id },
+        id: input.id,
+        body: { ...input.body, userId: ctx.session.user.id },
       });
     }),
   getByBillId: protectedProcedure

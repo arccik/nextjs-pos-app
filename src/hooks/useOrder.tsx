@@ -14,12 +14,14 @@ type AddToOrderProps = {
 export default function useOrder() {
   const [order, setOrder] = useState<OrderItemsBill | null>(null);
   const utils = api.useUtils();
-  const { data: selectedOrder } = api.order.getSelectedByUser.useQuery();
-  const { data: table } = api.table.getSelectedTable.useQuery();
+  const { data: selectedOrder, refetch: refetchOrder } =
+    api.order.getSelectedByUser.useQuery();
+  const { data: table, refetch: refetchTable } =
+    api.table.getSelectedTable.useQuery();
   const setStatus = api.order.setStatus.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({ title: "Order Status Changed" });
-      utils.order.invalidate();
+      await utils.order.invalidate();
     },
   });
 
@@ -30,8 +32,8 @@ export default function useOrder() {
   }, [selectedOrder]);
 
   const addItem = api.order.addItems.useMutation({
-    onSuccess: () => {
-      utils.order.invalidate();
+    onSuccess: async () => {
+      await utils.order.invalidate();
 
       toast({
         title: "Item Added",
@@ -40,61 +42,61 @@ export default function useOrder() {
     },
   });
   const addItemToOrder = api.order.addMoreItemsToOrder.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: "Order updated",
         description: "Your order has been updated successfully",
       });
-      utils.order.invalidate();
+      await utils.order.invalidate();
     },
   });
   const deleteOrder = api.order.deleteOne.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: "Order deleted",
         description: "Your order has been deleted successfully",
       });
-      utils.order.invalidate();
+      await utils.order.invalidate();
     },
   });
   const removeItemFromOrder = api.order.removeItemFromOrder.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: "Order updated",
         description: "Your order has been updated successfully",
       });
-      utils.order.invalidate();
+      await utils.order.invalidate();
     },
   });
   const updateOrder = api.order.updateOrder.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: "Order updated",
         description: "Your order has been updated successfully",
       });
 
-      utils.order.invalidate();
-      utils.table.invalidate();
+      await utils.order.invalidate();
+      await utils.table.invalidate();
     },
   });
 
   const unselect = api.table.unselectTable.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({ title: "Table Unselected" });
 
-      utils.order.invalidate();
-      utils.table.invalidate();
+      await utils.order.invalidate();
+      await utils.table.invalidate();
     },
     onError: (err) => {
       console.log("ERROR:UNSELECTING ", err);
     },
   });
   const setSelectedTable = api.table.setSelectedTable.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({ title: "Table Selected" });
 
-      utils.order.invalidate();
-      utils.table.invalidate();
+      await utils.order.invalidate();
+      await utils.table.invalidate();
     },
   });
 
@@ -150,7 +152,9 @@ export default function useOrder() {
       body: { status: "In Progress", selectedBy: null },
     });
 
-    setOrder(null);
+    // setOrder(null);
+    // utils.order.invalidate();
+    refetchOrder();
   };
 
   const changeStatus = ({

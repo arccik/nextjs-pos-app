@@ -13,9 +13,6 @@ import { Banknote, CreditCard } from "lucide-react";
 import CashPayment from "./CashPayment";
 import TipsButton from "./TipsButton";
 import usePayments from "@/hooks/usePayments";
-// import { useQuery } from "@tanstack/react-query";
-// import { getOneByOrderId } from "@/api/bills";
-// import { type BillWithPayments } from "@/server/db/schemas";
 import PaymentsList from "./PaymentsList";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { api } from "@/trpc/react";
@@ -50,13 +47,13 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
   };
   const handlePayment = (paymentMethod: "Cash" | "Card") => {
     if (!bills?.id) return;
-    makePayment({
-      billId: bills.id,
-      userId: bills.userId!,
-      chargedAmount: bills.totalAmount,
-      paymentMethod,
-      tipAmount: tipsAmount,
-    });
+    // makePayment({
+    //   billId: bills.id,
+    //   userId: bills.userId!,
+    //   chargedAmount: bills.totalAmount,
+    //   paymentMethod,
+    //   tipAmount: tipsAmount,
+    // });
   };
   return (
     <AlertDialog open={isOpen} onOpenChange={handleDialogButton}>

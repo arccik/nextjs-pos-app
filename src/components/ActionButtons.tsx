@@ -9,7 +9,7 @@ import PaymentButton from "./payment/PaymentButton";
 import { api } from "@/trpc/react";
 import { toast } from "./ui/use-toast";
 import useOrder from "@/hooks/useOrder";
-// import PaymentButton from "./Payment/PaymentButton";
+import { cn } from "@/lib/utils";
 
 type ActionButtonsProps = {
   orderId: string;
@@ -27,19 +27,20 @@ export default function ActionButtons({
   totalAmount,
 }: ActionButtonsProps) {
   const { changeStatus } = useOrder();
-  const buttonText: Record<OrderStatus[number], string> = {
+  const buttonText = {
     Pending: "In Progress",
     "In Progress": "Ready",
     Ready: "Served",
     Served: "Completed",
     Completed: "Cancelled",
     Cancelled: "Cancelled",
-  };
+  } as const;
+  const nextStatus: OrderStatus[number] = buttonText[status];
 
   const handleClick = () => {
     changeStatus({
       orderId,
-      status: buttonText[status],
+      status: nextStatus,
     });
   };
   return (
@@ -48,15 +49,19 @@ export default function ActionButtons({
 
       {status !== "In Progress" && (
         <Button
-          className="w-full"
+          className={cn(
+            "w-full border hover:border-slate-500 hover:bg-transparent",
+            nextStatus === "Cancelled" && "bg-red-300",
+          )}
+          variant="secondary"
           onClick={handleClick}
           disabled={!!isPaid && status === "Completed"}
         >
-          {buttonText[status]}
+          {nextStatus}
         </Button>
       )}
 
-      {/* {!isPaid && <PaymentButton orderId={orderId} totalAmount={totalAmount} />} */}
+      {/* {!isPaid && <PaymentButton orderId={orderId} totalAmount={100} />} */}
     </>
   );
 }

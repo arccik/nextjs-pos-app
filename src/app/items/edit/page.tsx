@@ -4,12 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import {
-  type Item,
-  newItemSchema,
-  type NewItem,
-  itemsSchema,
-} from "@/server/db/schemas";
+import { type Item, newItemSchema } from "@/server/db/schemas";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import Loading from "@/components/Loading";

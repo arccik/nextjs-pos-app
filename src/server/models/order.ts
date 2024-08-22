@@ -559,8 +559,9 @@ export const updateOrder = async ({
   body,
 }: {
   id: string;
-  body: NewOrder;
+  body: NewOrder & { userId?: string };
 }) => {
+  console.log("UPDATE ORDER >>> ", { body });
   return await db.update(orders).set(body).where(eq(orders.id, id));
 };
 

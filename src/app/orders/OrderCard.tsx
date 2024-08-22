@@ -65,11 +65,6 @@ export default function OrderCard({ order }: OrderCardProps) {
                   <TableIcon className="mr-2 h-6 w-6" />
                   Table <strong>{tableNumber}</strong>
                 </p>
-                {order.specialRequest && (
-                  <p key="special Request" className="text-sm text-gray-500">
-                    Special Request: {order.specialRequest}
-                  </p>
-                )}
               </div>
             ) : (
               <p
@@ -78,14 +73,6 @@ export default function OrderCard({ order }: OrderCardProps) {
               >
                 <HandPlatter className="mr-2 h-6 w-6" />
                 Take Away
-              </p>
-            )}
-            {!!order?.specialRequest && (
-              <p
-                key="special request table"
-                className="text-sm text-gray-500 dark:text-gray-400"
-              >
-                Special requests: {order.specialRequest}
               </p>
             )}
           </div>
