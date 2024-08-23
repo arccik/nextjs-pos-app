@@ -11,6 +11,7 @@ import type { TableStatus } from "@/server/db/schemas/table";
 import Loading from "@/components/Loading";
 
 import AddReservation from "@/components/reservations/AddReservation/AddReservation";
+import { Button } from "@/components/ui/button";
 // import { AdminMenu } from "./AdminMenu";
 // import { getUnAssignedReservations } from "@/server/models/reservation";
 
@@ -19,13 +20,13 @@ type TabelsGridProps = {
 };
 
 export default function TableCards({ standalone }: TabelsGridProps) {
-  const [status, setStatus] = useState<TableStatus>("available");
+  const [status, setStatus] = useState<TableStatus | undefined>();
 
   const {
     data: tables,
     refetch,
     isLoading,
-  } = api.table.getAllByStatus.useQuery(status);
+  } = api.table.getAll.useQuery(status);
 
   console.log("TableCards", tables);
 
@@ -40,6 +41,9 @@ export default function TableCards({ standalone }: TabelsGridProps) {
         value={status}
         onValueChange={(e: TableStatus) => setStatus(e)}
       >
+        <Button onClick={() => setStatus(undefined)} variant="ghost">
+          All
+        </Button>
         <ToggleGroupItem value="available">Available</ToggleGroupItem>
         <ToggleGroupItem value="occupied"> Occupied</ToggleGroupItem>
         <ToggleGroupItem value="reserved"> Reserved</ToggleGroupItem>

@@ -23,7 +23,7 @@ export const getAllByStatus = async (status: TableStatus) => {
   });
 };
 
-export const getAll = async () => {
+export const getAll = async (status: TableStatus | undefined) => {
   const date = new Date().toLocaleDateString(undefined, {
     day: "2-digit",
     month: "2-digit",
@@ -31,11 +31,12 @@ export const getAll = async () => {
   });
 
   const result = await db.query.tables.findMany({
+    where: status ? eq(tables.status, status) : undefined,
     with: {
       reservations: {
         where: and(
           eq(reservations.tableId, tables.id),
-          eq(reservations.scheduledAt, date),
+          // eq(reservations.scheduledAt, date),
         ),
       },
     },

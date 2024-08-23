@@ -28,7 +28,9 @@ export const tableRouter = createTRPCRouter({
   getOne: protectedProcedure
     .input(z.string())
     .query(async ({ input }) => await getOne(input)),
-  getAll: protectedProcedure.query(async () => await getAll()),
+  getAll: protectedProcedure
+    .input(z.enum(tableStatusEnum).optional())
+    .query(async ({ input }) => await getAll(input)),
   setSelectedTable: protectedProcedure
     .input(z.string())
     .mutation(async ({ input, ctx }) => {
