@@ -10,25 +10,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Delete } from "lucide-react";
 import { useState } from "react";
-// import usePayments from "@/hooks/usePayments";
 import Dialer from "./Dialer";
 
 type CashPaymentProps = {
   totalAmount: number;
+  tipsAmount: number | null;
+  onPay: (amount: number) => void;
 };
 
-export default function CashPayment({ totalAmount }: CashPaymentProps) {
+export default function CashPayment({
+  totalAmount,
+  tipsAmount,
+  onPay,
+}: CashPaymentProps) {
   const [inputValue, setInputValue] = useState<string>("");
-  // const { makePayment } = usePayments();
 
   const handlePayment = () => {
-    // makePayment({
-    //   billId: 1,
-    //   paymentMethod: "Cash",
-    //   chargedAmount: inputValue,
-    //   userId: 1,
-    //   tipAmount: "10",
-    // });
+    onPay(Number(inputValue));
   };
 
   return (

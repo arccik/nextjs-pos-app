@@ -24,6 +24,7 @@ export const bills = sqliteTable(
     serviceFee: real("service_fee"),
     tax: real("tax"),
     paid: integer("paid", { mode: "boolean" }).default(false),
+    tipAmount: real("tip_amount"),
     userId: text("userId", { length: 255 })
       .notNull()
       .references(() => users.id),
@@ -55,12 +56,12 @@ export const payments = sqliteTable("payments", {
   userId: text("userId", { length: 255 })
     .notNull()
     .references(() => users.id),
-  createdAt: integer("created_at", { mode: "timestamp" }).default(
-    sql`(CURRENT_DATE)`,
-  ),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
-    .default(sql`(CURRENT_DATE)`)
-    .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .$default(() => new Date())
+    .notNull(),
 });
 
 export const billsRelations = relations(bills, ({ one, many }) => ({

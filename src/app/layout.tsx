@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 
-// import { GeistSans } from "geist/font/sans";
+import { GeistSans } from "geist/font/sans";
 import { Toaster } from "@/components/ui/toaster";
 import { TRPCReactProvider } from "@/trpc/react";
 import SideBar from "@/components/navbar/SideBar";
@@ -28,9 +28,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <SideBar />
-            <TRPCReactProvider>{children}</TRPCReactProvider>
-            <Toaster />
+            <TRPCReactProvider>
+              <SideBar />
+              {children}
+              <Toaster />
+            </TRPCReactProvider>
           </ThemeProvider>
         </Providers>
       </body>

@@ -27,26 +27,26 @@ import useBill from "@/hooks/useBill";
 type PaymentButtonProps = {
   orderId: string;
 };
-type WhatComponentToShow = "cash" | "card" | "tip" | null;
+type WhatComponentToShow = "Cash" | "Card";
 
 export default function PaymentButton({ orderId }: PaymentButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, setState] = useState<WhatComponentToShow>(null);
+  const [showMethod, setShowMethod] = useState<WhatComponentToShow | null>(
+    null,
+  );
   const [tipsAmount, setTipAmount] = useState<number | null>(null);
   const { data: settings } = api.settings.get.useQuery();
   const currency = settings?.currency || "USD";
 
-  const {
-    data: bills,
-    isLoading: isBillLoading,
-    isError,
-  } = api.bill.getOneByOrderId.useQuery(orderId);
-
-  const { total, pay } = useBill(orderId);
-
-  console.log("BiLlSS<<<< ", bills);
+  const { total, pay, addTips } = useBill(orderId);
 
   // const { makePayment, generateBill } = usePayments();
+
+  const handleAddTips = () => {
+    if (!tipsAmount) return;
+    addTips(tipsAmount);
+    setTipAmount(tipsAmount);
+  };
 
   const handleDialogButton = () => {
     setIsOpen((prev) => !prev);
@@ -54,18 +54,9 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
       // generateBill({ orderId, tipsAmount });
     }
   };
-  const handlePayment = (paymentMethod: WhatComponentToShow) => {
-    console.log("Handle Payment: ", paymentMethod);
-    if (!paymentMethod) return;
-    setState(paymentMethod);
-    // if (!bills?.id) return;
-    // makePayment({
-    //   billId: bills.id,
-    //   userId: bills.userId!,
-    //   chargedAmount: bills.totalAmount,
-    //   paymentMethod,
-    //   tipAmount: tipsAmount,
-    // });
+  const handlePayment = (paymentMethod: WhatComponentToShow, total: number) => {
+    console.log("HANDLEING PAYMENT !!! ", { total });
+    pay(paymentMethod, total);
   };
 
   if (!total) return null;
@@ -83,9 +74,9 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
         <AlertDialogDescription>
           Please choose payment method
         </AlertDialogDescription>
-        {state && (
+        {showMethod && (
           <Button
-            onClick={() => setState(null)}
+            onClick={() => setShowMethod(null)}
             className="absolute right-5 top-5"
             variant="outline"
           >
@@ -93,10 +84,10 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
           </Button>
         )}
 
-        {!state && (
+        {!showMethod && (
           <div className="flex justify-evenly">
             <Button
-              onClick={() => handlePayment("card")}
+              onClick={() => setShowMethod("Card")}
               className="flex size-24 flex-col gap-2"
               variant="outline"
             >
@@ -104,7 +95,7 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
               Card
             </Button>
             <Button
-              onClick={() => handlePayment("cash")}
+              onClick={() => setShowMethod("Cash")}
               className="flex size-24 flex-col gap-2"
               variant="outline"
             >
@@ -115,9 +106,19 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
         )}
 
         <ScrollArea className=" w-full rounded-md">
-          {state === "cash" && <CashPayment totalAmount={total} />}
-          {state === "card" && (
-            <CardPayment tipAmount={tipsAmount} totalAmount={total} />
+          {showMethod === "Cash" && (
+            <CashPayment
+              totalAmount={total}
+              tipsAmount={tipsAmount}
+              onPay={(amount) => handlePayment("Cash", amount)}
+            />
+          )}
+          {showMethod === "Card" && (
+            <CardPayment
+              tipAmount={tipsAmount}
+              totalAmount={total}
+              onPay={(amount) => handlePayment("Card", amount)}
+            />
           )}
           {/* <PaymentsList
               payments={bills?.payments}
@@ -127,7 +128,7 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
         </ScrollArea>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <TipsButton setValue={setTipAmount} orderId={orderId} />
+          <TipsButton setValue={handleAddTips} orderId={orderId} />
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

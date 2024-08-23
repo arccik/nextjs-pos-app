@@ -143,3 +143,13 @@ export const payBill = async (data: NewPayment) => {
   await db.update(bills).set({ paid: true }).where(eq(bills.id, data.billId));
   return payment;
 };
+
+export const addTips = async (billId: string, tipAmount: number) => {
+  const [bill] = await db.select().from(bills).where(eq(bills.id, billId));
+  if (!bill) throw new Error("Bill not found");
+  return await db
+    .update(bills)
+    .set({ totalAmount: bill?.totalAmount + tipAmount, tipAmount })
+    .where(eq(bills.id, billId))
+    .returning();
+};

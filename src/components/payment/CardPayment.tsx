@@ -1,29 +1,24 @@
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
+
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
+import { Separator } from "../ui/separator";
 
 interface PaymentModalProps {
   totalAmount: number;
   tipAmount: number | null;
+  onPay: (amount: number) => void;
 }
 
 export default function CardPayment({
   totalAmount,
-  tipAmount = 0,
+  tipAmount,
+  onPay,
 }: PaymentModalProps) {
-  const [splitOption, setSplitOption] = useState("1");
+  const [splitOption, setSplitOption] = useState("1"); // 1: 100% / 2: 50% / 3: 33% / 4: 25%;
   const [inputValue, setInputValue] = useState("");
 
   const calculateSplitAmount = () => {
@@ -35,11 +30,9 @@ export default function CardPayment({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically handle the payment processing
-    console.log("Processing payment:", {
-      splitOption,
-      inputValue,
-      amount: calculateSplitAmount(),
-    });
+    const amount = calculateSplitAmount();
+    console.log(`Paying: £${amount}`);
+    onPay(parseFloat(amount));
   };
 
   return (
@@ -53,10 +46,9 @@ export default function CardPayment({
               placeholder="Enter payment amount"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              required
             />
+          <p className="text-center text-2xl text-slate-400">OR</p>
           </div>
-
           <div className="space-y-2">
             <Label>Payment Split</Label>
             <Tabs
@@ -76,7 +68,7 @@ export default function CardPayment({
           <div className="space-y-2">
             <Label>Payment Summary</Label>
             <div className="text-sm">
-              {tipAmount && <p>Tip: £{tipAmount}</p>}
+              <p>Tip: £{tipAmount}</p>
               <p className="font-semibold">
                 {splitOption} x £{calculateSplitAmount()}
               </p>
