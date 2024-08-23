@@ -15,17 +15,9 @@ type ActionButtonsProps = {
   orderId: string;
   status: OrderStatus[number];
   isPaid?: boolean | null;
-  tableId?: string | null;
-  totalAmount?: number;
 };
 
-export default function ActionButtons({
-  orderId,
-  status,
-  isPaid,
-  tableId,
-  totalAmount,
-}: ActionButtonsProps) {
+export default function ActionButtons({ orderId, status, isPaid }: ActionButtonsProps) {
   const { changeStatus } = useOrder();
   const buttonText = {
     Pending: "In Progress",
@@ -62,7 +54,7 @@ export default function ActionButtons({
         </Button>
       )}
 
-      {!isPaid && <PaymentButton orderId={orderId} totalAmount={totalAmount} />}
+      {!isPaid && <PaymentButton orderId={orderId} />}
     </>
   );
 }

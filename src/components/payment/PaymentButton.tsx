@@ -19,28 +19,32 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import TipsButton from "./TipsButton";
 import { AlertDescription } from "../ui/alert";
 import { api } from "@/trpc/react";
+import CardPayment from "./CardPayment";
+import Loading from "../Loading";
+import useBill from "@/hooks/useBill";
 // import { api } from "@/trpc/react";
 
 type PaymentButtonProps = {
   orderId: string;
-  totalAmount?: number;
 };
 type WhatComponentToShow = "cash" | "card" | "tip" | null;
 
-export default function PaymentButton({
-  orderId,
-  totalAmount,
-}: PaymentButtonProps) {
+export default function PaymentButton({ orderId }: PaymentButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [state, setState] = useState<WhatComponentToShow>(null);
   const [tipsAmount, setTipAmount] = useState<number | null>(null);
   const { data: settings } = api.settings.get.useQuery();
   const currency = settings?.currency || "USD";
-  // const {
-  //   data: bills,
-  //   isLoading,
-  //   isError,
-  // } = api.bill.getOneByOrderId.useQuery(orderId);
+
+  const {
+    data: bills,
+    isLoading: isBillLoading,
+    isError,
+  } = api.bill.getOneByOrderId.useQuery(orderId);
+
+  const { total, pay } = useBill(orderId);
+
+  console.log("BiLlSS<<<< ", bills);
 
   // const { makePayment, generateBill } = usePayments();
 
@@ -50,7 +54,10 @@ export default function PaymentButton({
       // generateBill({ orderId, tipsAmount });
     }
   };
-  const handlePayment = (paymentMethod: "Cash" | "Card") => {
+  const handlePayment = (paymentMethod: WhatComponentToShow) => {
+    console.log("Handle Payment: ", paymentMethod);
+    if (!paymentMethod) return;
+    setState(paymentMethod);
     // if (!bills?.id) return;
     // makePayment({
     //   billId: bills.id,
@@ -60,6 +67,9 @@ export default function PaymentButton({
     //   tipAmount: tipsAmount,
     // });
   };
+
+  if (!total) return null;
+
   return (
     <AlertDialog open={isOpen} onOpenChange={handleDialogButton}>
       <AlertDialogTrigger asChild>
@@ -69,12 +79,10 @@ export default function PaymentButton({
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
-        <AlertDialogTitle>Payment Method</AlertDialogTitle>
-        {totalAmount && (
-          <AlertDialogDescription>
-            Total Amount: {totalAmount}
-          </AlertDialogDescription>
-        )}
+        <AlertDialogTitle>Total: £{total?.toFixed(2)}</AlertDialogTitle>
+        <AlertDialogDescription>
+          Please choose payment method
+        </AlertDialogDescription>
         {state && (
           <Button
             onClick={() => setState(null)}
@@ -88,7 +96,7 @@ export default function PaymentButton({
         {!state && (
           <div className="flex justify-evenly">
             <Button
-              onClick={() => handlePayment("Card")}
+              onClick={() => handlePayment("card")}
               className="flex size-24 flex-col gap-2"
               variant="outline"
             >
@@ -96,7 +104,7 @@ export default function PaymentButton({
               Card
             </Button>
             <Button
-              onClick={() => handlePayment("Cash")}
+              onClick={() => handlePayment("cash")}
               className="flex size-24 flex-col gap-2"
               variant="outline"
             >
@@ -106,15 +114,16 @@ export default function PaymentButton({
           </div>
         )}
 
-        <ScrollArea className="max-h-[300px] w-full rounded-md">
-          <div className="flex flex-col gap-5 md:flex-row">
-            {state === "cash" && <CashPayment />}
-            {/* <PaymentsList
+        <ScrollArea className=" w-full rounded-md">
+          {state === "cash" && <CashPayment totalAmount={total} />}
+          {state === "card" && (
+            <CardPayment tipAmount={tipsAmount} totalAmount={total} />
+          )}
+          {/* <PaymentsList
               payments={bills?.payments}
               total={bills?.totalAmount}
               tipsAmount={tipsAmount}
             /> */}
-          </div>
         </ScrollArea>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>

@@ -13,9 +13,12 @@ import { useState } from "react";
 // import usePayments from "@/hooks/usePayments";
 import Dialer from "./Dialer";
 
-export default function CashPayment() {
+type CashPaymentProps = {
+  totalAmount: number;
+};
+
+export default function CashPayment({ totalAmount }: CashPaymentProps) {
   const [inputValue, setInputValue] = useState<string>("");
-  const paymentAmount = 100; // for test
   // const { makePayment } = usePayments();
 
   const handlePayment = () => {
@@ -29,7 +32,7 @@ export default function CashPayment() {
   };
 
   return (
-    <Card className="mx-auto w-full max-w-lg">
+    <Card className="mx-auto w-full">
       <CardHeader>
         <CardDescription className="flex gap-4">
           <Input
@@ -38,7 +41,7 @@ export default function CashPayment() {
             type="number"
             className="w-full"
             autoComplete="off"
-            disabled={Number(inputValue) > paymentAmount}
+            disabled={Number(inputValue) > totalAmount}
             autoCorrect="off"
             autoCapitalize="off"
             spellCheck="false"
@@ -54,7 +57,7 @@ export default function CashPayment() {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center">
-        <Dialer value={paymentAmount} setValue={setInputValue} />
+        <Dialer value={totalAmount} setValue={setInputValue} />
       </CardContent>
       <CardFooter className="flex justify-center space-x-2">
         <Button

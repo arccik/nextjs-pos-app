@@ -16,8 +16,8 @@ export const billRouter = createTRPCRouter({
       return await getOneByOrderId(input);
     }),
   payBill: protectedProcedure
-    .input(newPaymentSchema)
-    .mutation(async ({ input }) => {
-      return await payBill(input);
+    .input(newPaymentSchema.extend({ userId: z.string().optional() }))
+    .mutation(async ({ input, ctx }) => {
+      return await payBill({ ...input, userId: ctx.session.user.id });
     }),
 });
