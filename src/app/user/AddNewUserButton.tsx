@@ -22,7 +22,8 @@ export default function AddNewUserButton() {
         <DialogHeader>
           <DialogTitle>Add New User</DialogTitle>
           <DialogDescription>
-            Fill up required information below. Click save when you're done.
+            Fill up required information below. Click save when you&apos;re
+            done.
           </DialogDescription>
         </DialogHeader>
 

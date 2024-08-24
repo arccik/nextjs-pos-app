@@ -8,24 +8,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { type Payment } from "@/server/db/schemas";
 import { formatCurrency } from "@/lib/utils";
+import { api } from "@/trpc/react";
 
 type PaymentsListProps = {
-  payments?: Payment[];
   tipsAmount?: number | null;
   total?: number;
+  billId: string;
 };
 
-export default function PaymentsList({
-  payments,
-  total,
-  tipsAmount,
-}: PaymentsListProps) {
-  const totalPaid = payments?.reduce(
-    (acc, payment) => acc + Number(payment.chargedAmount),
-    0,
-  );
+export default function PaymentsList({ total, tipsAmount, billId }: PaymentsListProps) {
+  const { data: payments } = api.payment.getAll.useQuery({ billId });
+
   const summary = total ?? 0 + (tipsAmount ? Number(tipsAmount) : 0);
   return (
     <Table>
@@ -69,14 +63,14 @@ export default function PaymentsList({
           </TableCell>
         </TableRow>
 
-        {!!totalPaid && (
+        {/* {!!totalPaid && (
           <TableRow className="bg-slate-200">
             <TableCell colSpan={2}>Paid</TableCell>
             <TableCell className="text-right">
               {formatCurrency(totalPaid)}
             </TableCell>
           </TableRow>
-        )}
+        )} */}
       </TableFooter>
     </Table>
   );

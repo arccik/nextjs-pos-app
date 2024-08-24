@@ -1,12 +1,8 @@
-import {
+import type {
   Bill,
-  Item,
   NewOrderItem,
-  Order,
   OrderItem,
   Reservation,
-  Table,
-  User,
 } from "@/server/db/schemas";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -16,11 +12,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-
 export function formatCurrency(
   amount?: string | number | null,
-  currency: string = "GBP",
-  locale: string = "en-GB",
+  currency = "GBP",
+  locale = "en-GB",
 ): string {
   if (!amount) return "";
   const amountNumber = Number(amount);
@@ -101,9 +96,9 @@ export const combineOrderItems = (
     if (combinedMap.has(key)) {
       const existingItem = combinedMap.get(key)!;
       existingItem.quantity =
-        (existingItem.quantity || 0) + (item.quantity || 0);
+        (existingItem.quantity ?? 0) + (item.quantity ?? 0);
     } else {
-      combinedMap.set(key, { ...item, quantity: item.quantity || 0 });
+      combinedMap.set(key, { ...item, quantity: item.quantity ?? 0 });
     }
   };
 
@@ -128,7 +123,6 @@ export type ItemToSummerize = {
     imageUrl: string | null;
   };
 };
-
 
 export function formatId(id: string) {
   return id.slice(-4);

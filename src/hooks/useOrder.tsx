@@ -1,9 +1,9 @@
 "use client";
-import { Order, OrderStatus } from "@/server/db/schemas";
+import type { Order, OrderStatus } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
-import { OrderItemsBill } from "@/server/models/order";
+import { type OrderItemsBill } from "@/server/models/order";
 
 type AddToOrderProps = {
   itemId: string;
@@ -14,10 +14,8 @@ type AddToOrderProps = {
 export default function useOrder() {
   const [order, setOrder] = useState<OrderItemsBill | null>(null);
   const utils = api.useUtils();
-  const { data: selectedOrder, refetch: refetchOrder } =
-    api.order.getSelectedByUser.useQuery();
-  const { data: table, refetch: refetchTable } =
-    api.table.getSelectedTable.useQuery();
+  const { data: selectedOrder } = api.order.getSelectedByUser.useQuery();
+  const { data: table } = api.table.getSelectedTable.useQuery();
   const setStatus = api.order.setStatus.useMutation({
     onSuccess: async () => {
       toast({ title: "Order Status Changed" });
@@ -28,10 +26,10 @@ export default function useOrder() {
   useEffect(() => {
     if (!selectedOrder) return;
     setOrder(selectedOrder);
-    if (table && table?.id) {
+    if (table?.id) {
       setOrder({ ...selectedOrder, table });
     }
-  }, [selectedOrder]);
+  }, [selectedOrder, table]);
 
   const changeTableStatus = api.table.changeStatus.useMutation({
     onSuccess: async () => {

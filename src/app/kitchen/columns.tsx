@@ -1,23 +1,23 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 
 import type { Item, Order } from "@/server/db/schemas";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+// import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import { makeReady } from "@/api/orders";
-import { api } from "@/trpc/react";
-import { MainOrder, OrderWithItems } from "@/server/models/order";
+// import { api } from "@/trpc/react";
+import { type OrderWithItems } from "@/server/models/order";
 
 export const columns: ColumnDef<OrderWithItems>[] = [
   {
     accessorKey: "orderId",
     header: "Order ID",
-    cell: ({ row }) => <div>{(row.getValue("orders") as Order)?.id}</div>,
+    cell: ({ row }) => <div>{row.getValue("orders.id")}</div>,
   },
   {
     accessorKey: "items",
     header: () => <p className="text-xs">Items</p>,
     cell: (data) => {
-      const item = data.row.getValue("items") as Item;
+      const item: Item = data.row.getValue("items");
 
       return <div className="ml-4">{item?.id}</div>;
     },
@@ -35,7 +35,7 @@ export const columns: ColumnDef<OrderWithItems>[] = [
     accessorKey: "action",
     header: () => <p className="text-xs">Action</p>,
     cell: (data) => {
-      const order = data.row.getValue("orders") as Order;
+      const order: Order = data.row.getValue("orders");
       const orderStatus = order?.status;
       //   const queryClient = useQueryClient();
 
@@ -68,7 +68,7 @@ export const columns: ColumnDef<OrderWithItems>[] = [
     accessorKey: "orders",
     header: () => <p className="text-xs">Status</p>,
     cell: ({ row }) => {
-      const order = row.getValue("orders") as Order;
+      const order: Order = row.getValue("orders");
       return <div className="text-[10px]">{order?.status}</div>;
     },
   },

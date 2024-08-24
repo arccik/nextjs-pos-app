@@ -5,13 +5,13 @@ import {
   text,
 } from "drizzle-orm/sqlite-core";
 import { v4 as uuid } from "uuid";
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { Item, items } from "./item";
-import { Table, tables } from "./table";
-import { User, users } from "./user";
+import { items } from "./item";
+import { tables } from "./table";
+import { type User, users } from "./user";
 import { z } from "zod";
-import { Bill, bills } from "./bill";
+import { type Bill, bills } from "./bill";
 
 export const orderStatus = [
   "Pending",

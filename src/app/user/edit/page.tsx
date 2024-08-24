@@ -11,9 +11,7 @@ import Loading from "@/components/Loading";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import Fields from "./Fields";
-import { z } from "zod";
-import { UpdateUser, updateUserSchema } from "@/server/db/schemas";
-import { revalidatePath } from "next/cache";
+import { type UpdateUser, updateUserSchema } from "@/server/db/schemas";
 import { useSession } from "next-auth/react";
 
 export default function EditUserPage() {
@@ -21,7 +19,7 @@ export default function EditUserPage() {
   const searchParams = useSearchParams();
   const { update } = useSession();
 
-  const id = searchParams.get("id") as string;
+  const id = searchParams.get("id")!;
   const { data: user, isLoading } = api.user.getOne.useQuery(id, {
     enabled: !!id,
   });
@@ -40,7 +38,7 @@ export default function EditUserPage() {
     if (user) {
       form.reset({
         email: user.email,
-        name: user.name!,
+        name: user.name,
         role: user.role,
         image: user.image ?? "",
       });
@@ -48,10 +46,10 @@ export default function EditUserPage() {
   }, [user]);
 
   const updateUser = api.user.update.useMutation({
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       const [user] = response ?? [];
       toast({ title: `Successfully update ${form.getValues("name")}` });
-      update({ name: user?.name, image: user?.image });
+      await update({ name: user?.name, image: user?.image });
       router.refresh();
       router.back();
     },

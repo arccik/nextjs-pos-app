@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import { type NewReservation } from "@/server/db/schemas";
-import { UseFormReturn } from "react-hook-form";
+import { type UseFormReturn } from "react-hook-form";
 
 type StageButtonsProps = {
   setSelectedTab: (value: string) => void;

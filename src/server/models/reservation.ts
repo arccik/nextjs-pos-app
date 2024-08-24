@@ -1,14 +1,14 @@
 "use server";
 import {
-  NewReservation,
+  type NewReservation,
   type Reservation,
   reservations,
-  GetTimeSlot,
+  type GetTimeSlot,
 } from "../db/schemas/reservation";
 import { db } from "../db";
 import { and, eq, isNull } from "drizzle-orm";
 import {
-  StoreSettings,
+  type StoreSettings,
   storeRegularSchedule,
   storeSettings,
 } from "../db/schemas";

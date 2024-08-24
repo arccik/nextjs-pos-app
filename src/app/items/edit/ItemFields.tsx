@@ -17,14 +17,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UseFormReturn } from "react-hook-form";
+import { type UseFormReturn } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/trpc/react";
-import UploadFile from "./UploadFile";
+// import UploadFile from "./UploadFile";
+import { type Item } from "@/server/db/schemas";
 
 type ItemFieldsProps = {
-  form: UseFormReturn<any>;
+  form: UseFormReturn<Required<Item>>;
 };
 
 export default function ItemFields({ form }: ItemFieldsProps) {
@@ -53,7 +54,11 @@ export default function ItemFields({ form }: ItemFieldsProps) {
           <FormItem>
             <FormLabel>Description</FormLabel>
             <FormControl>
-              <Textarea placeholder="type here..." {...field} />
+              <Textarea
+                placeholder="type here..."
+                {...field}
+                value={field.value ?? ""}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -79,7 +84,7 @@ export default function ItemFields({ form }: ItemFieldsProps) {
         )}
       />
 
-      <UploadFile form={form} />
+      {/* <UploadFile form={form} /> */}
       <FormField
         control={form.control}
         name="categoryId"
@@ -139,7 +144,7 @@ export default function ItemFields({ form }: ItemFieldsProps) {
             <FormItem className="items-center space-x-2">
               <FormControl>
                 <Checkbox
-                  checked={field.value}
+                  checked={!!field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
@@ -155,7 +160,7 @@ export default function ItemFields({ form }: ItemFieldsProps) {
             <FormItem className="items-center space-x-2">
               <FormControl>
                 <Checkbox
-                  checked={field.value}
+                  checked={!!field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
@@ -171,7 +176,7 @@ export default function ItemFields({ form }: ItemFieldsProps) {
             <FormItem className="space-x-2">
               <FormControl>
                 <Checkbox
-                  checked={field.value}
+                  checked={!!field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
@@ -187,7 +192,7 @@ export default function ItemFields({ form }: ItemFieldsProps) {
             <FormItem className="space-x-2">
               <FormControl>
                 <Checkbox
-                  checked={field.value}
+                  checked={!!field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>

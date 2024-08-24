@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ReservationStepsProps } from "../ReservationSteps";
+import { type ReservationStepsProps } from "../ReservationSteps";
 import {
   FormControl,
   FormDescription,
@@ -9,11 +9,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ClockIcon, XIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
-import { cn, generateTimeSlots } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Select,
@@ -28,12 +28,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useQuery } from "@tanstack/react-query";
 // import { type ReservationTimeSlot } from "@/server/db/utils";
 // import { fetchTimeSlots } from "@/api/reservation";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { getAll } from "@/server/models/table";
-import { timeSlots } from "@/server/models/reservation";
+// import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+// import { getAll } from "@/server/models/table";
+// import { timeSlots } from "@/server/models/reservation";
 import { api } from "@/trpc/react";
 // import Loading from "@/components/layout/Loading";
 // import Error from "@/components/layout/Error";
@@ -43,8 +42,8 @@ export default function ReservationInfo({ form }: ReservationStepsProps) {
   //   const { venueTables } = useVenueSettings();
   const { data: tables } = api.table.getAll.useQuery();
   // const tables = await getAll();
-  const date = form?.getValues("scheduledAt");
-  const tableId = form?.getValues("tableId");
+  // const date = form?.getValues("scheduledAt");
+  // const tableId = form?.getValues("tableId");
   // const slots = await timeSlots({ date, tableId });
   //   const { isLoading, data, isError } = useQuery<ReservationTimeSlot[]>({
   //     queryKey: ["timeSlots"],

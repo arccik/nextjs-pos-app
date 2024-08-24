@@ -8,6 +8,7 @@ import {
   update,
   deleteOne,
   getTodayTotal,
+  getMostPopular,
 } from "@/server/models/cookedItem";
 import { newCookedItemSchema } from "@/server/db/schemas";
 
@@ -42,5 +43,8 @@ export const cookedItemRouter = createTRPCRouter({
     }),
   getTodayTotal: protectedProcedure.query(async () => {
     return await getTodayTotal();
+  }),
+  getMostPopular: protectedProcedure.query(async () => {
+    return await getMostPopular();
   }),
 });

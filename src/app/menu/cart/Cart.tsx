@@ -16,7 +16,7 @@ import TableIcon from "@/components/navbar/TableIcon";
 import { ClockIcon, Edit2, Utensils } from "lucide-react";
 import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
 import SelectTable from "@/app/waiter/SelectTable";
-import { type SelectedTable } from "@/app/waiter/ChooseTable";
+// import { type SelectedTable } from "@/app/waiter/ChooseTable";
 import useOrder from "@/hooks/useOrder";
 
 export default function Cart() {

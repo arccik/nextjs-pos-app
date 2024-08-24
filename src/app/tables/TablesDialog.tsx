@@ -100,8 +100,6 @@ export default function TableDialog({ tableData }: TableDIalogProps) {
               isPaid={orderData.isPaid}
               orderId={orderData.id}
               status={orderData.status}
-              tableId={tableData.id}
-              totalAmount={orderData.bill?.totalAmount!}
             />
           )}
         </DialogFooter>

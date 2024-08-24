@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "../db";
-import { Category, NewCategory, categories } from "../db/schemas";
+import { type Category, type NewCategory, categories } from "../db/schemas";
 
 export const getOne = async (id: string) => {
   return await db.query.categories.findFirst({

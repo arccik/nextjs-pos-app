@@ -2,6 +2,7 @@ import { type Item } from "@/server/db/schemas/item";
 import { cn, formatCurrency } from "@/lib/utils";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import AddItemToOrderButton from "./AddItemToOrderButton";
+import Image from "next/image";
 
 type MenuItemProps = {
   item: Item;
@@ -12,9 +13,11 @@ export default function MenuItem({ item }: MenuItemProps) {
     <div className="relative mb-8 grid grid-cols-4 gap-4">
       {item.imageUrl && (
         <div className="col-span-1">
-          <img
+          <Image
+            width="128"
+            height="128"
             alt={item.name ?? "Item Image"}
-            className="aspect-[2/4] h-32 w-full rounded-lg object-cover"
+            className="aspect-[2/4] rounded-lg object-cover"
             src={item.imageUrl}
           />
         </div>

@@ -61,7 +61,7 @@ export default function RecentOrders({ tableId }: RecentOrdersProps) {
                 <TableCell>
                   <Link
                     className="font-medium underline"
-                    href={`/order?id=${order.id}`}
+                    href={`/orders/${order.id}`}
                   >
                     #{order.id}
                   </Link>

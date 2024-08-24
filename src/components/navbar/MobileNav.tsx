@@ -1,4 +1,4 @@
-import { signOut } from "next-auth/react";
+// import { signOut } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { TriangleDownIcon } from "@radix-ui/react-icons";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuList,

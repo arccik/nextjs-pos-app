@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/card";
 
 import { Progress } from "@/components/ui/progress";
-import { useQuery } from "@tanstack/react-query";
 // import Loading from "@/components/layout/Loading";
 // import Error from "@/components/layout/Error";
 import { formatCurrency } from "@/lib/utils";

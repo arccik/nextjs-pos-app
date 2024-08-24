@@ -22,11 +22,8 @@ export default function ChooseTable({ close }: ChooseTableProps) {
   const router = useRouter();
 
   const { selectedOrder, unselectTable, selectTable } = useOrder();
-  const {
-    data: tables,
-    isLoading: isTablesLoading,
-    refetch: refetchTables,
-  } = api.table.getAll.useQuery();
+  const { data: tables, isLoading: isTablesLoading } =
+    api.table.getAll.useQuery();
 
   const handleTableSelect = (tableId: string) => {
     selectTable(tableId);

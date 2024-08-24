@@ -3,11 +3,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import {
-  newVenueSettingsSchema,
-  venueSettings,
-  venueSettingsSchema,
-} from "../../db/schemas";
+import { newVenueSettingsSchema, venueSettings } from "../../db/schemas";
 import { eq } from "drizzle-orm";
 
 export const settingsRouter = createTRPCRouter({

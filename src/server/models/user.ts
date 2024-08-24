@@ -1,16 +1,14 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "../db";
-import { NewUser, UpdateUser, type User, users } from "../db/schemas/user";
+import { type NewUser, type UpdateUser, users } from "../db/schemas/user";
 
 export const getOne = async (id: string) => {
-  let response = await db.query.users.findFirst({
+  return await db.query.users.findFirst({
+    columns: { password: false },
     where: eq(users.id, id),
     with: { profileInfo: true },
   });
-  if (!response) return null;
-  const { password, ...user } = response;
-  return user;
 };
 export const getAll = async () => {
   return await db.query.users.findMany();

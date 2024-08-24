@@ -11,17 +11,17 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import DayCard from "./DayCard";
 import SelectedDay from "./SelectedDay";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Rota } from "@/server/db/schemas";
+// import { Button } from "@/components/ui/button";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogDescription,
+//   DialogFooter,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogTrigger,
+// } from "@/components/ui/dialog";
+import { type Rota } from "@/server/db/schemas";
 
 export interface RotaItem {
   date: Date;
@@ -91,7 +91,7 @@ export const MonthCalendar: React.FC<MonthlyRotaProps> = ({
             {day}
           </div>
         ))}
-        {days.map((day, index) => {
+        {days.map((day) => {
           const rotaItem = rotaData.filter(
             (item) =>
               format(item.date, "yyyy-MM-dd") === format(day, "yyyy-MM-dd"),

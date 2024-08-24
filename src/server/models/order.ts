@@ -1,29 +1,21 @@
-import { and, eq, getTableColumns, gte, ne, lt, SQL } from "drizzle-orm";
+import { and, eq, getTableColumns, gte, ne, lt } from "drizzle-orm";
 
 import { db } from "../db";
 import {
   type NewOrder,
   orders,
   orderItems,
-  OrderStatus,
-  NewOrderWithItems,
+  type OrderStatus,
+  type NewOrderWithItems,
   tables,
-  NewOrderItem,
+  type NewOrderItem,
   items,
   users,
-  Item,
-  type NewItem,
-  Order,
   bills,
 } from "../db/schemas";
 import { combineOrderItems } from "../../lib/utils";
 import { endOfToday, startOfToday } from "date-fns";
-import { StringOrTemplateHeader } from "@tanstack/react-table";
-import { generateBill, updateBill } from "./bill";
-import {
-  SQLiteSelect,
-  SQLiteSelectQueryBuilder,
-} from "drizzle-orm/sqlite-core";
+import { updateBill } from "./bill";
 
 export const getOne = async (id: string) => {
   const result = await db.query.orders.findFirst({
@@ -44,6 +36,8 @@ export const getOne = async (id: string) => {
         },
       },
       bill: true,
+      creator: { columns: { password: false, email: false } },
+      table: true,
     },
   });
   return result;
@@ -366,7 +360,8 @@ export const complete = async (id: string) => {
     .update(orders)
     .set({ status: "Completed" })
     .where(eq(orders.id, id));
-  db.update(tables)
+  await db
+    .update(tables)
     .set({ requireCleaning: true })
     .where(eq(tables.id, orders.tableId));
   return result;
@@ -611,7 +606,7 @@ export const getSelectedByUser = async (userId: string) => {
       },
     },
   });
-  return result || null;
+  return result ?? null;
 };
 
 export const unselectOrder = async (orderId: string) => {

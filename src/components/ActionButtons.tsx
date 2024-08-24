@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 // import { useToast } from "@/components/ui/use-toast";
 import { type OrderStatus } from "@/server/db/schemas";
 import PaymentButton from "./payment/PaymentButton";
-import { api } from "@/trpc/react";
-import { toast } from "./ui/use-toast";
 import useOrder from "@/hooks/useOrder";
 import { cn } from "@/lib/utils";
 

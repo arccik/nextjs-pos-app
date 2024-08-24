@@ -3,16 +3,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type NewReservation, newReservationSchema } from "@/server/db/schemas";
 // import { create } from "@/api/reservation";
-import { toast } from "@/components/ui/use-toast";
 import { Form } from "@/components/ui/form";
 
 import ReservationSteps from "./ReservationSteps";
 
-type NewReservationProps = {
-  onComplete: () => void;
-};
+// type NewReservationProps = {
+//   onComplete: () => void;
+// };
 
-export default function NewResetvation({ onComplete }: NewReservationProps) {
+export default function NewResetvation() {
   // const queryClient = useQueryClient();
 
   // const addNewReservation = useMutation({

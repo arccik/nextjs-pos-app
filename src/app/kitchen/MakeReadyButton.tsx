@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
 import useCookedItem from "@/hooks/useCookedItem";
-import { api } from "@/trpc/react";
-import { toast } from "@/components/ui/use-toast";
 
 type MakeReadyButtonProps = {
   orderId: string;

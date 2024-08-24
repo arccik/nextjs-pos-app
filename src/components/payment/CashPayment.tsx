@@ -55,7 +55,7 @@ export default function CashPayment({
         </CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center">
-        <Dialer value={totalAmount} setValue={setInputValue} />
+        <Dialer value={totalAmount + tipsAmount} setValue={setInputValue} />
       </CardContent>
       <CardFooter className="flex justify-center space-x-2">
         <Button

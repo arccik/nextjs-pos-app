@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { format, isToday } from "date-fns";
-import { Rota } from "@/server/db/schemas";
+import { type Rota } from "@/server/db/schemas";
 
 type DayCardProps = {
   rotaItem?: Rota[];
@@ -30,12 +30,14 @@ export default function DayCard({
     >
       <div className="absolute left-1 top-1 text-sm">{format(day, "d")}</div>
       <div className="mt-5">
-        {rotaItem &&
-          rotaItem.map((item) => (
-            <div className={`${colorMap[item.shift]} rounded p-1 text-xs `}>
-              {item.name}
-            </div>
-          ))}
+        {rotaItem?.map((item) => (
+          <div
+            className={`${colorMap[item.shift]} rounded p-1 text-xs`}
+            key={item.id}
+          >
+            {item.name}
+          </div>
+        ))}
       </div>
     </div>
   );

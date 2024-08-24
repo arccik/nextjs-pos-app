@@ -17,10 +17,9 @@ import CashPayment from "./CashPayment";
 import PaymentsList from "./PaymentsList";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import TipsButton from "./TipsButton";
-import { AlertDescription } from "../ui/alert";
-import { api } from "@/trpc/react";
+// import { AlertDescription } from "../ui/alert";
 import CardPayment from "./CardPayment";
-import Loading from "../Loading";
+// import Loading from "../Loading";
 import useBill from "@/hooks/useBill";
 // import { api } from "@/trpc/react";
 
@@ -35,10 +34,10 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
     null,
   );
   const [tipsAmount, setTipAmount] = useState<number | null>(null);
-  const { data: settings } = api.settings.get.useQuery();
-  const currency = settings?.currency || "USD";
+  // const { data: settings } = api.settings.get.useQuery();
+  // const currency = settings?.currency ?? "USD";
 
-  const { total, pay, addTips } = useBill(orderId);
+  const { total, pay, addTips, billId } = useBill(orderId);
 
   // const { makePayment, generateBill } = usePayments();
 
@@ -120,11 +119,7 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
               onPay={(amount) => handlePayment("Card", amount)}
             />
           )}
-          {/* <PaymentsList
-              payments={bills?.payments}
-              total={bills?.totalAmount}
-              tipsAmount={tipsAmount}
-            /> */}
+          {billId && <PaymentsList billId={billId} tipsAmount={tipsAmount} />}
         </ScrollArea>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>

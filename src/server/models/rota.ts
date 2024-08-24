@@ -1,7 +1,7 @@
 import { eq, gte } from "drizzle-orm";
 
 import { db } from "../db";
-import { NewRota, rotas } from "../db/schemas";
+import { type NewRota, rotas } from "../db/schemas";
 
 export const getOne = async (id: string) => {
   return await db.query.rotas.findFirst({

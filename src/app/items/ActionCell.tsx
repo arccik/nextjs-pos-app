@@ -1,6 +1,6 @@
 "use client";
 import type { Item } from "@/server/db/schemas";
-import { CellContext } from "@tanstack/react-table";
+import { type CellContext } from "@tanstack/react-table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,10 +38,12 @@ export default function ActionCell(props: CellContext<Item, unknown>) {
 
   const handleAddItemToStopList = (itemId: string) => {
     // addToStopList.mutate(itemId);
+    console.log("handleAddItemToStopList", itemId);
     throw new Error("Not implemented");
   };
   const handleRemoveItemFromStopList = (itemId: string) => {
     // removeFromStopList.mutate(itemId!);
+    console.log("handleRemoveItemFromStopList", itemId);
     throw new Error("Not implemented");
   };
   //   const deleteItem = useMutation({

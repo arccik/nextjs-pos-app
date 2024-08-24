@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { reservationColumns } from "./columns";
 // import AddReservation from "../addReservation/AddReservation";
-import type { Reservation } from "@/server/db/schemas";
 import { api } from "@/trpc/server";
 import AddReservation from "@/components/reservations/AddReservation/AddReservation";
 import { DataTable } from "@/components/DataTable";

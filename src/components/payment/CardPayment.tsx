@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
-import { Separator } from "../ui/separator";
 
 interface PaymentModalProps {
   totalAmount: number;

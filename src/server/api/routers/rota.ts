@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { getOne, getAll, getByDate, saveRota } from "@/server/models/rota";
-import { newRotaSchema, rotaSchema } from "@/server/db/schemas";
+import { getOne, getAll, getByDate } from "@/server/models/rota";
+// import { newRotaSchema, rotaSchema } from "@/server/db/schemas";
 
 export const rotaRouter = createTRPCRouter({
   getOne: protectedProcedure

@@ -1,12 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "../db";
-import {
-  type Payment,
-  payments,
-  NewPayment,
-  orders,
-  bills,
-} from "../db/schemas";
+import { type Payment, payments, type NewPayment } from "../db/schemas";
 
 export const getOne = async (id: string) => {
   return await db.query.payments.findFirst({

@@ -1,7 +1,7 @@
 import { formatId } from "@/lib/utils";
 import { format } from "date-fns";
 import KitchenOrderItems from "./KitchenOrderItems";
-import { MainOrder } from "@/server/models/order";
+import { type MainOrder } from "@/server/models/order";
 import MakeReadyButton from "./MakeReadyButton";
 import { Card } from "@/components/ui/card";
 

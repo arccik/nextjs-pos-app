@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 
 import { formatCurrency } from "@/lib/utils";
-import { Item, OrderItem } from "@/server/db/schemas";
+// import { Item, OrderItem } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import { useMemo } from "react";
 

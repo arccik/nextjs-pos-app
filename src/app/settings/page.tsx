@@ -15,12 +15,9 @@ import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import {
-  NewVenueSettings,
-  type VenueSettings,
-  venueSettingsSchema,
+  type NewVenueSettings,
   newVenueSettingsSchema,
 } from "@/server/db/schemas";
-import { useMutation, useQuery } from "@tanstack/react-query";
 // import { getVenueSettings, updateVenueSettings } from "@/api/venueSettings";
 // import Loading from "@/components/layout/Loading";
 // import Error from "@/components/layout/Error";
@@ -34,7 +31,7 @@ export default function SettingsPage() {
   //     queryKey: ["venueSettings"],
   //     queryFn: getVenueSettings,
   //   });
-  const mutateFunc = (str: string) => ({
+  const mutateFunc = () => ({
     onSuccess: () => {
       toast({
         title: `Venue Settings successfully saved`,

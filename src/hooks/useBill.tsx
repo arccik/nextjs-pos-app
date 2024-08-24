@@ -23,5 +23,5 @@ export default function useBill(orderId: string) {
     if (!bill?.id) return null;
     saveTips.mutate({ billId: bill.id, amount });
   };
-  return { total: bill?.totalAmount, pay, addTips };
+  return { total: bill?.totalAmount, pay, addTips, billId: bill?.id };
 }

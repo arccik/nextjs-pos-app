@@ -1,13 +1,13 @@
 "use client";
-import { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import type { Item } from "@/server/db/schemas/item";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { CaretSortIcon, CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 
-import { useQuery } from "@tanstack/react-query";
 import ActionCell from "./ActionCell";
-import { api } from "@/trpc/react";
+import Image from "next/image";
+// import { api } from "@/trpc/react";
 
 export const columns: ColumnDef<Item>[] = [
   {
@@ -76,7 +76,12 @@ export const columns: ColumnDef<Item>[] = [
     header: "Image",
     cell: ({ row }) => (
       <div className="ml-4 lowercase">
-        <img width={100} src={row.getValue("imageUrl")} />
+        <Image
+          width="128"
+          height="128"
+          alt={row.getValue("name")}
+          src={row.getValue("imageUrl")}
+        />
       </div>
     ),
   },
@@ -94,15 +99,15 @@ export const columns: ColumnDef<Item>[] = [
       );
     },
     cell: ({ row }) => {
-      const categoryId: string = row.getValue("categoryId");
-      const { data } = useQuery({
-        queryKey: ["category", categoryId],
-        queryFn: () => {
-          const { data } = api.category.getOne.useQuery({ id: categoryId });
-          return data;
-        },
-      });
-      return <div className="ml-4 lowercase">{data?.name}</div>;
+      // const categoryId: string = row.getValue("categoryId");
+      // const { data } = useQuery({
+      //   queryKey: ["category", categoryId],
+      //   queryFn: () => {
+      //     const { data } = api.category.getOne.useQuery({ id: categoryId });
+      //     return data;
+      //   },
+      // });
+      return <div className="ml-4 lowercase">data?.name</div>;
     },
   },
   {

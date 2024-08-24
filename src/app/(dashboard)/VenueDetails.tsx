@@ -1,4 +1,3 @@
-// import { format } from "date-fns";
 import {
   Card,
   CardContent,
@@ -12,25 +11,11 @@ import { Separator } from "@/components/ui/separator";
 
 import StopList from "./StopList";
 
-import { useQuery } from "@tanstack/react-query";
-// import { getVenueSettings } from "@/api/venueSettings";
 import { db } from "@/server/db";
-// import type { VenueSettings } from "@server/src/schemas";
-// import Loading from "@/components/layout/Loading";
-// import Error from "@/components/layout/Error";
 
 export default async function VenueDetails() {
   const venueSettings = await db.query.venueSettings.findFirst();
 
-  // const {
-  //   data: venueSettings,
-  //   isLoading,
-  //   isError,
-  // } = useQuery<VenueSettings>({
-  //   queryKey: ["venueSettings"],
-  //   queryFn: getVenueSettings,
-  // });
-  // if (isError) return <Error message="Fail to fetch venue settings" />;
   const isLoading = false;
   return (
     <Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">

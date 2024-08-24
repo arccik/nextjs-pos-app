@@ -1,6 +1,12 @@
 import { eq, gte } from "drizzle-orm";
 
-import { NewBill, NewPayment, bills, orders, payments } from "../db/schemas";
+import {
+  type NewBill,
+  type NewPayment,
+  bills,
+  orders,
+  payments,
+} from "../db/schemas";
 import { getOne as getOneOrder } from "./order";
 import { subDays } from "date-fns";
 import { db } from "../db";
@@ -111,14 +117,12 @@ export const paidThisWeek = async () => {
     .select()
     .from(bills)
     .where(gte(bills.createdAt, subDays(today, 7)));
-  return (
-    result &&
-    result
+    if (!result) return;
+    return result
       .reduce((acc, cur) => {
         return acc + Number(cur.totalAmount);
       }, 0)
-      .toFixed(2)
-  );
+      .toFixed(2);
 };
 
 export const paidThisMonth = async () => {

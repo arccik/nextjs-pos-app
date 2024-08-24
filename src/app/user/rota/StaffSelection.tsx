@@ -8,11 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Rota, User } from "@/server/db/schemas";
+import { type User } from "@/server/db/schemas";
 
 type Shift = "morning" | "evening" | "night";
 
-interface StaffStatus {
+export interface StaffStatus {
   id: string;
   working: boolean;
   shift: Shift | null;
@@ -82,7 +82,7 @@ export function StaffStatusSelector({
               </Button>
               {status?.working && (
                 <Select
-                  value={status.shift || ""}
+                  value={status.shift ?? ""}
                   onValueChange={(value: Shift) =>
                     updateStaffShift(staff.id, value)
                   }

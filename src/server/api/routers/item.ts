@@ -8,7 +8,7 @@ import {
   update,
   deleteOne,
 } from "@/server/models/item";
-import { newItemSchema, itemsSchema } from "@/server/db/schemas";
+import { newItemSchema } from "@/server/db/schemas";
 
 export const itemRouter = createTRPCRouter({
   getOne: protectedProcedure

@@ -16,9 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type Category, type NewItem } from "@/server/db/schemas";
-import { UseFormReturn } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
+import { type NewItem } from "@/server/db/schemas";
+import { type UseFormReturn } from "react-hook-form";
+// import { useQuery } from "@tanstack/react-query";
 // import { getAll } from "@/api/categories";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";

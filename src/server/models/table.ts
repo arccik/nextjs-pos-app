@@ -2,11 +2,11 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "../db";
 import {
-  NewTable,
+  type NewTable,
   reservations,
-  Table,
+  type Table,
   tables,
-  TableStatus,
+  type TableStatus,
 } from "../db/schemas";
 
 export const getOne = async (id: string) => {
@@ -24,11 +24,11 @@ export const getAllByStatus = async (status: TableStatus) => {
 };
 
 export const getAll = async (status: TableStatus | undefined) => {
-  const date = new Date().toLocaleDateString(undefined, {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  // const date = new Date().toLocaleDateString(undefined, {
+  //   day: "2-digit",
+  //   month: "2-digit",
+  //   year: "numeric",
+  // });
 
   const result = await db.query.tables.findMany({
     where: status ? eq(tables.status, status) : undefined,

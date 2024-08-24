@@ -16,7 +16,7 @@ export default function EditItem() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const id = searchParams.get("id") as string;
+  const id = searchParams.get("id")!;
   const { data: item, isLoading } = api.item.getOne.useQuery(
     { id },
     { enabled: !!id },

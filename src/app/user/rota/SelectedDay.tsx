@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
+  // DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  // DialogTrigger,
 } from "@/components/ui/dialog";
-import { StaffStatusSelector } from "./StaffSelection";
+import { StaffStatus, StaffStatusSelector } from "./StaffSelection";
 import { api } from "@/trpc/react";
 import Loading from "@/components/Loading";
 type SelectedDayProps = {
@@ -16,17 +16,16 @@ type SelectedDayProps = {
   diselect: () => void;
 };
 
-
 export default function SelectedDay({ date, diselect }: SelectedDayProps) {
-  const saveRota = api.rota;
-  const handleStatusChange = (staffStatus: any[]) => {
+  // const saveRota = api.rota;
+  const handleStatusChange = (staffStatus: StaffStatus[]) => {
     console.log("Staff status:", staffStatus);
-    // Handle the status change (e.g., update state, send to server, etc.)
-    // You can filter this array to get working and off staff, along with their shifts
-    const workingStaff = staffStatus.filter((s) => s.working);
-    const offStaff = staffStatus.filter((s) => !s.working);
-    console.log("Working staff:", workingStaff);
-    console.log("Off staff:", offStaff);
+    // // Handle the status change (e.g., update state, send to server, etc.)
+    // // You can filter this array to get working and off staff, along with their shifts
+    // const workingStaff = staffStatus.filter((s) => s.working);
+    // const offStaff = staffStatus.filter((s) => !s.working);
+    // console.log("Working staff:", workingStaff);
+    // console.log("Off staff:", offStaff);
   };
   const { data, isLoading } = api.user.getAll.useQuery();
 

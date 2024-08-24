@@ -13,11 +13,11 @@ export default function TipsButton({ setValue, orderId }: TipsButtonProps) {
   const [show, setShow] = useState(false);
   const [tipValue, setTipValue] = useState<number | null>(null);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (!tipValue) return;
     setValue(tipValue);
     setShow(false);
-    queryClient.invalidateQueries({ queryKey: ["bill", orderId] });
+    await queryClient.invalidateQueries({ queryKey: ["bill", orderId] });
     setTipValue(null);
   };
   const queryClient = useQueryClient();

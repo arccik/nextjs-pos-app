@@ -1,5 +1,4 @@
 // import { relations } from "drizzle-orm";
-import { sql } from "drizzle-orm";
 import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { v4 as uuid } from "uuid";

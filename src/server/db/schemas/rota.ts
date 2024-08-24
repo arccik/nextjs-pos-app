@@ -2,7 +2,7 @@ import { text, sqliteTable, int, integer } from "drizzle-orm/sqlite-core";
 import { v4 as uuid } from "uuid";
 
 import { users } from "./user";
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const shift = ["morning", "evening", "night"] as const;

@@ -21,7 +21,6 @@ import {
   getSpecialRequest,
   deleteOne,
   getPendingOrder,
-  getAllByStatus,
   newOrder,
   removeItemFromOrder,
   updateOrder,

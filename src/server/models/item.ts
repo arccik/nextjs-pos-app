@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "../db";
-import { items, NewItem, Item } from "../db/schemas";
+import { items, type NewItem } from "../db/schemas";
 
 export const getOne = async (id: string) => {
   return await db.query.items.findFirst({

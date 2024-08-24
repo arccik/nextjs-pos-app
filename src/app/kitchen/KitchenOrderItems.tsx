@@ -2,16 +2,10 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import useCookedItem from "@/hooks/useCookedItem";
 import { cn } from "@/lib/utils";
-import { OrderItem } from "@/server/db/schemas";
-import { OrderWithItems } from "@/server/models/order";
-import { CheckedState } from "@radix-ui/react-checkbox";
-import { useState } from "react";
+import { type OrderWithItems } from "@/server/models/order";
+import { type CheckedState } from "@radix-ui/react-checkbox";
 
-type Item = {
-  name: string;
-  quantity: number;
-  id: string;
-};
+
 
 type KitchenOrderItemsProps = {
   items: OrderWithItems["orderItems"];

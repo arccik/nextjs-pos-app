@@ -1,9 +1,9 @@
 import { text, sqliteTable, integer, unique } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { Reservation, reservations } from "./reservation";
-import { User, users } from "./user";
-import { relations, sql } from "drizzle-orm";
+import { type Reservation } from "./reservation";
+import { type User, users } from "./user";
+import { relations } from "drizzle-orm";
 import { v4 as uuid } from "uuid";
 
 export const tableStatusEnum = [
@@ -42,7 +42,7 @@ export const tables = sqliteTable(
   }),
 );
 
-export const tableRelations = relations(tables, ({ one, many }) => ({
+export const tableRelations = relations(tables, ({ one }) => ({
   user: one(users, {
     fields: [tables.selectedBy],
     references: [users.id],

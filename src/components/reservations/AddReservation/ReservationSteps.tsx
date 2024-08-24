@@ -1,6 +1,6 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UseFormReturn } from "react-hook-form";
+import { type UseFormReturn } from "react-hook-form";
 import { useState } from "react";
 import ReservationInfo from "./stages/ReservationInfo";
 import CustomerInfo from "./stages/CustomerInfo";

@@ -2,7 +2,6 @@ import {
   HomeIcon,
   BookOpenText,
   LineChart,
-  PersonStanding,
   ConciergeBell,
   Ham,
   BookMarked,
@@ -12,7 +11,7 @@ import {
 
 import TableIcon from "./TableIcon";
 import ChefIcon from "./ChefIcon";
-import Waiter from "./WaiterIcon";
+// import Waiter from "./WaiterIcon";
 
 export default [
   {

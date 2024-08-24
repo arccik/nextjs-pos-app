@@ -17,7 +17,7 @@ import {
 } from "@/server/db/schemas";
 import { isExist } from "./models/user";
 
-type UserRole = "admin" | "waiter";
+// type UserRole = "admin" | "waiter";
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -46,7 +46,7 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user, token }) => ({
+    session: ({ session, token }) => ({
       ...session,
       user: {
         ...session.user,
@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
         },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials) return null;
 
         const user = await isExist(credentials.email);

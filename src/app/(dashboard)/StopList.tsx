@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 // import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 // import { addItemToStopList, getAll, removeItemFromStopList } from "@/api/items";
 // import type { Item } from "@server/src/schemas";
-import { useState } from "react";
 import { db } from "@/server/db";
 import { eq } from "drizzle-orm";
 
@@ -42,14 +41,15 @@ export default async function StopList() {
   //   },
   // });
 
-  const handleAddItemToStopList = (itemId: string) => {
-    console.log("Add item to stop list:", itemId);
-    const id = parseInt(itemId);
-    if (isNaN(id)) return;
-    // addToStopList.mutate(id);
-    // setSelectedItem(undefined);
-  };
+  // const handleAddItemToStopList = (itemId: string) => {
+  //   console.log("Add item to stop list:", itemId);
+  //   const id = parseInt(itemId);
+  //   if (isNaN(id)) return;
+  //   // addToStopList.mutate(id);
+  //   // setSelectedItem(undefined);
+  // };
   const handleRemoveItemFromStopList = (itemId: string) => {
+    itemId;
     // removeFromStopList.mutate(itemId!);
   };
   return (

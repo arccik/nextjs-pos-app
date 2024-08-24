@@ -2,7 +2,7 @@ import { integer, text, sqliteTable } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { v4 as uuid } from "uuid";
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 
 import { tables } from "./table";
 

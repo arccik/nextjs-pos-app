@@ -7,38 +7,38 @@ export default function useCookedItem(orderId: string) {
 
   const { data: cookedItems, refetch: refetchCookedItems } =
     api.cookedItem.getAll.useQuery(orderId);
-  const { data: order, refetch: refetchOrder } = api.order.getOne.useQuery({
+  const { data: order } = api.order.getOne.useQuery({
     id: orderId,
   });
   const utils = api.useUtils();
 
   const createCookedItem = api.cookedItem.create.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: "Item Added",
         description: `Item been added to the order.`,
       });
-      refetchCookedItems();
-      utils.cookedItem.invalidate();
+      await refetchCookedItems();
+      await utils.cookedItem.invalidate();
     },
   });
   const removeCookedItem = api.cookedItem.delete.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: "Item Removed",
         description: `Item been removed from the order.`,
       });
-      refetchCookedItems();
-      utils.cookedItem.invalidate();
+      await refetchCookedItems();
+      await utils.cookedItem.invalidate();
     },
   });
 
   const setOrderReady = api.order.setStatus.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: "Order is ready",
       });
-      utils.order.invalidate();
+      await utils.order.invalidate();
     },
   });
   const isAllChecked = cookedItems?.length === order?.orderItems.length;

@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,9 +22,8 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { userRoles, newUserSchema } from "@/server/db/schemas";
+import { userRoles, newUserSchema, NewUser } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
-import { revalidatePath } from "next/cache";
 import { useRouter } from "next/navigation";
 
 type AddNewUserProps = {
@@ -33,7 +31,7 @@ type AddNewUserProps = {
 };
 export function AddNewUser({ onComplete }: AddNewUserProps) {
   const router = useRouter();
-  const form = useForm<z.infer<typeof newUserSchema>>({
+  const form = useForm<NewUser>({
     resolver: zodResolver(newUserSchema),
     defaultValues: {
       name: "",
@@ -60,7 +58,7 @@ export function AddNewUser({ onComplete }: AddNewUserProps) {
     },
   });
 
-  function onSubmit(data: z.infer<typeof newUserSchema>) {
+  function onSubmit(data: NewUser) {
     addUser.mutate(data);
   }
   return (

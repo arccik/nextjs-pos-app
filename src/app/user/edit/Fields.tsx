@@ -17,13 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UseFormReturn } from "react-hook-form";
-import { api } from "@/trpc/react";
-import { userRoles } from "@/server/db/schemas";
+import { type UseFormReturn } from "react-hook-form";
+import { type UpdateUser, userRoles } from "@/server/db/schemas";
 // import UploadFile from "./UploadFile";
 
 type FieldsProps = {
-  form: UseFormReturn<any>;
+  form: UseFormReturn<UpdateUser>;
 };
 
 // name: string | null;
@@ -63,7 +62,7 @@ export default function Fields({ form }: FieldsProps) {
       />
       <FormField
         control={form.control}
-        name="Password"
+        name="password"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Password</FormLabel>

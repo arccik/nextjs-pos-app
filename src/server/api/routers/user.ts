@@ -10,12 +10,7 @@ import {
   deleteOne,
   update,
 } from "@/server/models/user";
-import {
-  newPaymentSchema,
-  newUserSchema,
-  updateUserSchema,
-  userSchema,
-} from "@/server/db/schemas";
+import { newUserSchema, updateUserSchema } from "@/server/db/schemas";
 
 export const userRouter = createTRPCRouter({
   getOne: protectedProcedure.input(z.string()).query(async ({ input }) => {
@@ -27,7 +22,7 @@ export const userRouter = createTRPCRouter({
   create: protectedProcedure
     .input(newUserSchema)
     .mutation(async ({ input }) => {
-      const password = await bcrypt.hash(input.password!, 10);
+      const password = await bcrypt.hash(input.password, 10);
       return await create({ ...input, password });
     }),
   deleteOne: protectedProcedure

@@ -1,3 +1,4 @@
+"use client";
 import {
   CardTitle,
   CardDescription,
@@ -7,7 +8,7 @@ import {
   Card,
 } from "@/components/ui/card";
 
-import { MainOrder, type OrderWithItems } from "@/server/models/order";
+import { type MainOrder, type OrderWithItems } from "@/server/models/order";
 
 import DisplayOrderItems from "./DisplayOrderItems";
 import CountDownOpenOrder from "./CountDownOpenOrder";
@@ -30,7 +31,6 @@ export default function OrderCard({ order }: OrderCardProps) {
 
   const tableNumber = order.table?.number;
   const serviceFee = order.bill?.serviceFee;
-  const total = order.bill?.totalAmount;
 
   return (
     <Card className="w-full">
@@ -39,7 +39,7 @@ export default function OrderCard({ order }: OrderCardProps) {
         onClick={() => setShowDetails((prev) => !prev)}
       >
         <CardTitle className="flex justify-between">
-          <Link href={`/order?id=${order.id}`}>
+          <Link href={`/orders/${order.id}`}>
             <span>Order #{formatId(order.id)}</span>
           </Link>
           <span className="flex gap-2">
@@ -102,8 +102,6 @@ export default function OrderCard({ order }: OrderCardProps) {
           status={order.status}
           orderId={order.id}
           isPaid={order.isPaid}
-          tableId={order.tableId}
-          totalAmount={total}
         />
       </CardFooter>
     </Card>
