@@ -24,14 +24,14 @@ import ActionButtons from "@/components/ActionButtons";
 
 type OrderCardProps = {
   order: MainOrder;
+  isOpen?: boolean;
 };
 
-export default function OrderCard({ order }: OrderCardProps) {
-  const [showDetails, setShowDetails] = useState(false);
+export default function OrderCard({ order, isOpen }: OrderCardProps) {
+  const [showDetails, setShowDetails] = useState(isOpen);
 
   const tableNumber = order.table?.number;
   const serviceFee = order.bill?.serviceFee;
-
   return (
     <Card className="w-full">
       <CardHeader

@@ -107,7 +107,9 @@ export const columns: ColumnDef<Item>[] = [
       //     return data;
       //   },
       // });
-      return <div className="ml-4 lowercase">data?.name</div>;
+      return (
+        <div className="ml-4 lowercase">data?.name {row.getValue("name")}</div>
+      );
     },
   },
   {

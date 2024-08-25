@@ -45,7 +45,7 @@ export default function SettingsPage() {
     },
   });
 
-  const createSettings = api.settings.create.useMutation(mutateFunc("create"));
+  const createSettings = api.settings.create.useMutation(mutateFunc());
   const { data, isLoading } = api.settings.get.useQuery();
 
   const form = useForm<NewVenueSettings>({

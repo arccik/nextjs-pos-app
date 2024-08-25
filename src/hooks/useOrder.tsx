@@ -4,7 +4,7 @@ import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import { type OrderItemsBill } from "@/server/models/order";
-
+import { useRouter } from "next/navigation";
 type AddToOrderProps = {
   itemId: string;
   quantity: number;
@@ -16,6 +16,7 @@ export default function useOrder() {
   const utils = api.useUtils();
   const { data: selectedOrder } = api.order.getSelectedByUser.useQuery();
   const { data: table } = api.table.getSelectedTable.useQuery();
+  const router = useRouter();
   const setStatus = api.order.setStatus.useMutation({
     onSuccess: async () => {
       toast({ title: "Order Status Changed" });
@@ -83,6 +84,8 @@ export default function useOrder() {
 
       await utils.order.invalidate();
       await utils.table.invalidate();
+
+      order?.id && router.push(`/orders/${order.id}`);
     },
   });
 
@@ -161,6 +164,7 @@ export default function useOrder() {
       changeTableStatus.mutate({ tableId: table.id, status: "occupied" });
     }
     setOrder(null);
+    toast({ title: "Order Sent to Kitchen" });
   };
 
   const changeStatus = ({

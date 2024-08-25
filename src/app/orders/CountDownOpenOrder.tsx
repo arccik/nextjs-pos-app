@@ -16,7 +16,7 @@ export default function CountDownOpenOrder({ date }: { date: Date }) {
     }, 600);
 
     return () => clearInterval(intervalId);
-  }, [data]);
+  }, [date]);
 
   return (
     <div className="flex items-center text-right text-sm">

@@ -18,6 +18,7 @@ export default function Orders({ orderStatus }: OrderProps) {
   //TODO: make api requiest with limit and offset
 
   const { data, isLoading } = api.order.getAll.useQuery(status);
+  console.log("Orders", { data, status });
 
   const total = data?.length;
   return (
@@ -52,7 +53,7 @@ export default function Orders({ orderStatus }: OrderProps) {
             +180.1% from last month
           </p>
           <div className="mt-4">
-            {data ? (
+            {!!data?.length ? (
               <div className="grid  gap-4 md:grid-cols-2 lg:justify-between xl:grid-cols-3">
                 {data.map((order) => (
                   <OrderCard key={order.id} order={order} />

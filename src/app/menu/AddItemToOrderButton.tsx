@@ -6,6 +6,8 @@ import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import QuantityButtons from "./QuantityButtons";
 import useOrder from "@/hooks/useOrder";
+import Loading from "@/components/Loading";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 type AddItemToOrderButtonProps = {
   item: Item;
@@ -17,7 +19,7 @@ export default function AddItemToOrderButton({
   orderId,
 }: AddItemToOrderButtonProps) {
   const [quantity, setQuantity] = useState(1);
-  const { add } = useOrder();
+  const { add, isLoading } = useOrder();
 
   console.log("Use Local Storage Data", orderId);
 
@@ -40,7 +42,13 @@ export default function AddItemToOrderButton({
         onClick={() => handleAddItem({ itemId: item.id, quantity })}
         disabled={!item.isAvailable}
       >
-        <PlusIcon size="1rem" className="mr-1" /> Add to Order
+        {isLoading ? (
+          <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <>
+            <PlusIcon className="mr-2 h-4 w-4" /> Add to Order{" "}
+          </>
+        )}
       </Button>
     </div>
   );
