@@ -7,6 +7,9 @@ import {
   update,
   deleteOne,
   getByBillId,
+  totalSales,
+  totalSoldItems,
+  mostSoldItems,
 } from "@/server/models/payment";
 import { paymentSchema } from "@/server/db/schemas";
 
@@ -42,4 +45,13 @@ export const paymentRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return await deleteOne(input.id);
     }),
+  getTotalSales: protectedProcedure.query(async () => {
+    return await totalSales();
+  }),
+  getTotalSoldItems: protectedProcedure.query(async () => {
+    return await totalSoldItems();
+  }),
+  mostSoldItems: protectedProcedure.query(async () => {
+    return await mostSoldItems();
+  }),
 });

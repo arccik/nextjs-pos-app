@@ -9,7 +9,7 @@ export default async function Reservations() {
   const data = await api.reservation.getAll();
 
   return (
-    <Card>
+    <div>
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <div>
           <h1 className="text-4xl font-semibold">Reservations</h1>
@@ -30,6 +30,6 @@ export default async function Reservations() {
           />
         )}
       </CardContent>
-    </Card>
+    </div>
   );
 }

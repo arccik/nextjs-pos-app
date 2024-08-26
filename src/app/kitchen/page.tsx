@@ -9,29 +9,25 @@ export default function KitchenPage() {
   const { data, isLoading } = api.order.getAll.useQuery("In Progress");
   const { data: cookedItems } = api.cookedItem.getTodayTotal.useQuery();
   return (
-    <main className="sm:p-2">
-      <Card className="p-5">
-        <div className="flex justify-between">
-          <div>
-            <h1 className="text-4xl font-bold">Kitchen</h1>
-            <p className="mt-2 text-gray-400">This is the kitchen page.</p>
-          </div>
-          <div>
-            <p className="text-2xl text-gray-400">
-              Total Orders {data?.length} / {cookedItems}
-            </p>
-          </div>
+    <main className="p-2 sm:p-5">
+      <div className="flex justify-between">
+        <div>
+          <h1 className="text-4xl font-bold">Kitchen</h1>
+          <p className="mt-2 text-gray-400">This is the kitchen page.</p>
         </div>
-        {isLoading ? (
-          <Loading />
-        ) : !!data?.length ? (
-          <KitchenOrderDisplay data={data} />
-        ) : (
-          <p className="my-10 text-center text-gray-400">
-            No orders to display
+        <div>
+          <p className="text-2xl text-gray-400">
+            Total Orders {data?.length} / {cookedItems}
           </p>
-        )}
-      </Card>
+        </div>
+      </div>
+      {isLoading ? (
+        <Loading />
+      ) : !!data?.length ? (
+        <KitchenOrderDisplay data={data} />
+      ) : (
+        <p className="my-10 text-center text-gray-400">No orders to display</p>
+      )}
     </main>
   );
 }

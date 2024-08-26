@@ -35,7 +35,7 @@ export default function PaymentsList({ total, tipsAmount, billId }: PaymentsList
       <TableBody>
         {payments?.map((payment) => (
           <TableRow key={payment.id}>
-            <TableCell className="font-medium">{payment.userId}</TableCell>
+            <TableCell className="font-medium">{payment.user.name}</TableCell>
             <TableCell className="text-center">
               {payment.paymentMethod}
             </TableCell>

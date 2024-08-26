@@ -54,7 +54,6 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
     }
   };
   const handlePayment = (paymentMethod: WhatComponentToShow, total: number) => {
-    console.log("HANDLEING PAYMENT !!! ", { total });
     pay(paymentMethod, total);
   };
 

@@ -513,7 +513,12 @@ export const getRecentOrders = async () => {
       lt(orders.createdAt, endOfToday()),
     ),
 
-    with: { creator: { columns: { name: true, role: true } }, bill: true },
+    with: {
+      creator: { columns: { name: true, role: true } },
+      bill: true,
+      orderItems: true,
+    },
+    limit: 6,
   });
 };
 
@@ -535,10 +540,6 @@ export const getSpecialRequest = async ({ orderId }: { orderId: string }) => {
     where: eq(orders.id, orderId),
     columns: { specialRequest: true },
   });
-  // return await db
-  //   .select({ specialRequest: orders.specialRequest })
-  //   .from(orders)
-  //   .where(eq(orders.id, orderId));
 };
 
 export const getPendingOrder = async (userId: string) => {
@@ -557,7 +558,11 @@ export const updateOrder = async ({
   body: NewOrder & { userId?: string };
 }) => {
   console.log("UPDATE ORDER >>> ", { body });
-  return await db.update(orders).set(body).where(eq(orders.id, id));
+  return await db
+    .update(orders)
+    .set(body)
+    .where(eq(orders.id, id))
+    .returning({ id: orders.id });
 };
 
 export const setOrderStatus = async ({
@@ -567,25 +572,27 @@ export const setOrderStatus = async ({
   orderId: string;
   status: OrderStatus[number];
 }) => {
-  const result = await db
+  const [result] = await db
     .update(orders)
     .set({ status })
-    .where(eq(orders.id, orderId));
+    .where(eq(orders.id, orderId))
+    .returning({ id: orders.id });
   return result;
 };
 
 export const removeSpecialRequest = async (orderId: string) => {
-  const result = await db
+  const [result] = await db
     .update(orders)
     .set({ specialRequest: null })
-    .where(eq(orders.id, orderId));
+    .where(eq(orders.id, orderId))
+    .returning({ id: orders.id });
   return result;
 };
 
 export type OrderItemsBill = Unpromisify<ReturnType<typeof getSelectedByUser>>;
 
 export const getSelectedByUser = async (userId: string) => {
-  const result = await db.query.orders.findFirst({
+  return await db.query.orders.findFirst({
     where: and(eq(orders.selectedBy, userId)),
     with: {
       table: true,
@@ -606,13 +613,13 @@ export const getSelectedByUser = async (userId: string) => {
       },
     },
   });
-  return result ?? null;
 };
 
 export const unselectOrder = async (orderId: string) => {
-  const result = await db
+  const [result] = await db
     .update(orders)
     .set({ selectedBy: null })
-    .where(eq(orders.id, orderId));
+    .where(eq(orders.id, orderId))
+    .returning({ id: orders.id });
   return result;
 };

@@ -3,8 +3,11 @@ import { api } from "@/trpc/react";
 export default function useBill(orderId: string) {
   const { data: bill, refetch: refetchBill } =
     api.bill.getOneByOrderId.useQuery(orderId);
+  const utils = api.useUtils();
   const makePayment = api.payment.create.useMutation({
-    onSuccess: () => refetchBill(),
+    onSuccess: async () => {
+      await utils.order.invalidate();
+    },
   });
   const saveTips = api.bill.addTips.useMutation({
     onSuccess: () => refetchBill(),

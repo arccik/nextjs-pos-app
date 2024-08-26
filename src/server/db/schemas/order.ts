@@ -41,7 +41,9 @@ export const orders = sqliteTable("orders", {
     .default("Pending")
     .notNull(),
   specialRequest: text("special_request"),
-  billId: text("bill_id"),
+  billId: text("bill_id").references(() => bills.id, {
+    onDelete: "set null",
+  }),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .$default(() => new Date())
     .notNull(),
@@ -60,7 +62,14 @@ export const orderItems = sqliteTable(
       .notNull()
       .references(() => items.id, { onDelete: "cascade" }),
     quantity: integer("quantity").notNull().default(1),
+    createdAt: integer("created_at", { mode: "timestamp_ms" })
+      .$default(() => new Date())
+      .notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+      .$default(() => new Date())
+      .notNull(),
   },
+
   (t) => ({
     pk: primaryKey({ columns: [t.orderId, t.itemId] }),
   }),

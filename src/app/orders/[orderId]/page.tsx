@@ -36,20 +36,18 @@ export default async function OrderPage({
 
   return (
     <div className="container mx-auto p-4">
-      <Card className="p-6 ">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold">Order Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <OrderCard order={order} isOpen />
-        </CardContent>
-        <CardFooter className="flex justify-end space-x-2">
-          <Link href="/orders">
-            <Button variant="outline">Back to Orders</Button>
-          </Link>
-          <Button variant="default">Print Order</Button>
-        </CardFooter>
-      </Card>
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold">Order Details</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <OrderCard order={order} isOpen />
+      </CardContent>
+      <CardFooter className="flex justify-end space-x-2">
+        <Link href="/orders">
+          <Button variant="outline">Back to Orders</Button>
+        </Link>
+        <Button variant="default">Print Order</Button>
+      </CardFooter>
     </div>
   );
 }

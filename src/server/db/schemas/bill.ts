@@ -34,9 +34,7 @@ export const bills = sqliteTable(
     updatedAt: integer("updated_at", { mode: "timestamp_ms" })
       .$default(() => new Date())
       .notNull(),
-    orderId: text("order_id")
-      .notNull()
-      .references(() => orders.id, { onDelete: "cascade" }),
+    orderId: text("order_id").notNull(),
   },
   (t) => ({ unq: unique().on(t.userId, t.orderId) }),
 );

@@ -32,6 +32,7 @@ export default function OrderCard({ order, isOpen }: OrderCardProps) {
 
   const tableNumber = order.table?.number;
   const serviceFee = order.bill?.serviceFee;
+
   return (
     <Card className="w-full">
       <CardHeader
@@ -39,9 +40,11 @@ export default function OrderCard({ order, isOpen }: OrderCardProps) {
         onClick={() => setShowDetails((prev) => !prev)}
       >
         <CardTitle className="flex justify-between">
-          <Link href={`/orders/${order.id}`}>
-            <span>Order #{formatId(order.id)}</span>
-          </Link>
+          <div className="flex tracking-tighter">
+            <Link href={`/orders/${order.id}`}>
+              <span>Order #{formatId(order.id)}</span>
+            </Link>
+          </div>
           <span className="flex gap-2">
             <Badge>{order.status}</Badge>
             {order.isPaid && (
@@ -76,7 +79,12 @@ export default function OrderCard({ order, isOpen }: OrderCardProps) {
               </p>
             )}
           </div>
-          <CountDownOpenOrder date={order.createdAt} />
+          <div>
+            <span className="text-sm text-slate-400">
+              Created By {order.creator.name}
+            </span>
+            <CountDownOpenOrder date={order.createdAt} />
+          </div>
         </div>
       </CardHeader>
 

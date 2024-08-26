@@ -1,6 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { api } from "@/trpc/react";
 
 export function RecentSales() {
+  const { data } = api.order.getRecentOrders.useQuery();
+  console.log("RecentSales", data);
   return (
     <div className="space-y-8">
       <div className="flex items-center">

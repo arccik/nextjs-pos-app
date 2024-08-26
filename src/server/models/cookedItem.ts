@@ -71,3 +71,25 @@ export const getMostPopular = async () => {
 
   return result;
 };
+
+export const getLeastPopular = async () => {
+  const cookedItemsList = await db.query.cookedItems.findMany();
+  const ids = cookedItemsList.map((item) => item.itemId);
+  const result = await db
+    .select({
+      itemId: cookedItems.itemId,
+      itemName: items.name, // Assuming you have a `name` column in the `items` table
+      frequency: sql<number>`SUM(${cookedItems.quantity})`,
+    })
+    .from(cookedItems)
+    .innerJoin(items, sql`${cookedItems.itemId} = ${items.id}`)
+    .where(sql`${cookedItems.itemId} IN (${sql.join(ids)})`)
+    .groupBy(cookedItems.itemId)
+    .orderBy(sql`SUM(${cookedItems.quantity}) ASC`);
+
+  return result;
+};
+
+export const getPopularItem = async () => {
+  return await db.select().from(cookedItems).groupBy(cookedItems.itemId);
+};
