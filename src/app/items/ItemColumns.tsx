@@ -99,14 +99,7 @@ export const columns: ColumnDef<Item>[] = [
       );
     },
     cell: ({ row }) => {
-      // const categoryId: string = row.getValue("categoryId");
-      // const { data } = useQuery({
-      //   queryKey: ["category", categoryId],
-      //   queryFn: () => {
-      //     const { data } = api.category.getOne.useQuery({ id: categoryId });
-      //     return data;
-      //   },
-      // });
+
       return (
         <div className="ml-4 lowercase">data?.name {row.getValue("name")}</div>
       );

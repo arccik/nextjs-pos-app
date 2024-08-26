@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Badge } from "@/components/ui/badge";
-// import { startOfDay, endOfDay } from "date-fns";
 import { File, ListFilter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,48 +26,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// import { useQuery } from "@tanstack/react-query";
-// import Loading from "@/components/layout/Loading";
-// import Error from "@/components/layout/Error";
-// import { recentOrders } from "@/api/orders";
-// import type { OrderWithUserAndBill } from "@server/src/schemas";
-// import { useNavigate } from "react-router-dom";
+
 import { formatCurrency, formatId } from "@/lib/utils";
-// import { db } from "@/server/db";
 import Link from "next/link";
 import { api } from "@/trpc/server";
-import { redirect } from "next/navigation";
-
-// import { PDFDownloadLink } from "@react-pdf/renderer";
-// import TablePDF from "./TablePDF";
 
 export default async function OrderTable() {
-  // const today = new Date();
-  // const startOfToday = startOfDay(today);
-  // const endOfToday = endOfDay(today);
   const data = await api.order.getAll();
-
-  // const data = await db.query.orders.findMany({
-  //   where: and(
-  //     gte(orders.createdAt, startOfToday),
-  //     lt(orders.createdAt, endOfToday),
-  //   ),
-
-  //   with: { user: { columns: { name: true, role: true } }, bill: true },
-  // });
-
-  // const navigate = useNavigate();
-  // const { data, isLoading, isError } = useQuery<OrderWithUserAndBill[]>({
-  //   queryKey: ["orders"],
-  //   queryFn: recentOrders,
-  // });
-  // if (isLoading) return <Loading />;
-  // if (isError) return <Error message="Fail to fetch orders" />;
-  // const tableData: any[] = [
-  //   { column1: "Value 1", column2: "Value 2", column3: "Value 3", column4: "Value 4" },
-  //   { column1: "Value 5", column2: "Value 6", column3: "Value 7", column4: "Value 8" },
-  //   // Add more rows as needed
-  // ];
 
   return (
     <Tabs defaultValue="week">
@@ -134,10 +98,7 @@ export default async function OrderTable() {
                       prefetch={false}
                       key={order.id}
                     >
-                      <TableRow
-                        onClick={() => redirect(`/orders/${order.id}`)}
-                        className="cursor-pointer"
-                      >
+                      <TableRow className="cursor-pointer">
                         <TableCell>
                           <div className="font-medium">
                             {formatId(order.id)}

@@ -1,3 +1,4 @@
+"use client";
 import { Input } from "@/components/ui/input";
 import {
   FormControl,
@@ -18,15 +19,14 @@ import {
 } from "@/components/ui/select";
 import { type NewItem } from "@/server/db/schemas";
 import { type UseFormReturn } from "react-hook-form";
-// import { useQuery } from "@tanstack/react-query";
-// import { getAll } from "@/api/categories";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import UploadFile from "./UploadFile";
 import { api } from "@/trpc/react";
 
 type ItemFieldsProps = {
-  form: UseFormReturn<UseFormReturn<NewItem>>;
+  form: UseFormReturn<NewItem>;
 };
 
 export function ItemFields({ form }: ItemFieldsProps) {
@@ -54,7 +54,12 @@ export function ItemFields({ form }: ItemFieldsProps) {
           <FormItem>
             <FormLabel>Description</FormLabel>
             <FormControl>
-              <Textarea placeholder="type here..." {...field} />
+              <Textarea
+                placeholder="type here..."
+                {...field}
+                value={field.value ?? ""}
+                onChange={field.onChange}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -141,7 +146,7 @@ export function ItemFields({ form }: ItemFieldsProps) {
             <FormItem className="items-center space-x-2">
               <FormControl>
                 <Checkbox
-                  checked={field.value}
+                  checked={!!field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
@@ -157,7 +162,7 @@ export function ItemFields({ form }: ItemFieldsProps) {
             <FormItem className="items-center space-x-2">
               <FormControl>
                 <Checkbox
-                  checked={field.value}
+                  checked={!!field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
@@ -173,7 +178,7 @@ export function ItemFields({ form }: ItemFieldsProps) {
             <FormItem className="space-x-2">
               <FormControl>
                 <Checkbox
-                  checked={field.value}
+                  checked={!!field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
@@ -189,7 +194,7 @@ export function ItemFields({ form }: ItemFieldsProps) {
             <FormItem className="space-x-2">
               <FormControl>
                 <Checkbox
-                  checked={field.value}
+                  checked={!!field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>

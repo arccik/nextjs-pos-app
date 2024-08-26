@@ -12,7 +12,7 @@ import Loading from "@/components/Loading";
 
 import AddReservation from "@/components/reservations/AddReservation/AddReservation";
 import { Button } from "@/components/ui/button";
-// import { AdminMenu } from "./AdminMenu";
+import { AdminMenu } from "./AdminMenu";
 // import { getUnAssignedReservations } from "@/server/models/reservation";
 
 type TabelsGridProps = {
@@ -28,7 +28,7 @@ export default function TableCards({ standalone }: TabelsGridProps) {
     isLoading,
   } = api.table.getAll.useQuery(status);
 
-  console.log("TableCards", tables);
+  // console.log("TableCards", tables);
 
   // const { data: reservations } =
   //   api.reservation.getUnAssignedReservations.useQuery();
@@ -58,7 +58,7 @@ export default function TableCards({ standalone }: TabelsGridProps) {
           <AddReservation />
           <AddTable onComplete={refetch} />
         </div>
-        {/* <AdminMenu /> */}
+        <AdminMenu />
       </CardHeader>
 
       <CardContent>

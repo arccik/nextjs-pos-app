@@ -7,11 +7,11 @@ import { Form } from "@/components/ui/form";
 
 import ReservationSteps from "./ReservationSteps";
 
-// type NewReservationProps = {
-//   onComplete: () => void;
-// };
+type NewReservationProps = {
+  onComplete: () => void;
+};
 
-export default function NewResetvation() {
+export default function NewResetvation({ onComplete }: NewReservationProps) {
   // const queryClient = useQueryClient();
 
   // const addNewReservation = useMutation({

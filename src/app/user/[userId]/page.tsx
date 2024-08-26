@@ -4,63 +4,69 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { type Item, newItemSchema } from "@/server/db/schemas";
+// import { updateUserSchema, type NewUser } from "@/server/db/schemas";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import Loading from "@/components/Loading";
-import ItemFields from "./ItemFields";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
+import Fields from "./Fields";
+import { type UpdateUser, updateUserSchema } from "@/server/db/schemas";
+import { useSession } from "next-auth/react";
 
-export default function EditItem() {
+export default function EditUserPage({
+  params,
+}: {
+  params: { userId: string };
+}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const { update } = useSession();
 
-  const id = searchParams.get("id")!;
-  const { data: item, isLoading } = api.item.getOne.useQuery(
-    { id },
-    { enabled: !!id },
-  );
+  const id = params.userId;
+  const { data: user, isLoading } = api.user.getOne.useQuery(id, {
+    enabled: !!id,
+  });
 
-  const form = useForm<Item>({
-    resolver: zodResolver(newItemSchema),
+  const form = useForm<UpdateUser>({
+    resolver: zodResolver(updateUserSchema),
     defaultValues: {
       name: "",
-      description: "",
-      categoryId: "",
-      price: 0,
-      imageUrl: "",
-      isGlutenFree: false,
-      isSpicy: false,
-      isVegan: false,
-      isVegetarian: false,
-      preparationTime: 0,
+      email: "",
+      image: "",
+      role: "user",
     },
   });
-  console.log("Edit Item >>>> ", { id, item, Error: form.formState.errors });
 
   useEffect(() => {
-    if (item) {
-      form.reset(item);
+    if (user) {
+      form.reset({
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        image: user.image ?? "",
+      });
     }
-  }, [item]);
+  }, [user]);
 
-  const updateItem = api.item.update.useMutation({
-    onSuccess: () => {
+  const updateUser = api.user.update.useMutation({
+    onSuccess: async (response) => {
+      const [user] = response ?? [];
       toast({ title: `Successfully update ${form.getValues("name")}` });
+      await update({ name: user?.name, image: user?.image });
+      router.refresh();
       router.back();
     },
   });
 
-  const onSubmit = (values: Item) => {
-    updateItem.mutate(values);
+  const onSubmit = (values: UpdateUser) => {
+    updateUser.mutate({ id, ...values });
   };
 
   if (isLoading) return <Loading />;
-  if (!item) {
+  if (!user) {
     return (
       <div className="flex h-screen flex-col items-center justify-center">
-        <h1 className="text-4xl font-bold text-gray-800">Item Not Found</h1>
+        <h1 className="text-4xl font-bold text-gray-800">User Not Found</h1>
         <p className="mt-4 text-lg text-gray-600">
           The item you are looking for does not exist.
         </p>
@@ -81,15 +87,12 @@ export default function EditItem() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <div>
               <h1 className="text-xl font-bold">
-                <small>Editing</small> {item.name}
+                <small>Editing</small> {user.name}
               </h1>
             </div>
-            <ItemFields form={form} />
+            <Fields form={form} />
 
-            <div>
-              <Button type="submit" className="w-full">
-                Save Changes
-              </Button>
+            <div className="flex gap-4">
               <Button
                 onClick={() => router.back()}
                 type="reset"
@@ -97,6 +100,9 @@ export default function EditItem() {
                 className="w-full"
               >
                 Back
+              </Button>
+              <Button type="submit" className="w-full">
+                Save Changes
               </Button>
             </div>
           </form>

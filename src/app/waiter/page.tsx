@@ -9,19 +9,20 @@ import {
   TableIcon,
 } from "lucide-react";
 import SelectTableDialog from "./SelectTable";
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 // import TableIcon from "@/components/layout/navigation/TableIcon";
 // import TablesCards from "@/components/tables/TableCards";
 
 export default function Waiter() {
-  const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams.toString());
+  // const searchParams = useSearchParams();
+  // const params = new URLSearchParams(searchParams.toString());
 
   // const selectedTab = params.get("tab");
   // const userId = 1;
 
   const handleTabClick = (value: string) => {
-    params.set("tab", value);
+    // params.set("tab", value);
+    console.log("handleTabClick", value);
   };
 
   return (

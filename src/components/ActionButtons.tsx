@@ -1,3 +1,4 @@
+"use client";
 // import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // import AddItem from "./AddItem";
@@ -15,7 +16,11 @@ type ActionButtonsProps = {
   isPaid?: boolean | null;
 };
 
-export default function ActionButtons({ orderId, status, isPaid }: ActionButtonsProps) {
+export default function ActionButtons({
+  orderId,
+  status,
+  isPaid,
+}: ActionButtonsProps) {
   const { changeStatus } = useOrder();
   const buttonText = {
     Pending: "In Progress",

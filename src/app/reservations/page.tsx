@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { CardContent, CardHeader } from "@/components/ui/card";
 import { reservationColumns } from "./columns";
 // import AddReservation from "../addReservation/AddReservation";
 import { api } from "@/trpc/server";

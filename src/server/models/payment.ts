@@ -7,8 +7,8 @@ import {
   orderItems,
   bills,
   orders,
+  items,
 } from "../db/schemas";
-import { startOfMonth } from "date-fns";
 
 export const getOne = async (id: string) => {
   return await db.query.payments.findFirst({
@@ -77,9 +77,11 @@ export const mostSoldItems = async () => {
     .select({
       itemId: orderItems.itemId,
       totalQuantity: sql<number>`SUM(quantity)`.as("totalQuantity"),
+      item: items,
     })
     .from(orderItems)
-    .groupBy(orderItems.itemId);
+    .groupBy(orderItems.itemId)
+    .leftJoin(items, eq(orderItems.itemId, items.id));
   // .where(lt(orderItems.createdAt, today))
   return result;
   // const response = await db.query.orderItems.findMany({
