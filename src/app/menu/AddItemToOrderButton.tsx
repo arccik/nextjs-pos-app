@@ -6,7 +6,6 @@ import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import QuantityButtons from "./QuantityButtons";
 import useOrder from "@/hooks/useOrder";
-import Loading from "@/components/Loading";
 import { ReloadIcon } from "@radix-ui/react-icons";
 
 type AddItemToOrderButtonProps = {

@@ -8,7 +8,7 @@ import {
   DialogTitle,
   // DialogTrigger,
 } from "@/components/ui/dialog";
-import { StaffStatus, StaffStatusSelector } from "./StaffSelection";
+import { type StaffStatus, type StaffStatusSelector } from "./StaffSelection";
 import { api } from "@/trpc/react";
 import Loading from "@/components/Loading";
 type SelectedDayProps = {

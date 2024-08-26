@@ -72,7 +72,7 @@ export const totalSoldItems = async () => {
 };
 
 export const mostSoldItems = async () => {
-  const today = startOfMonth(new Date());
+  // const today = startOfMonth(new Date());
   const result = await db
     .select({
       itemId: orderItems.itemId,

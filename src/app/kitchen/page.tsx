@@ -1,5 +1,4 @@
 "use client";
-import { Card } from "@/components/ui/card";
 
 import KitchenOrderDisplay from "./KitchenOrderDisplay";
 import { api } from "@/trpc/react";

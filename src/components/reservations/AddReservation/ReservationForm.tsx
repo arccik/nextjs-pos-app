@@ -28,6 +28,7 @@ export default function NewResetvation() {
   // });
   const onSubmit = (values: NewReservation) => {
     // addNewReservation.mutate(values);
+    console.log("New Reservation: ", values);
     throw new Error("Not implemented");
   };
   const form = useForm<NewReservation>({

@@ -7,7 +7,7 @@ import {
   Table,
   TableFooter,
 } from "@/components/ui/table";
-import { formatCurrency, ItemToSummerize } from "@/lib/utils";
+import { formatCurrency, type ItemToSummerize } from "@/lib/utils";
 import { type Bill } from "@/server/db/schemas";
 
 type DisplayOrderItemsProps = {

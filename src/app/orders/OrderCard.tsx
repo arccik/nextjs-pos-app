@@ -8,11 +8,11 @@ import {
   Card,
 } from "@/components/ui/card";
 
-import { type MainOrder, type OrderWithItems } from "@/server/models/order";
+import { type MainOrder } from "@/server/models/order";
 
 import DisplayOrderItems from "./DisplayOrderItems";
 import CountDownOpenOrder from "./CountDownOpenOrder";
-import { countTotal, formatCurrency, formatId } from "@/lib/utils";
+import { formatCurrency, formatId } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
 // import ActionButtons from "@/components/ActionButtons";

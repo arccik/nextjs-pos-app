@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { userRoles, newUserSchema, NewUser } from "@/server/db/schemas";
+import { userRoles, newUserSchema, type NewUser } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 

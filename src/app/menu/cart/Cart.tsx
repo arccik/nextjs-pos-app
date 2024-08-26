@@ -18,7 +18,6 @@ import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
 import SelectTable from "@/app/waiter/SelectTable";
 // import { type SelectedTable } from "@/app/waiter/ChooseTable";
 import useOrder from "@/hooks/useOrder";
-import { redirect } from "next/navigation";
 
 export default function Cart() {
   const { selectedOrder, proceedOrder, selectedTable } = useOrder();

@@ -25,7 +25,7 @@ export default async function OrderPage({
             <CardTitle>Order Not Found</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>We couldn't find the order you're looking for.</p>
+            <p>We couldn&apos;t find the order you&apos;re looking for.</p>
           </CardContent>
           <CardFooter>
             <Button variant="outline">Back to Orders</Button>
