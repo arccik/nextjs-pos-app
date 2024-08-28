@@ -1,65 +1,60 @@
 import { relations } from "drizzle-orm";
 import {
-  integer,
-  sqliteTable,
+  pgTable,
   real,
   unique,
-  text,
-} from "drizzle-orm/sqlite-core";
-import { v4 as uuid } from "uuid";
+  boolean,
+  varchar,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { orders } from "./order";
 import { users } from "./user";
 
 export const paymentMethod = ["Card", "Cash"] as const;
 
-export const bills = sqliteTable(
+export const bills = pgTable(
   "bills",
   {
-    id: text("id")
+    id: varchar("id", { length: 255 })
       .notNull()
       .primaryKey()
-      .$defaultFn(() => uuid()),
+      .$defaultFn(() => crypto.randomUUID()),
     totalAmount: real("total_amount").notNull(),
     serviceFee: real("service_fee"),
     tax: real("tax"),
-    paid: integer("paid", { mode: "boolean" }).default(false),
+    paid: boolean("paid").default(false),
     tipAmount: real("tip_amount"),
-    userId: text("userId", { length: 255 })
+    userId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => users.id),
-    createdAt: integer("created_at", { mode: "timestamp_ms" })
-      .$default(() => new Date())
-      .notNull(),
-    updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-      .$default(() => new Date())
-      .notNull(),
-    orderId: text("order_id").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .$onUpdate(() => new Date()),
+    orderId: varchar("order_id", { length: 255 }).notNull(),
   },
   (t) => ({ unq: unique().on(t.userId, t.orderId) }),
 );
 
-export const payments = sqliteTable("payments", {
-  id: text("id")
+export const payments = pgTable("payments", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
-
-  billId: text("bill_id")
+    .$defaultFn(() => crypto.randomUUID()),
+  billId: varchar("bill_id", { length: 255 })
     .references(() => bills.id)
     .notNull(),
-  paymentMethod: text("payment_method", { enum: paymentMethod }).notNull(),
+  paymentMethod: varchar("payment_method", { enum: paymentMethod }).notNull(),
   chargedAmount: real("charged_amount").notNull(),
   tipAmount: real("tip_amount"),
-  userId: text("userId", { length: 255 })
+  userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const billsRelations = relations(bills, ({ one, many }) => ({

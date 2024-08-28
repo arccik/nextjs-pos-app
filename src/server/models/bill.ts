@@ -53,7 +53,7 @@ export const create = async (data: NewBill) => {
     .where(eq(orders.id, data.orderId));
 };
 
-export const deleteOne = async (id: string) => {
+export const deleteOne = async (id: number) => {
   return await db.delete(bills).where(eq(bills.id, id));
 };
 export const generateBill = async (

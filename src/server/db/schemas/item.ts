@@ -1,36 +1,41 @@
 import { relations } from "drizzle-orm";
-import { integer, text, real, sqliteTable } from "drizzle-orm/sqlite-core";
-import { v4 as uuid } from "uuid";
+import {
+  integer,
+  text,
+  real,
+  pgTable,
+  varchar,
+  boolean,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
 import { categories } from "./category";
 import { orderItems } from "./order";
+import { timestamp } from "drizzle-orm/pg-core";
 
-export const items = sqliteTable("items", {
-  id: text("id")
+export const items = pgTable("items", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
-  name: text("name", { length: 255 }).notNull(),
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   price: real("price").notNull(),
-  imageUrl: text("image_url", { length: 255 }),
-  isVegetarian: integer("vegetarian", { mode: "boolean" }),
-  isVegan: integer("vegan", { mode: "boolean" }),
-  isGlutenFree: integer("gluten_free", { mode: "boolean" }),
-  isSpicy: integer("spicy", { mode: "boolean" }),
+  imageUrl: varchar("image_url", { length: 255 }),
+  isVegetarian: boolean("vegetarian"),
+  isVegan: boolean("vegan"),
+  isGlutenFree: boolean("gluten_free"),
+  isSpicy: boolean("spicy"),
   preparationTime: integer("preparation_time").notNull(),
-  categoryId: text("category_id")
+  categoryId: varchar("category_id", { length: 255 })
     .notNull()
     .references(() => categories.id, { onDelete: "cascade" }),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
-  isAvailable: integer("available", { mode: "boolean" }).default(true),
+  isAvailable: boolean("available").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const itemRelations = relations(items, ({ one, many }) => ({

@@ -13,7 +13,7 @@ import { type User } from "@/server/db/schemas";
 type Shift = "morning" | "evening" | "night";
 
 export interface StaffStatus {
-  id: string;
+  id: number;
   working: boolean;
   shift: Shift | null;
 }

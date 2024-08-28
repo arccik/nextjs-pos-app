@@ -9,7 +9,7 @@ import {
   type TableStatus,
 } from "../db/schemas";
 
-export const getOne = async (id: string) => {
+export const getOne = async (id: number) => {
   return await db.query.tables.findFirst({ where: eq(tables.id, id) });
 };
 
@@ -53,14 +53,14 @@ export const create = async (body: NewTable) => {
 };
 
 //delete a tables
-export const deleteOne = async (id: string) => {
+export const deleteOne = async (id: number) => {
   return await db.delete(tables).where(eq(tables.id, id));
 };
 //update a tables record
-export const update = async (id: string, body: Table) => {
+export const update = async (id: number, body: Table) => {
   return await db.update(tables).set(body).where(eq(tables.id, id)).returning();
 };
-export const updateStatus = async (id: string, status: TableStatus) => {
+export const updateStatus = async (id: number, status: TableStatus) => {
   return await db
     .update(tables)
     .set({ status })
@@ -68,7 +68,7 @@ export const updateStatus = async (id: string, status: TableStatus) => {
     .returning();
 };
 
-export const markClean = async (id: string) => {
+export const markClean = async (id: number) => {
   console.log("MARK AS CLEAN >>>> ", id);
 
   return await db
@@ -82,8 +82,8 @@ export const setSelectedTable = async ({
   id,
   userId,
 }: {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
 }) => {
   const isExist = await getSelectedTable(userId);
   if (isExist) {
@@ -96,21 +96,21 @@ export const setSelectedTable = async ({
   return result;
 };
 
-export const unsetSelectedTable = async ({ id }: { id: string }) => {
+export const unsetSelectedTable = async ({ id }: { id: number }) => {
   return await db
     .update(tables)
     .set({ selectedBy: null })
     .where(eq(tables.id, id));
 };
 
-export const getSelectedTable = async (userId: string) => {
+export const getSelectedTable = async (userId: number) => {
   const result = await db.query.tables.findFirst({
     where: eq(tables.selectedBy, userId),
   });
   return result ?? null;
 };
 
-export const unselectTable = async (userId: string) => {
+export const unselectTable = async (userId: number) => {
   return await db
     .update(tables)
     .set({ selectedBy: null })

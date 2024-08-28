@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
-import { text, integer, real, sqliteTable } from "drizzle-orm/sqlite-core";
+import { boolean, timestamp, varchar } from "drizzle-orm/pg-core";
+import { text, integer, real, pgTable } from "drizzle-orm/pg-core";
 
 export const dayOfWeek = [
   "monday",
@@ -11,37 +12,39 @@ export const dayOfWeek = [
   "sunday",
 ] as const;
 
-export const storeSettings = sqliteTable("store_settings", {
+export const storeSettings = pgTable("store_settings", {
   profileName: text("profile_name").default("default").primaryKey().notNull(),
-  storeForceClose: integer("store_force_close", { mode: "boolean" })
-    .default(false)
-    .notNull(),
+  storeForceClose: boolean("store_force_close").default(false).notNull(),
   reservationInterval: integer("reservation_interval"),
   reservationDuration: integer("reservation_duration"),
   reservationNotArrivalExpirationTime: integer(
     "reservation_not_arrival_expiration_time",
   ),
-  tableNumberLeadingZeros: integer("table_leading_zeros", { mode: "boolean" })
+  tableNumberLeadingZeros: boolean("table_leading_zeros")
     .default(false)
     .notNull(),
   leadingZerosQuantity: integer("leading_zeros_quantity").default(1).notNull(),
   serviceFee: real("service_fee"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
-export const storeRegularSchedule = sqliteTable("store_regular_working_times", {
+export const storeRegularSchedule = pgTable("store_regular_working_times", {
   number: integer("number").primaryKey().notNull(),
-  day: text("day", { enum: dayOfWeek }).notNull(),
+  day: varchar("day", { enum: dayOfWeek }).notNull(),
   openTime: text("open_time"),
   closeTime: text("close_time"),
-  isActive: integer("is_active", { mode: "boolean" }).default(true).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
 });
 
-export const storeCustomSchedule = sqliteTable("store_custom_working_times", {
-  date: integer("date", { mode: "timestamp" }).default(sql`(CURRENT_DATE)`),
+export const storeCustomSchedule = pgTable("store_custom_working_times", {
+  date: timestamp("created_at").defaultNow().notNull(),
   name: text("name").notNull(),
   openTime: text("open_time"),
   closeTime: text("close_time"),
-  isActive: integer("is_active", { mode: "boolean" }).default(true).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
 });
 
 export type StoreSettings = typeof storeSettings.$inferSelect;

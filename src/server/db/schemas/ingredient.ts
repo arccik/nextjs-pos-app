@@ -1,17 +1,29 @@
-import { text, sqliteTable, integer } from "drizzle-orm/sqlite-core";
+import {
+  text,
+  pgTable,
+  integer,
+  boolean,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
 import { nutritions } from "./nutritions";
 import { relations } from "drizzle-orm";
-import { v4 as uuid } from "uuid";
 
-export const ingredients = sqliteTable("ingredients", {
-  id: text("id")
+export const ingredients = pgTable("ingredients", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   stock: integer("stock").default(0).notNull(),
-  isActive: integer("is_active", { mode: "boolean" }).default(true).notNull(),
-  nutritionId: text("nutrition_id").references(() => nutritions.id),
+  isActive: boolean("is_active").default(true).notNull(),
+  nutritionId: varchar("nutrition_id", { length: 255 }).references(
+    () => nutritions.id,
+  ),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const ingredientsRelations = relations(ingredients, ({ one }) => ({

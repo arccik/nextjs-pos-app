@@ -1,20 +1,16 @@
-// import { relations } from "drizzle-orm";
-import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core";
+import { pgTable, varchar, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { v4 as uuid } from "uuid";
 
-export const categories = sqliteTable("category", {
-  id: text("id")
+export const categories = pgTable("category", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
-  name: text("name", { length: 255 }).notNull(),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const categoriesSchema = createSelectSchema(categories);

@@ -2,12 +2,12 @@ import {
   text,
   integer,
   primaryKey,
-  int,
   index,
-  sqliteTable,
-} from "drizzle-orm/sqlite-core";
-import { v4 as uuid } from "uuid";
-import { relations, sql } from "drizzle-orm";
+  pgTable,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { type AdapterAccount } from "next-auth/adapters";
 import { tables } from "./table";
@@ -22,25 +22,21 @@ export const userRoles = [
   "manager",
 ] as const;
 
-export const users = sqliteTable("user", {
-  id: text("id")
+export const users = pgTable("user", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   email: text("email").unique().notNull(),
   password: text("password").notNull(),
   image: text("image"),
-  emailVerified: int("emailVerified", {
-    mode: "timestamp",
-  }).default(sql`CURRENT_TIMESTAMP`),
-  role: text("role", { enum: userRoles }).notNull().default("user"),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
+  emailVerified: timestamp("emailVerified").defaultNow().notNull(),
+  role: varchar("role", { enum: userRoles }).notNull().default("user"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -52,18 +48,22 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   selector: many(orders, { relationName: "selector" }),
 }));
 
-export const profileInfo = sqliteTable("profile", {
-  id: text("id")
+export const profileInfo = pgTable("profile", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
+    .$defaultFn(() => crypto.randomUUID()),
   image: text("image"),
   phone: text("phone"),
   address: text("address"),
-  userId: text("user_id").references(() => users.id),
-  createdAt: int("created_at", { mode: "timestamp" })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+  userId: varchar("user_id", { length: 255 }).references(() => users.id, {
+    onDelete: "cascade",
+    onUpdate: "cascade",
+  }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const profileInfoRelations = relations(profileInfo, ({ one }) => ({
@@ -73,30 +73,35 @@ export const profileInfoRelations = relations(profileInfo, ({ one }) => ({
   }),
 }));
 
-export const accounts = sqliteTable(
+export const accounts = pgTable(
   "account",
   {
-    userId: text("userId", { length: 255 })
+    userId: varchar("user_id", { length: 255 })
       .notNull()
-      .references(() => users.id),
-    type: text("type", { length: 255 })
+      .references(() => users.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    type: varchar("type", { length: 255 })
       .$type<AdapterAccount["type"]>()
       .notNull(),
-    provider: text("provider", { length: 255 }).notNull(),
-    providerAccountId: text("providerAccountId", { length: 255 }).notNull(),
+    provider: varchar("provider", { length: 255 }).notNull(),
+    providerAccountId: varchar("provider_account_id", {
+      length: 255,
+    }).notNull(),
     refresh_token: text("refresh_token"),
     access_token: text("access_token"),
-    expires_at: int("expires_at"),
-    token_type: text("token_type", { length: 255 }),
-    scope: text("scope", { length: 255 }),
+    expires_at: integer("expires_at"),
+    token_type: varchar("token_type", { length: 255 }),
+    scope: varchar("scope", { length: 255 }),
     id_token: text("id_token"),
-    session_state: text("session_state", { length: 255 }),
+    session_state: varchar("session_state", { length: 255 }),
   },
   (account) => ({
     compoundKey: primaryKey({
       columns: [account.provider, account.providerAccountId],
     }),
-    userIdIdx: index("account_userId_idx").on(account.userId),
+    userIdIdx: index("account_user_id_idx").on(account.userId),
   }),
 );
 
@@ -104,17 +109,22 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
   user: one(users, { fields: [accounts.userId], references: [users.id] }),
 }));
 
-export const sessions = sqliteTable(
+export const sessions = pgTable(
   "session",
   {
-    sessionToken: text("sessionToken", { length: 255 }).notNull().primaryKey(),
-    userId: text("userId", { length: 255 })
+    sessionToken: varchar("sessionToken", { length: 255 })
+      .notNull()
+      .primaryKey(),
+    userId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => users.id),
-    expires: int("expires", { mode: "timestamp" }).notNull(),
+    expires: timestamp("expires", {
+      mode: "date",
+      withTimezone: true,
+    }).notNull(),
   },
   (session) => ({
-    userIdIdx: index("session_userId_idx").on(session.userId),
+    userIdIdx: index("session_user_id_idx").on(session.userId),
   }),
 );
 
@@ -122,12 +132,15 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),
 }));
 
-export const verificationTokens = sqliteTable(
+export const verificationTokens = pgTable(
   "verificationToken",
   {
-    identifier: text("identifier", { length: 255 }).notNull(),
-    token: text("token", { length: 255 }).notNull(),
-    expires: int("expires", { mode: "timestamp" }).notNull(),
+    identifier: varchar("identifier", { length: 255 }).notNull(),
+    token: varchar("token", { length: 255 }).notNull(),
+    expires: timestamp("expires", {
+      mode: "date",
+      withTimezone: true,
+    }).notNull(),
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),

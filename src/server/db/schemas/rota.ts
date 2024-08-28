@@ -1,5 +1,4 @@
-import { text, sqliteTable, int, integer } from "drizzle-orm/sqlite-core";
-import { v4 as uuid } from "uuid";
+import { text, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 
 import { users } from "./user";
 import { relations } from "drizzle-orm";
@@ -7,23 +6,21 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const shift = ["morning", "evening", "night"] as const;
 
-export const rotas = sqliteTable("rota", {
-  id: text("id")
+export const rotas = pgTable("rota", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
-  shift: text("shift", { enum: shift }).notNull(),
-  userId: text("user_id")
+  shift: varchar("shift", { enum: shift }).notNull(),
+  userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id),
-  date: int("created_at", { mode: "timestamp" }).notNull(),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
+  date: timestamp("date").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const rotaRelations = relations(rotas, ({ one }) => ({

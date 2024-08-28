@@ -1,10 +1,17 @@
-import { text, sqliteTable, integer, unique } from "drizzle-orm/sqlite-core";
+import {
+  text,
+  pgTable,
+  integer,
+  unique,
+  varchar,
+  boolean,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { type Reservation } from "./reservation";
 import { type User, users } from "./user";
 import { relations } from "drizzle-orm";
-import { v4 as uuid } from "uuid";
 
 export const tableStatusEnum = [
   "available",
@@ -12,30 +19,28 @@ export const tableStatusEnum = [
   "reserved",
   "closed",
 ] as const;
-export const tables = sqliteTable(
+export const tables = pgTable(
   "tables",
   {
-    id: text("id")
+    id: varchar("id", { length: 255 })
       .notNull()
       .primaryKey()
-      .$defaultFn(() => uuid()),
+      .$defaultFn(() => crypto.randomUUID()),
     number: integer("number").notNull(),
-    prefix: text("prefix", { length: 5 }),
+    prefix: varchar("prefix", { length: 5 }),
     description: text("description"),
     seats: integer("seats").notNull(),
-    selectedBy: text("userId", { length: 255 }).references(() => users.id),
-    requireCleaning: integer("require_cleaning", { mode: "boolean" })
-      .default(false)
-      .notNull(),
-    status: text("status", { enum: tableStatusEnum })
+    selectedBy: varchar("selected_by", { length: 255 }).references(
+      () => users.id,
+    ),
+    requireCleaning: boolean("require_cleaning").default(false).notNull(),
+    status: varchar("status", { enum: tableStatusEnum })
       .default("available")
       .notNull(),
-    createdAt: integer("created_at", { mode: "timestamp" })
-      .$default(() => new Date())
-      .notNull(),
-    updatedAt: integer("updated_at", { mode: "timestamp" })
-      .$onUpdate(() => new Date())
-      .notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (t) => ({
     unq: unique().on(t.number, t.prefix),

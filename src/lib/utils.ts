@@ -124,7 +124,7 @@ export type ItemToSummerize = {
   };
 };
 
-export function formatId(id: string) {
+export function formatId(id: number) {
   return id.slice(-4);
 }
 

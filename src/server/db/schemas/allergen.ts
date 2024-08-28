@@ -1,12 +1,11 @@
-import { text, sqliteTable } from "drizzle-orm/sqlite-core";
-import { v4 as uuid } from "uuid";
+import { pgTable, varchar } from "drizzle-orm/pg-core";
 
-export const allergens = sqliteTable("allergens", {
-  id: text("id")
+export const allergens = pgTable("allergens", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
-  name: text("name").notNull(),
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
 });
 
 export type Allergens = typeof allergens.$inferSelect;

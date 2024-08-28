@@ -1,10 +1,12 @@
 import {
   integer,
   primaryKey,
-  sqliteTable,
+  pgTable,
   text,
-} from "drizzle-orm/sqlite-core";
-import { v4 as uuid } from "uuid";
+  varchar,
+  boolean,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { items } from "./item";
@@ -22,52 +24,51 @@ export const orderStatus = [
   "Served",
 ] as const;
 
-export const orders = sqliteTable("orders", {
-  id: text("id")
+export const orders = pgTable("orders", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
-  userId: text("userId", { length: 255 })
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id, { onDelete: "set null" }),
-  selectedBy: text("selected_by", { length: 255 }).references(() => users.id, {
+  selectedBy: varchar("selected_by", { length: 255 }).references(
+    () => users.id,
+    {
+      onDelete: "set null",
+    },
+  ),
+  tableId: varchar("table_id", { length: 255 }).references(() => tables.id, {
     onDelete: "set null",
   }),
-  tableId: text("table_id").references(() => tables.id, {
-    onDelete: "set null",
-  }),
-  isPaid: integer("is_paid", { mode: "boolean" }).default(false).notNull(),
-  status: text("order_status", { enum: orderStatus })
+  isPaid: boolean("is_paid").default(false).notNull(),
+  status: varchar("order_status", { enum: orderStatus })
     .default("Pending")
     .notNull(),
   specialRequest: text("special_request"),
-  billId: text("bill_id").references(() => bills.id, {
+  billId: varchar("bill_id", { length: 255 }).references(() => bills.id, {
     onDelete: "set null",
   }),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
-export const orderItems = sqliteTable(
+export const orderItems = pgTable(
   "order_items",
   {
-    orderId: text("order_id")
+    orderId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => orders.id, { onDelete: "cascade" }),
-    itemId: text("item_id")
+    itemId: varchar("item_id", { length: 255 })
       .notNull()
       .references(() => items.id, { onDelete: "cascade" }),
     quantity: integer("quantity").notNull().default(1),
-    createdAt: integer("created_at", { mode: "timestamp_ms" })
-      .$default(() => new Date())
-      .notNull(),
-    updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-      .$default(() => new Date())
-      .notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
 
   (t) => ({

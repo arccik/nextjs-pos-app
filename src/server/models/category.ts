@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { type Category, type NewCategory, categories } from "../db/schemas";
 
-export const getOne = async (id: string) => {
+export const getOne = async (id: number) => {
   return await db.query.categories.findFirst({
     where: eq(categories.id, id),
   });
@@ -23,7 +23,7 @@ export const create = async (body: NewCategory) => {
   return await db.insert(categories).values(body).returning();
 };
 
-export const deleteOne = async (id: string) => {
+export const deleteOne = async (id: number) => {
   const result = await db.delete(categories).where(eq(categories.id, id));
   return result;
 };

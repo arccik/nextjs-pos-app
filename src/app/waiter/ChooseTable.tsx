@@ -14,7 +14,7 @@ type ChooseTableProps = {
 };
 
 export type SelectedTable = {
-  id: string;
+  id: number;
   number: number;
 } | null;
 

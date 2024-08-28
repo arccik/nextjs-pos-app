@@ -1,10 +1,16 @@
-import { integer, text, sqliteTable } from "drizzle-orm/sqlite-core";
+import {
+  integer,
+  text,
+  pgTable,
+  varchar,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { v4 as uuid } from "uuid";
 import { relations } from "drizzle-orm";
 
 import { tables } from "./table";
+import { users } from "./user";
 
 export const reservationStatusEnum = [
   "Scheduled",
@@ -14,29 +20,28 @@ export const reservationStatusEnum = [
   "Cancelled",
 ] as const;
 
-export const reservations = sqliteTable("reservations", {
-  id: text("id")
+export const reservations = pgTable("reservations", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
-  tableId: text("table_id").references(() => tables.id),
+    .$defaultFn(() => crypto.randomUUID()),
+  tableId: varchar("table_id", { length: 255 }).references(() => tables.id),
   customerName: text("customer_name").notNull(),
   customerPhoneNumber: text("customer_phone_number"),
   customerEmail: text("customer_email"),
   guestsPredictedNumber: integer("guest_predicted_number"),
   specialRequests: text("special_requests"),
   notes: text("notes"),
-  status: text("status", { enum: reservationStatusEnum })
+  userId: varchar("user_id", { length: 255 }).references(() => users.id),
+  status: varchar("status", { enum: reservationStatusEnum })
     .default("Scheduled")
     .notNull(),
-  scheduledAt: text("scheduled_at", { length: 255 }).notNull(),
-  expireAt: text("expire_at", { length: 255 }).notNull(),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
+  scheduledAt: varchar("scheduled_at", { length: 255 }).notNull(),
+  expireAt: varchar("expire_at", { length: 255 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const tablesRelations = relations(tables, ({ many }) => ({
@@ -47,6 +52,10 @@ export const reservationsRelations = relations(reservations, ({ one }) => ({
   table: one(tables, {
     fields: [reservations.id],
     references: [tables.id],
+  }),
+  user: one(users, {
+    fields: [reservations.userId],
+    references: [users.id],
   }),
 }));
 

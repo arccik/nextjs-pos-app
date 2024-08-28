@@ -1,13 +1,19 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import {
+  boolean,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { v4 as uuid } from "uuid";
 
-export const venueSettings = sqliteTable("venue_settings", {
-  id: text("id")
+export const venueSettings = pgTable("venue_settings", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   address: text("address").notNull(),
   phone: text("phone"),
@@ -19,26 +25,19 @@ export const venueSettings = sqliteTable("venue_settings", {
   amenities: text("amenities"),
   accessibilityInformation: text("accessibility_information"),
   logo: text("logo"),
-  acceptCash: integer("accept_cash", { mode: "boolean" }),
-  acceptCredit: integer("accept_credit", { mode: "boolean" }),
-  acceptMobilePayment: integer("accept_mobile_payment", { mode: "boolean" }),
-  alloweManagerToEditMenu: integer("allow_manager_to_edit_menu", {
-    mode: "boolean",
-  }),
-  allowedChashierToRefund: integer("allowed_cashier_to_refund", {
-    mode: "boolean",
-  }),
-  allowedServersToModifyOrder: integer("allowed_servers_to_modify_order", {
-    mode: "boolean",
-  }),
+  acceptCash: boolean("accept_cash"),
+  acceptCredit: boolean("accept_credit"),
+  acceptMobilePayment: boolean("accept_mobile_payment"),
+  alloweManagerToEditMenu: boolean("allow_manager_to_edit_menu"),
+  allowedChashierToRefund: boolean("allowed_cashier_to_refund"),
+  allowedServersToModifyOrder: boolean("allowed_servers_to_modify_order"),
   serviceFee: integer("service_fee"),
   currency: text("currency"),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
+  updatedBy: varchar("updated_by", { length: 255 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const venueSettingsSchema = createSelectSchema(venueSettings).extend({

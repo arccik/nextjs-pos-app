@@ -1,29 +1,29 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { v4 as uuid } from "uuid";
+import { integer, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { users } from "./user";
 import { items } from "./item";
 import { orders } from "./order";
 
-export const cookedItems = sqliteTable("cooked_items", {
-  id: text("id")
+export const cookedItems = pgTable("cooked_items", {
+  id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => uuid()),
-  itemId: text("item_id")
+    .$defaultFn(() => crypto.randomUUID()),
+  itemId: varchar("item_id", { length: 255 })
     .notNull()
     .references(() => items.id, { onDelete: "cascade" }),
-  orderId: text("order_id")
+  orderId: varchar("order_id", { length: 255 })
     .notNull()
     .references(() => orders.id, { onDelete: "cascade" }),
-  userId: text("user_id")
+  userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id, { onDelete: "set null" }),
   quantity: integer("quantity").notNull().default(1),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .$default(() => new Date())
-    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const cookedItemsRelations = relations(cookedItems, ({ one }) => ({

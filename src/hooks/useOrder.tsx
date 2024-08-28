@@ -82,7 +82,7 @@ export default function useOrder() {
     addItem.mutate({ itemId, orderId: id, quantity });
   };
 
-  const deleteOne = (id: string) => {
+  const deleteOne = (id: number) => {
     deleteOrder.mutate({ id });
   };
 
@@ -96,7 +96,7 @@ export default function useOrder() {
     removeItemFromOrder.mutate({ itemId, orderId });
   };
 
-  const update = ({ id, body }: { id: string; body: Order }) => {
+  const update = ({ id, body }: { id: number; body: Order }) => {
     updateOrder.mutate({ id, body });
   };
 

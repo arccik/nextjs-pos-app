@@ -10,7 +10,7 @@ import {
   items,
 } from "../db/schemas";
 
-export const getOne = async (id: string) => {
+export const getOne = async (id: number) => {
   return await db.query.payments.findFirst({
     where: eq(payments.id, id),
   });
@@ -42,7 +42,7 @@ export const create = async (data: NewPayment) => {
   return payment;
 };
 
-export const deleteOne = async (id: string) => {
+export const deleteOne = async (id: number) => {
   return await db.delete(payments).where(eq(payments.id, id));
 };
 export const update = async (body: Payment) => {

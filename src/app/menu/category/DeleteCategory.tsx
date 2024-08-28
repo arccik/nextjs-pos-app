@@ -15,7 +15,7 @@ import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
 type DeleteCategoryProps = {
-  id: string;
+  id: number;
   name: string;
 };
 

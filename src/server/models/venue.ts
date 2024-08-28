@@ -12,7 +12,7 @@ export const getSettings = async () => {
 export const updateSettings = async (data: VenueSettings) => {
   return await db
     .update(venueSettings)
-    .set({ ...data, updatedAt: new Date() })
+    .set(data)
     .where(eq(venueSettings.id, data.id))
     .returning();
 };
