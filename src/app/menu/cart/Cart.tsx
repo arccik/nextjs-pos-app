@@ -27,9 +27,9 @@ export default function Cart() {
 
   const items = selectedOrder?.orderItems;
 
-  const handleSubmitOrder = () => {
+  const handleSubmitOrder = async () => {
     console.log("submitting order", selectedOrder);
-    proceedOrder();
+    await proceedOrder();
     router.refresh();
   };
   if (!selectedOrder) return null;

@@ -2,9 +2,8 @@
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-// import { updateUserSchema, type NewUser } from "@/server/db/schemas";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import Loading from "@/components/Loading";

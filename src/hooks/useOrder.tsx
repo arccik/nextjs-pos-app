@@ -1,9 +1,8 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import type { Order, OrderStatus } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
-import { type OrderItemsBill } from "@/server/models/order";
 
 type AddToOrderProps = {
   itemId: string;
@@ -13,7 +12,6 @@ type AddToOrderProps = {
 type UtilsKeys = "order" | "table" | "bill" | "payment";
 
 export default function useOrder() {
-  // const [order, setOrder] = useState<OrderItemsBill | null>(null);
   const utils = api.useUtils();
 
   const { data: selectedOrder, refetch: refetchSelectedOrder } =

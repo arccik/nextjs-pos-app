@@ -12,6 +12,7 @@ import { type NewItem } from "@/server/db/schemas";
 import { useEffect, useState } from "react";
 
 import { TrashIcon } from "@radix-ui/react-icons";
+import Image from "next/image";
 
 // const API_URL = "http://localhost:3000/api";
 
@@ -79,7 +80,7 @@ export default function UploadFile({ form }: UploadFileProps) {
             onClick={handleImageDelete}
           />
         </div>
-        <img src={URL.createObjectURL(file)} />
+        <Image src={URL.createObjectURL(file)} alt="uploaded image" />
       </div>
     );
   }

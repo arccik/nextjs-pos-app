@@ -33,9 +33,7 @@ export default function Orders({ orderStatus }: OrderProps) {
           <ToggleGroupItem value="In Progress"> In Progress</ToggleGroupItem>
           <ToggleGroupItem value="Served"> Served</ToggleGroupItem>
           <ToggleGroupItem value="Completed"> Completed</ToggleGroupItem>
-          <ToggleGroupItem value="Pending" className="border border-red-700/40">
-            Pending
-          </ToggleGroupItem>
+
         </ToggleGroup>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xl font-semibold">

@@ -475,7 +475,7 @@ export const getOrderWithItems = async (id: string) => {
 };
 
 export const getOrderItems = async () => {
-  const { password: _, ...rest } = getTableColumns(users);
+  const { password, ...rest } = getTableColumns(users);
   return await db
     .select({
       order_items: orderItems,
