@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@/trpc/react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 const data = [
@@ -54,6 +55,7 @@ const data = [
 ];
 
 export function Overview() {
+  const { data } = api.payment.getMonthlyPaymentTotals.useQuery();
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart data={data}>

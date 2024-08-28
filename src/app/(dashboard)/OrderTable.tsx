@@ -33,6 +33,7 @@ import { api } from "@/trpc/server";
 
 export default async function OrderTable() {
   const data = await api.order.getAll();
+  console.log("Recent orders: ", data);
 
   return (
     <Tabs defaultValue="week">
@@ -123,7 +124,10 @@ export default async function OrderTable() {
                         <TableCell className="hidden md:table-cell">
                           {order.createdAt?.toDateString()}
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="hidden sm:table-cell">
+                          {formatCurrency(order.bill?.totalAmount)}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
                           {formatCurrency(order.bill?.totalAmount)}
                         </TableCell>
                       </TableRow>

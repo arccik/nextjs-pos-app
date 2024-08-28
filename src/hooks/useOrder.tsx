@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Order, OrderStatus } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
@@ -13,17 +13,31 @@ type AddToOrderProps = {
 type UtilsKeys = "order" | "table" | "bill" | "payment";
 
 export default function useOrder() {
-  const [order, setOrder] = useState<OrderItemsBill | null>(null);
+  // const [order, setOrder] = useState<OrderItemsBill | null>(null);
   const utils = api.useUtils();
 
-  const { data: selectedOrder } = api.order.getSelectedByUser.useQuery();
+  const { data: selectedOrder, refetch: refetchSelectedOrder } =
+    api.order.getSelectedByUser.useQuery(undefined, {
+      refetchInterval: 5000,
+      select: (data) => data ?? null,
+    });
   const { data: selectedTable } = api.table.getSelectedTable.useQuery();
-
+  const orderId = selectedOrder?.id;
   // Utility function to handle successful mutations
-  const handleSuccess = async (message: string, entity: UtilsKeys) => {
-    toast({ title: message });
-    await utils[entity].invalidate();
-  };
+  const handleSuccess = useCallback(
+    async (message: string, entity: UtilsKeys) => {
+      toast({ title: message });
+      await utils[entity].invalidate();
+      await utils.order.invalidate();
+      await refetchSelectedOrder();
+
+      // If after refetch, selectedOrder is undefined, invalidate the query
+      if (selectedOrder === undefined) {
+        await utils.order.getSelectedByUser.invalidate();
+      }
+    },
+    [utils, refetchSelectedOrder, selectedOrder],
+  );
 
   // Mutations
   const setStatus = api.order.setStatus.useMutation({
@@ -58,24 +72,21 @@ export default function useOrder() {
   });
 
   const unselectTableMutation = api.table.unselectTable.useMutation({
-    onSuccess: async () => {
-      await utils.order.invalidate();
-      await utils.table.invalidate();
-    },
+    onSuccess: async () => handleSuccess("Table unselected", "table"),
   });
 
   const setSelectedTable = api.table.setSelectedTable.useMutation({
     onSuccess: () => handleSuccess("Table Selected", "table"),
   });
 
-  useEffect(() => {
-    if (selectedOrder) {
-      setOrder((prevOrder) => ({
-        ...selectedOrder,
-        table: selectedTable ?? prevOrder?.table ?? null,
-      }));
-    }
-  }, [selectedOrder, selectedTable]);
+  // useEffect(() => {
+  //   if (selectedOrder) {
+  //     setOrder((prevOrder) => ({
+  //       ...selectedOrder,
+  //       table: selectedTable ?? prevOrder?.table ?? null,
+  //     }));
+  //   }
+  // }, [selectedOrder, selectedTable]);
 
   // Action functions
   const add = ({ itemId, quantity, id }: AddToOrderProps) => {
@@ -102,33 +113,35 @@ export default function useOrder() {
 
   const selectTable = (tableId: string) => {
     setSelectedTable.mutate(tableId);
-    if (order?.id) {
-      updateOrder.mutate({ id: order.id, body: { tableId } });
+    if (orderId) {
+      updateOrder.mutate({ id: orderId, body: { tableId } });
     }
   };
 
   const unselectTable = () => {
     unselectTableMutation.mutate();
-    if (order?.id) {
-      updateOrder.mutate({ id: order.id, body: { tableId: null } });
+    if (orderId) {
+      updateOrder.mutate({ id: orderId, body: { tableId: null } });
     }
   };
 
-  const proceedOrder = () => {
-    if (!order?.id) return;
-    unselectTableMutation.mutate();
-    updateOrder.mutate({
-      id: order.id,
+  const proceedOrder = async () => {
+    if (!orderId) return;
+    await unselectTableMutation.mutateAsync();
+    await updateOrder.mutateAsync({
+      id: orderId,
       body: { status: "In Progress", selectedBy: null },
     });
-    if (!updateOrder.isPending) {
-      setOrder(null);
-    }
+
     if (selectedTable?.id) {
-      changeTableStatus.mutate({
+      await changeTableStatus.mutateAsync({
         tableId: selectedTable.id,
         status: "occupied",
       });
+    }
+    await refetchSelectedOrder();
+    if (selectedOrder === undefined) {
+      await utils.order.getSelectedByUser.invalidate();
     }
   };
 
@@ -145,7 +158,7 @@ export default function useOrder() {
   const isLoading = addItem.isPending || addItemToOrder.isPending;
 
   return {
-    selectedOrder: order,
+    selectedOrder,
     selectedTable,
     selectTable,
     unselectTable,

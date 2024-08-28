@@ -18,16 +18,19 @@ import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
 import SelectTable from "@/app/waiter/SelectTable";
 // import { type SelectedTable } from "@/app/waiter/ChooseTable";
 import useOrder from "@/hooks/useOrder";
+import { useRouter } from "next/navigation";
 
 export default function Cart() {
   const { selectedOrder, proceedOrder, selectedTable } = useOrder();
   console.log("USE ORDER HOOK: ", { selectedOrder, selectedTable });
+  const router = useRouter();
 
   const items = selectedOrder?.orderItems;
 
   const handleSubmitOrder = () => {
     console.log("submitting order", selectedOrder);
     proceedOrder();
+    router.refresh();
   };
   if (!selectedOrder) return null;
   return (

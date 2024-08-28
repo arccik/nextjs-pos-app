@@ -88,3 +88,44 @@ export const mostSoldItems = async () => {
   //   where: lt(orderItems.createdAt, today),
   // });
 };
+
+export async function getMonthlyPaymentTotals() {
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  console.log("Executing database query...");
+  const result = await db
+    .select({
+      month: sql<number>`EXTRACT(MONTH FROM ${payments.createdAt})`,
+      total: sql<number>`SUM(${payments.chargedAmount})`,
+    })
+    .from(payments)
+    .groupBy(sql`EXTRACT(MONTH FROM ${payments.createdAt})`)
+    .orderBy(sql`EXTRACT(MONTH FROM ${payments.createdAt})`);
+
+  if (result.length === 0) {
+    console.log("No data returned from the query.");
+  }
+
+  const monthlyTotals = monthNames.map((name, index) => {
+    const monthData = result.find((r) => r.month == index + 1);
+    return {
+      name,
+      total: monthData ? Math.floor(monthData.total) : 0,
+    };
+  });
+
+  return monthlyTotals;
+}

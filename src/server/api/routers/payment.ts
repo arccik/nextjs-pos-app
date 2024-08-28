@@ -10,6 +10,7 @@ import {
   totalSales,
   totalSoldItems,
   mostSoldItems,
+  getMonthlyPaymentTotals,
 } from "@/server/models/payment";
 import { paymentSchema } from "@/server/db/schemas";
 
@@ -53,5 +54,8 @@ export const paymentRouter = createTRPCRouter({
   }),
   mostSoldItems: protectedProcedure.query(async () => {
     return await mostSoldItems();
+  }),
+  getMonthlyPaymentTotals: protectedProcedure.query(async () => {
+    return await getMonthlyPaymentTotals();
   }),
 });

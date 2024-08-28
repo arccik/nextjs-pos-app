@@ -20,7 +20,6 @@ export default function AddItemToOrderButton({
   const [quantity, setQuantity] = useState(1);
   const { add, isLoading } = useOrder();
 
-  console.log("Use Local Storage Data", orderId);
 
   const handleAddItem = ({
     itemId,

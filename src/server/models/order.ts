@@ -208,16 +208,23 @@ export const newOrder = async (body: NewOrder) => {
 };
 
 export const create = async (values: NewOrderWithItems) => {
-  const insertedOrder = await db
+  const [insertedOrder] = await db
     .insert(orders)
     .values({ tableId: values.tableId, userId: values.userId })
     .returning();
-  const orderId = insertedOrder[0]?.id;
+  const orderId = insertedOrder?.id;
+
   if (!orderId) throw new Error("Order ID is missing");
   await db
     .insert(orderItems)
     .values(values.items.map((item) => ({ ...item, orderId })));
-
+  await db.insert(bills).values([
+    {
+      totalAmount: 0,
+      orderId,
+      userId: values.userId,
+    },
+  ]);
   return {
     success: true,
     orderId,

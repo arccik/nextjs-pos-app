@@ -12,7 +12,7 @@ const globalForDb = globalThis as unknown as {
   conn: ReturnType<typeof neon>;
 };
 
-const conn = globalForDb.conn ?? neon(env.DATABASE_URL);
+export const conn = globalForDb.conn ?? neon(env.DATABASE_URL);
 if (env.NODE_ENV !== "production") globalForDb.conn = conn;
 
 export const db = drizzle(conn, { schema });
