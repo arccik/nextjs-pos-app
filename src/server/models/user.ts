@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { type NewUser, type UpdateUser, users } from "../db/schemas/user";
 
-export const getOne = async (id: number) => {
+export const getOne = async (id: string) => {
   return await db.query.users.findFirst({
     columns: { password: false },
     where: eq(users.id, id),
@@ -15,7 +15,7 @@ export const getAll = async () => {
 };
 
 type UpdateUserProp = {
-  id: number;
+  id: string;
   body: UpdateUser;
 };
 export const update = async ({ id, body }: UpdateUserProp) => {
@@ -25,11 +25,10 @@ export const update = async ({ id, body }: UpdateUserProp) => {
 };
 
 export const create = async (body: NewUser) => {
-  console.log("Creating user :::: ", body);
   return await db.insert(users).values(body).returning();
 };
 
-export const deleteOne = async (id: number) => {
+export const deleteOne = async (id: string) => {
   return await db.delete(users).where(eq(users.id, id));
 };
 

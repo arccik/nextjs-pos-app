@@ -1,4 +1,3 @@
-"use server";
 import {
   type NewReservation,
   type Reservation,
@@ -18,7 +17,7 @@ export const getAll = async () => {
   return await db.select().from(reservations);
 };
 
-export const getOne = async (id: number) => {
+export const getOne = async (id: string) => {
   return await db.select().from(reservations).where(eq(reservations.id, id));
 };
 
@@ -28,7 +27,7 @@ export const create = async (body: NewReservation) => {
     .values(body)
     .returning({ id: reservations.id });
 };
-export const deleteOne = async (id: number) => {
+export const deleteOne = async (id: string) => {
   return await db.delete(reservations).where(eq(reservations.id, id));
 };
 export const update = async (body: Reservation) => {

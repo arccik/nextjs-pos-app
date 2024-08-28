@@ -98,7 +98,12 @@ export const combineOrderItems = (
       existingItem.quantity =
         (existingItem.quantity ?? 0) + (item.quantity ?? 0);
     } else {
-      combinedMap.set(key, { ...item, quantity: item.quantity ?? 0 });
+      combinedMap.set(key, {
+        ...item,
+        quantity: item.quantity ?? 0,
+        updatedAt: item.createdAt ?? new Date(),
+        createdAt: item.createdAt ?? new Date(),
+      });
     }
   };
 
@@ -124,7 +129,7 @@ export type ItemToSummerize = {
   };
 };
 
-export function formatId(id: number) {
+export function formatId(id: string) {
   return id.slice(-4);
 }
 

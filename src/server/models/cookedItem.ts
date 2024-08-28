@@ -4,7 +4,7 @@ import { db } from "../db";
 import { type NewCookedItem, cookedItems, items } from "../db/schemas";
 import { startOfDay } from "date-fns";
 
-export const getOne = async (id: number) => {
+export const getOne = async (id: string) => {
   return await db.query.cookedItems.findFirst({
     where: eq(cookedItems.id, id),
   });
@@ -18,7 +18,7 @@ export const getAll = async (orderId?: string) => {
     return await db.query.cookedItems.findMany();
   }
 };
-export const update = async (id: number, body: Partial<NewCookedItem>) => {
+export const update = async (id: string, body: Partial<NewCookedItem>) => {
   return await db
     .update(cookedItems)
     .set(body)

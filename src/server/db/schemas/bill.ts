@@ -51,7 +51,7 @@ export const payments = pgTable("payments", {
   userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdate(() => new Date()),

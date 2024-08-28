@@ -17,7 +17,7 @@ import { combineOrderItems } from "../../lib/utils";
 import { endOfToday, startOfToday } from "date-fns";
 import { updateBill } from "./bill";
 
-export const getOne = async (id: number) => {
+export const getOne = async (id: string) => {
   const result = await db.query.orders.findFirst({
     where: and(eq(orders.id, id)),
     with: {
@@ -173,7 +173,7 @@ export const getOrdersWithItems = async (status?: OrderStatus[number]) => {
   return result;
 };
 
-export const update = async (id: number, body: NewOrder) => {
+export const update = async (id: string, body: NewOrder) => {
   const result = await db.update(orders).set(body).where(eq(orders.id, id));
   return result;
 };
@@ -306,7 +306,7 @@ async function findOrCreateOrder(
   }
 }
 
-export const deleteOne = async (id: number) => {
+export const deleteOne = async (id: string) => {
   return await db.delete(orders).where(eq(orders.id, id));
 };
 
@@ -322,7 +322,7 @@ export const removeItemFromOrder = async ({
     .where(and(eq(orderItems.orderId, orderId), eq(orderItems.itemId, itemId)));
 };
 
-export const pay = async (id: number) => {
+export const pay = async (id: string) => {
   try {
     // TODO: do something ALL about this crap...
     return { id };
@@ -355,7 +355,7 @@ export const pay = async (id: number) => {
   }
 };
 
-export const complete = async (id: number) => {
+export const complete = async (id: string) => {
   const result = await db
     .update(orders)
     .set({ status: "Completed" })
@@ -366,7 +366,7 @@ export const complete = async (id: number) => {
     .where(eq(tables.id, orders.tableId));
   return result;
 };
-export const cancelOrder = async (id: number) => {
+export const cancelOrder = async (id: string) => {
   const result = await db
     .update(orders)
     .set({ status: "Cancelled" })
@@ -374,7 +374,7 @@ export const cancelOrder = async (id: number) => {
   return result;
 };
 
-export const serve = async (id: number) => {
+export const serve = async (id: string) => {
   const result = await db
     .update(orders)
     .set({ status: "Served" })
@@ -382,7 +382,7 @@ export const serve = async (id: number) => {
   return result;
 };
 
-export const leave = async (id: number) => {
+export const leave = async (id: string) => {
   const [order] = await db.select().from(orders).where(eq(orders.id, id));
   if (!order?.tableId) return;
   const result = await db
@@ -391,7 +391,7 @@ export const leave = async (id: number) => {
     .where(eq(tables.id, order.tableId));
   return result;
 };
-export const reinstand = async (id: number) => {
+export const reinstand = async (id: string) => {
   const result = await db
     .update(orders)
     .set({ status: "In Progress" })
@@ -409,7 +409,7 @@ export const recentCompletedOrders = async (tableId: string) => {
   });
 };
 
-export const addSpecailRequest = async (id: number, request: string) => {
+export const addSpecailRequest = async (id: string, request: string) => {
   const result = await db
     .update(orders)
     .set({ specialRequest: request })
@@ -438,7 +438,7 @@ export const getPending = async () => {
   return pendingOrders;
 };
 
-export const getOrderWithItems = async (id: number) => {
+export const getOrderWithItems = async (id: string) => {
   // i need to return order with items: name, id, quantity, price
   const result = await db.query.orders.findFirst({
     where: eq(orders.id, id),
@@ -554,7 +554,7 @@ export const updateOrder = async ({
   id,
   body,
 }: {
-  id: number;
+  id: string;
   body: NewOrder & { userId?: string };
 }) => {
   console.log("UPDATE ORDER >>> ", { body });
