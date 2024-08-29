@@ -16,19 +16,6 @@ type SelectedDayProps = {
 };
 
 export default function SelectedDay({ date, diselect }: SelectedDayProps) {
-  const saveRota = api.rota.saveRota.useMutation({
-    onSuccess: () => {
-      toast({
-        title: "Rota saved successfully",
-        description: "The rota has been saved to the database",
-      });
-    },
-  });
-  const handleStatusChange = (staffStatus: StaffStatus[]) => {
-    if (!date) return;
-    saveRota.mutate(staffStatus.map((v) => ({ ...v, date })));
-  };
-
   return (
     <Dialog open={!!date} onOpenChange={diselect}>
       <DialogContent>
@@ -39,7 +26,7 @@ export default function SelectedDay({ date, diselect }: SelectedDayProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <StaffStatusSelector onStatusChange={handleStatusChange} />
+        <StaffStatusSelector date={date} onComplete={diselect} />
       </DialogContent>
     </Dialog>
   );

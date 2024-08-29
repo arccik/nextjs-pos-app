@@ -20,7 +20,7 @@ export const YearlyRota: React.FC<YearlyRotaProps> = ({ today }) => {
     setCurrentMonth((nextMonth) => addMonths(nextMonth, 1));
 
   return (
-    <Card className="flex h-screen flex-col">
+    <div className="flex h-screen flex-col">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <Button variant="outline" size="icon" onClick={handlePrevMonth}>
           <ChevronLeft className="h-4 w-4" />
@@ -43,6 +43,6 @@ export const YearlyRota: React.FC<YearlyRotaProps> = ({ today }) => {
           // )}
         />
       </CardContent>
-    </Card>
+    </div>
   );
 };

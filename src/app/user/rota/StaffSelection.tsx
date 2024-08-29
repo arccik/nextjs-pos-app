@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { api } from "@/trpc/react";
 import Loading from "@/components/Loading";
+import { toast } from "@/components/ui/use-toast";
 // import { type User } from "@/server/db/schemas";
 
 type Shift = "morning" | "evening" | "night";
@@ -18,23 +19,34 @@ export interface StaffStatus {
   userId: string;
   working: boolean;
   shift: Shift | null;
+  date: Date;
 }
 
 interface StaffStatusSelectorProps {
-  onStatusChange: (staffStatus: StaffStatus[]) => void;
+  date: Date | null;
+  onComplete: () => void;
 }
 
 export function StaffStatusSelector({
-  onStatusChange,
+  date,
+  onComplete,
 }: StaffStatusSelectorProps) {
-  const { data: staffMembers, isLoading } = api.user.getAll.useQuery();
-  const [staffStatus, setStaffStatus] = useState<StaffStatus[] | undefined>(
-    staffMembers?.map((staff) => ({
-      userId: staff.id,
-      working: false,
-      shift: null,
-    })),
-  );
+  const saveRota = api.rota.saveRota.useMutation({
+    onSuccess: async () => {
+      toast({
+        title: "Rota saved successfully",
+        description: "The rota has been saved to the database",
+      });
+      await refetchStaffMembers();
+    },
+  });
+
+  const {
+    data: staffMembers,
+    isLoading,
+    refetch: refetchStaffMembers,
+  } = api.user.getAll.useQuery();
+  const [staffStatus, setStaffStatus] = useState<StaffStatus[] | undefined>();
   useEffect(() => {
     setStaffStatus(
       staffMembers?.map((staff) => ({
@@ -42,10 +54,15 @@ export function StaffStatusSelector({
         working: false,
         shift: null,
         name: staff.name,
+        date: date!,
       })),
     );
   }, [staffMembers]);
 
+  const handleStatusChange = () => {
+    staffStatus && saveRota.mutate(staffStatus);
+    onComplete();
+  };
   const toggleStaffStatus = (staffId: string) => {
     setStaffStatus((prev) =>
       prev?.map((status) =>
@@ -68,9 +85,6 @@ export function StaffStatusSelector({
     );
   };
 
-  const handleStatusChange = () => {
-    staffStatus && onStatusChange(staffStatus);
-  };
   if (isLoading) return <Loading />;
   return (
     <div className="rounded-lg bg-white">

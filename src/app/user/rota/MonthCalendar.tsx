@@ -11,16 +11,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import DayCard from "./DayCard";
 import SelectedDay from "./SelectedDay";
-// import { Button } from "@/components/ui/button";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogFooter,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogTrigger,
-// } from "@/components/ui/dialog";
+
 import { api } from "@/trpc/react";
 
 export interface RotaItem {
@@ -50,7 +41,6 @@ export const COLORS = [
 
 export const MonthCalendar: React.FC<MonthlyRotaProps> = ({ month }) => {
   const { data: rotaData } = api.rota.getAll.useQuery(month);
-  console.log("MoNTTADDA >>>> ", rotaData);
 
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const monthStart = startOfMonth(month);
@@ -61,51 +51,58 @@ export const MonthCalendar: React.FC<MonthlyRotaProps> = ({ month }) => {
   const days = eachDayOfInterval({ start: startDate, end: endDate });
 
   const handleClick = (day: Date) => {
-    console.log("DaY CLicKED >>>!!!", day);
     setSelectedDay(day);
   };
 
   return (
-    <Card className="flex h-full w-full flex-col">
-      {/* <Dialog open={!!selectedDay} onOpenChange={() => setSelectedDay(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add Item</DialogTitle>
-            <DialogDescription>
-              Here you can add new items to the menu
-              <p>{selectedDay?.toDateString()}/</p>
-            </DialogDescription>
-          </DialogHeader>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum
-            repellendus eligendi recusandae laborum ratione nesciunt laboriosam
-            maiores! Assumenda, voluptatum officiis.
-          </p>
-        </DialogContent>
-      </Dialog> */}
+    <Card className="flex min-h-full flex-col">
       <SelectedDay date={selectedDay} diselect={() => setSelectedDay(null)} />
-      <CardContent className="bg-gradient-radial grid flex-grow grid-cols-7 grid-rows-[auto_1fr_1fr_1fr_1fr_1fr_1fr] gap-1">
-        {DAYS_OF_WEEK.map((day) => (
-          <div key={day} className="p-2 text-center font-bold">
-            {day}
-          </div>
-        ))}
-        {days.map((day) => {
-          const rotaItem = rotaData?.filter(
-            (item) =>
-              format(item.date, "yyyy-MM-dd") === format(day, "yyyy-MM-dd"),
-          );
-          const isCurrentMonth = day.getMonth() === month.getMonth();
-          return (
-            <DayCard
-              key={day.toDateString()}
-              day={day}
-              isCurrentMonth={isCurrentMonth}
-              rotaItem={rotaItem}
-              onClick={handleClick}
-            />
-          );
-        })}
+      <CardContent className="flex flex-grow flex-col p-2">
+        {/* Display the days of the week */}
+        <div className="hidden md:mb-2 md:mt-2 md:grid md:grid-cols-7 md:gap-1">
+          {DAYS_OF_WEEK.map((day) => (
+            <div key={day} className="p-2 text-center font-bold">
+              {day}
+            </div>
+          ))}
+        </div>
+        {/* Display the days in a list on mobile */}
+        <div className="grid grid-cols-1 gap-2 md:hidden">
+          {days.map((day) => {
+            const rotaItem = rotaData?.filter(
+              (item) =>
+                format(item.date, "yyyy-MM-dd") === format(day, "yyyy-MM-dd"),
+            );
+            const isCurrentMonth = day.getMonth() === month.getMonth();
+            return (
+              <DayCard
+                key={day.toDateString()}
+                day={day}
+                isCurrentMonth={isCurrentMonth}
+                rotaItem={rotaItem}
+                onClick={handleClick}
+              />
+            );
+          })}
+        </div>
+        <div className="hidden md:mt-2 md:grid md:grid-cols-7 md:gap-1">
+          {days.map((day) => {
+            const rotaItem = rotaData?.filter(
+              (item) =>
+                format(item.date, "yyyy-MM-dd") === format(day, "yyyy-MM-dd"),
+            );
+            const isCurrentMonth = day.getMonth() === month.getMonth();
+            return (
+              <DayCard
+                key={day.toDateString()}
+                day={day}
+                isCurrentMonth={isCurrentMonth}
+                rotaItem={rotaItem}
+                onClick={handleClick}
+              />
+            );
+          })}
+        </div>
       </CardContent>
     </Card>
   );

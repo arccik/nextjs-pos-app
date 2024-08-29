@@ -4,7 +4,7 @@ export default async function App() {
   const currentMonth = new Date();
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="mx-auto">
       <YearlyRota today={currentMonth} />
     </div>
   );
