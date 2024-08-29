@@ -8,11 +8,10 @@ import { MonthCalendar } from "./MonthCalendar";
 import { type Rota } from "@/server/db/schemas";
 
 interface YearlyRotaProps {
-  rotaData: Rota[];
   today: Date;
 }
 
-export const YearlyRota: React.FC<YearlyRotaProps> = ({ rotaData, today }) => {
+export const YearlyRota: React.FC<YearlyRotaProps> = ({ today }) => {
   const [currentMonth, setCurrentMonth] = useState(today);
 
   const handlePrevMonth = () =>
@@ -36,12 +35,12 @@ export const YearlyRota: React.FC<YearlyRotaProps> = ({ rotaData, today }) => {
       <CardContent className="flex-grow overflow-auto">
         <MonthCalendar
           month={currentMonth}
-          rotaData={rotaData.filter(
-            (item) =>
-              new Date(item.date).getFullYear() ===
-                currentMonth.getFullYear() &&
-              new Date(item.date).getMonth() === currentMonth.getMonth(),
-          )}
+          // rotaData={rotaData.filter(
+          //   (item) =>
+          //     new Date(item.date).getFullYear() ===
+          //       currentMonth.getFullYear() &&
+          //     new Date(item.date).getMonth() === currentMonth.getMonth(),
+          // )}
         />
       </CardContent>
     </Card>

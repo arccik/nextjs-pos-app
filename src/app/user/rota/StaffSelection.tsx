@@ -1,5 +1,5 @@
 // components/StaffStatusSelector.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -8,39 +8,48 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type User } from "@/server/db/schemas";
+import { api } from "@/trpc/react";
+import Loading from "@/components/Loading";
+// import { type User } from "@/server/db/schemas";
 
 type Shift = "morning" | "evening" | "night";
 
 export interface StaffStatus {
-  id: string;
+  userId: string;
   working: boolean;
   shift: Shift | null;
 }
 
 interface StaffStatusSelectorProps {
-  staffMembers: User[];
-  date: Date;
   onStatusChange: (staffStatus: StaffStatus[]) => void;
 }
 
 export function StaffStatusSelector({
-  staffMembers,
-  date,
   onStatusChange,
 }: StaffStatusSelectorProps) {
-  const [staffStatus, setStaffStatus] = useState<StaffStatus[]>(
-    staffMembers.map((staff) => ({
-      id: staff.id,
+  const { data: staffMembers, isLoading } = api.user.getAll.useQuery();
+  const [staffStatus, setStaffStatus] = useState<StaffStatus[] | undefined>(
+    staffMembers?.map((staff) => ({
+      userId: staff.id,
       working: false,
       shift: null,
     })),
   );
+  useEffect(() => {
+    setStaffStatus(
+      staffMembers?.map((staff) => ({
+        userId: staff.id,
+        working: false,
+        shift: null,
+        name: staff.name,
+      })),
+    );
+  }, [staffMembers]);
 
   const toggleStaffStatus = (staffId: string) => {
     setStaffStatus((prev) =>
-      prev.map((status) =>
-        status.id === staffId
+      prev?.map((status) =>
+        status.userId === staffId
           ? {
               ...status,
               working: !status.working,
@@ -53,24 +62,21 @@ export function StaffStatusSelector({
 
   const updateStaffShift = (staffId: string, shift: Shift) => {
     setStaffStatus((prev) =>
-      prev.map((status) =>
-        status.id === staffId ? { ...status, shift } : status,
+      prev?.map((status) =>
+        status.userId === staffId ? { ...status, shift } : status,
       ),
     );
   };
 
   const handleStatusChange = () => {
-    onStatusChange(staffStatus);
+    staffStatus && onStatusChange(staffStatus);
   };
-
+  if (isLoading) return <Loading />;
   return (
-    <div className="rounded-lg bg-white p-6 shadow-md">
-      <h2 className="mb-4 text-xl font-bold">
-        Staff Status for {date.toDateString()}
-      </h2>
+    <div className="rounded-lg bg-white">
       <div className="space-y-4">
-        {staffMembers.map((staff) => {
-          const status = staffStatus.find((s) => s.id === staff.id);
+        {staffMembers?.map((staff) => {
+          const status = staffStatus?.find((s) => s.userId === staff.id);
           return (
             <div key={staff.id} className="flex items-center space-x-2">
               <Button
@@ -103,10 +109,11 @@ export function StaffStatusSelector({
         <div className="flex justify-between text-sm text-gray-600">
           <div>
             <strong>Working:</strong>{" "}
-            {staffStatus.filter((s) => s.working).length}
+            {staffStatus?.filter((s) => s.working).length}
           </div>
           <div>
-            <strong>Off:</strong> {staffStatus.filter((s) => !s.working).length}
+            <strong>Off:</strong>{" "}
+            {staffStatus?.filter((s) => !s.working).length}
           </div>
         </div>
         <Button onClick={handleStatusChange} className="w-full">

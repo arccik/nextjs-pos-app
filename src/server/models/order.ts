@@ -114,6 +114,7 @@ export const getAll = async (status?: OrderStatus[number]) => {
     where: and(
       status ? eq(orders.status, status) : undefined,
       gte(orders.createdAt, today),
+      eq(orders.guestLeft, false),
     ),
     orderBy: (orders, { asc }) => [asc(orders.createdAt)],
 

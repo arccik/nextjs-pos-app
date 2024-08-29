@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type NewItem } from "@/server/db/schemas";
+import { type Item } from "@/server/db/schemas";
 import { type UseFormReturn } from "react-hook-form";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -26,7 +26,7 @@ import UploadFile from "./UploadFile";
 import { api } from "@/trpc/react";
 
 type ItemFieldsProps = {
-  form: UseFormReturn<NewItem>;
+  form: UseFormReturn<Item>;
 };
 
 export function ItemFields({ form }: ItemFieldsProps) {

@@ -21,7 +21,7 @@ import SelectedDay from "./SelectedDay";
 //   DialogTitle,
 //   DialogTrigger,
 // } from "@/components/ui/dialog";
-import { type Rota } from "@/server/db/schemas";
+import { api } from "@/trpc/react";
 
 export interface RotaItem {
   date: Date;
@@ -31,7 +31,6 @@ export interface RotaItem {
 
 interface MonthlyRotaProps {
   month: Date;
-  rotaData: Rota[];
 }
 
 const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -49,10 +48,10 @@ export const COLORS = [
   "bg-cyan-200",
 ];
 
-export const MonthCalendar: React.FC<MonthlyRotaProps> = ({
-  month,
-  rotaData,
-}) => {
+export const MonthCalendar: React.FC<MonthlyRotaProps> = ({ month }) => {
+  const { data: rotaData } = api.rota.getAll.useQuery(month);
+  console.log("MoNTTADDA >>>> ", rotaData);
+
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const monthStart = startOfMonth(month);
   const monthEnd = endOfMonth(month);
@@ -92,7 +91,7 @@ export const MonthCalendar: React.FC<MonthlyRotaProps> = ({
           </div>
         ))}
         {days.map((day) => {
-          const rotaItem = rotaData.filter(
+          const rotaItem = rotaData?.filter(
             (item) =>
               format(item.date, "yyyy-MM-dd") === format(day, "yyyy-MM-dd"),
           );

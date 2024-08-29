@@ -11,7 +11,9 @@ export const getOne = async (id: string) => {
   });
 };
 export const getAll = async () => {
-  return await db.query.users.findMany();
+  return await db.query.users.findMany({
+    columns: { password: false, email: false },
+  });
 };
 
 type UpdateUserProp = {

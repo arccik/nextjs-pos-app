@@ -1,4 +1,10 @@
-import { text, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
+import {
+  text,
+  pgTable,
+  timestamp,
+  varchar,
+  boolean,
+} from "drizzle-orm/pg-core";
 
 import { users } from "./user";
 import { relations } from "drizzle-orm";
@@ -12,12 +18,13 @@ export const rotas = pgTable("rota", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
-  shift: varchar("shift", { enum: shift }).notNull(),
+  shift: varchar("shift", { enum: shift }),
   userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id),
-  date: timestamp("date").defaultNow().notNull(),
+  date: timestamp("date").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  working: boolean("working").default(false).notNull(),
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdate(() => new Date()),

@@ -45,6 +45,7 @@ export const orders = pgTable("orders", {
   status: varchar("order_status", { enum: orderStatus })
     .default("Pending")
     .notNull(),
+  guestLeft: boolean("guest_left").default(false).notNull(),
   specialRequest: text("special_request"),
   billId: varchar("bill_id", { length: 255 }).references(() => bills.id, {
     onDelete: "set null",

@@ -25,11 +25,7 @@ type FieldsProps = {
   form: UseFormReturn<UpdateUser>;
 };
 
-// name: string | null;
-// email: string;
-// password: string;
-// image: string | null;
-// role: "admin" | "user" | "waiter" | "chef" | "manager";
+
 
 export default function Fields({ form }: FieldsProps) {
   return (

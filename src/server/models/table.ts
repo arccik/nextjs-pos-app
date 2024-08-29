@@ -114,10 +114,13 @@ export const unselectTable = async (userId: string) => {
 };
 
 export const guestLeave = async (orderId: string) => {
-  const order = await db.query.orders.findFirst({
-    where: eq(orders.id, orderId),
-  });
-  console.log("GUEST LEAVE AAAA A A AA A", { orderId, order });
+
+  const [order] = await db
+    .update(orders)
+    .set({ status: "Completed", guestLeft: true })
+    .where(eq(orders.id, orderId))
+    .returning();
+
   if (!order) return null;
   if (order.tableId) {
     await db
@@ -125,4 +128,5 @@ export const guestLeave = async (orderId: string) => {
       .set({ selectedBy: null, requireCleaning: true, status: "available" })
       .where(eq(tables.id, order.tableId));
   }
+  return order;
 };

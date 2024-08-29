@@ -1,56 +1,45 @@
-// import { Button } from "@/components/ui/button";
+"use client";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  // DialogFooter,
   DialogHeader,
   DialogTitle,
-  // DialogTrigger,
 } from "@/components/ui/dialog";
 import { type StaffStatus, StaffStatusSelector } from "./StaffSelection";
 import { api } from "@/trpc/react";
-import Loading from "@/components/Loading";
+import { format } from "date-fns";
+import { toast } from "@/components/ui/use-toast";
 type SelectedDayProps = {
   date: Date | null;
   diselect: () => void;
 };
 
 export default function SelectedDay({ date, diselect }: SelectedDayProps) {
-  // const saveRota = api.rota;
+  const saveRota = api.rota.saveRota.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Rota saved successfully",
+        description: "The rota has been saved to the database",
+      });
+    },
+  });
   const handleStatusChange = (staffStatus: StaffStatus[]) => {
-    console.log("Staff status:", staffStatus);
-    // // Handle the status change (e.g., update state, send to server, etc.)
-    // // You can filter this array to get working and off staff, along with their shifts
-    // const workingStaff = staffStatus.filter((s) => s.working);
-    // const offStaff = staffStatus.filter((s) => !s.working);
-    // console.log("Working staff:", workingStaff);
-    // console.log("Off staff:", offStaff);
+    if (!date) return;
+    saveRota.mutate(staffStatus.map((v) => ({ ...v, date })));
   };
-  const { data, isLoading } = api.user.getAll.useQuery();
 
   return (
     <Dialog open={!!date} onOpenChange={diselect}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{date?.toDateString()}</DialogTitle>
+          <DialogTitle>{date && format(date, "dd MMM yyyy")}</DialogTitle>
           <DialogDescription>
-            Here you can add new items to the menu
+            Select staff who is going to be working this day
           </DialogDescription>
         </DialogHeader>
-        {/* <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum
-          repellendus eligendi recusandae laborum ratione nesciunt laboriosam
-          maiores! Assumenda, voluptatum officiis.
-        </p> */}
-        {isLoading && <Loading />}
-        {data && (
-          <StaffStatusSelector
-            staffMembers={data}
-            date={new Date()} // You can pass any date here
-            onStatusChange={handleStatusChange}
-          />
-        )}
+
+        <StaffStatusSelector onStatusChange={handleStatusChange} />
       </DialogContent>
     </Dialog>
   );
