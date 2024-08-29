@@ -11,7 +11,7 @@ type NewReservationProps = {
   onComplete: () => void;
 };
 
-export default function NewResetvation({ onComplete }: NewReservationProps) {
+export default function NewResetvation() {
   // const queryClient = useQueryClient();
 
   // const addNewReservation = useMutation({

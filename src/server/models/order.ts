@@ -281,7 +281,7 @@ async function findOrCreateOrder(
 ): Promise<OrderWithItems | { id: string } | undefined> {
   console.log("findOrCreateOrder triggered!!!", { userId, orderId });
   const selectedOrder = await getSelectedByUser(userId);
-  if (selectedOrder) return selectedOrder;
+  if (selectedOrder && selectedOrder !== "null") return selectedOrder;
   if (!orderId) {
     const [newOrder] = await db
       .insert(orders)
@@ -603,7 +603,7 @@ export const removeSpecialRequest = async (orderId: string) => {
 export type OrderItemsBill = Unpromisify<ReturnType<typeof getSelectedByUser>>;
 
 export const getSelectedByUser = async (userId: string) => {
-  return await db.query.orders.findFirst({
+  const result = await db.query.orders.findFirst({
     where: and(eq(orders.selectedBy, userId)),
     with: {
       table: true,
@@ -624,6 +624,7 @@ export const getSelectedByUser = async (userId: string) => {
       },
     },
   });
+  return result ?? "null";
 };
 
 export const unselectOrder = async (orderId: string) => {
@@ -633,4 +634,18 @@ export const unselectOrder = async (orderId: string) => {
     .where(eq(orders.id, orderId))
     .returning({ id: orders.id });
   return result;
+};
+
+export const selectOrder = async (orderId: string, userId: string) => {
+  const isSelected = await db.query.orders.findFirst({
+    where: eq(orders.selectedBy, userId),
+  });
+  if (isSelected) {
+    await unselectOrder(isSelected.id);
+  }
+  return db
+    .update(orders)
+    .set({ selectedBy: userId })
+    .where(eq(orders.id, orderId))
+    .returning({ id: orders.id });
 };

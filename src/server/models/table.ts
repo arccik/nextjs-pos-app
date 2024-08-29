@@ -3,6 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../db";
 import {
   type NewTable,
+  orders,
   reservations,
   type Table,
   tables,
@@ -101,7 +102,7 @@ export const getSelectedTable = async (userId: string) => {
   const result = await db.query.tables.findFirst({
     where: eq(tables.selectedBy, userId),
   });
-  return result ?? null;
+  return result ?? "null";
 };
 
 export const unselectTable = async (userId: string) => {
@@ -110,4 +111,17 @@ export const unselectTable = async (userId: string) => {
     .set({ selectedBy: null })
     .where(eq(tables.selectedBy, userId))
     .returning();
+};
+
+export const guestLeave = async (orderId: string) => {
+  const order = await db.query.orders.findFirst({
+    where: eq(orders.id, orderId),
+  });
+  if (!order) return null;
+  if (order.tableId) {
+    await db
+      .update(tables)
+      .set({ selectedBy: null, requireCleaning: true })
+      .where(eq(tables.id, order.tableId));
+  }
 };

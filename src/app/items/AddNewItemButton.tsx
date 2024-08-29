@@ -10,11 +10,11 @@ import {
 import AddItem from "./form/AddItem";
 
 type AddNewItemButtonProps = {
-  refetch: () => void;
+  refetch?: () => void;
 };
 export default function AddNewItemButton({ refetch }: AddNewItemButtonProps) {
   return (
-    <Dialog onOpenChange={() => refetch()}>
+    <Dialog onOpenChange={() => refetch && refetch()}>
       <DialogTrigger asChild>
         <Button size="sm">Add Item</Button>
       </DialogTrigger>
@@ -27,7 +27,7 @@ export default function AddNewItemButton({ refetch }: AddNewItemButtonProps) {
         </DialogHeader>
         <AddItem
           onClose={() => {
-            refetch();
+            refetch && refetch();
           }}
         />
       </DialogContent>

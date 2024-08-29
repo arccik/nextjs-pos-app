@@ -16,20 +16,15 @@ import TableIcon from "@/components/navbar/TableIcon";
 import { ClockIcon, Edit2, Utensils } from "lucide-react";
 import AddOrderSpecialRequest from "./AddOrderSpecialRequest";
 import SelectTable from "@/app/waiter/SelectTable";
-// import { type SelectedTable } from "@/app/waiter/ChooseTable";
 import useOrder from "@/hooks/useOrder";
-import { useRouter } from "next/navigation";
 
 export default function Cart() {
   const { selectedOrder, proceedOrder, selectedTable } = useOrder();
-  console.log("USE ORDER HOOK: ", { selectedOrder, selectedTable });
-  const router = useRouter();
 
-  const items = selectedOrder?.orderItems;
+  const items = selectedOrder && selectedOrder?.orderItems;
 
   const handleSubmitOrder = async () => {
     await proceedOrder();
-    router.refresh();
   };
   if (!selectedOrder) return null;
   return (
@@ -45,7 +40,7 @@ export default function Cart() {
         />
       </CardHeader>
       <CardContent className="grid gap-4">
-        {selectedTable ? (
+        {selectedTable && typeof selectedTable !== "string" ? (
           <div className="flex items-center gap-4">
             <ClockIcon className="h-6 w-6" />
             <div className="grid gap-1 text-sm">
@@ -81,7 +76,7 @@ export default function Cart() {
           <CloseCartDialog orderId={selectedOrder.id} />
           <Button
             onClick={handleSubmitOrder}
-            // disabled={saveOrder.isPending || addMoreItemsToOrder.isPending}
+            // disabled={selectedOrder}
             className="w-full"
           >
             Proceed

@@ -8,13 +8,9 @@ import AddNewOrderButton from "./AddNewOrderButton";
 import { api } from "@/trpc/react";
 import Loading from "@/components/Loading";
 
-type OrderProps = {
-  orderStatus?: OrderStatus[number];
-};
-export default function Orders({ orderStatus }: OrderProps) {
-  const [status, setStatus] = useState<OrderStatus[number] | undefined>(
-    orderStatus,
-  );
+
+export default function OrdersPage() {
+  const [status, setStatus] = useState<OrderStatus[number]>("In Progress");
   //TODO: make api requiest with limit and offset
 
   const { data, isLoading } = api.order.getAll.useQuery(status);

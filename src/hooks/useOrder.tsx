@@ -14,67 +14,65 @@ type UtilsKeys = "order" | "table" | "bill" | "payment";
 export default function useOrder() {
   const utils = api.useUtils();
 
-  const { data: selectedOrder, refetch: refetchSelectedOrder } =
-    api.order.getSelectedByUser.useQuery(undefined, {
-      refetchInterval: 5000,
-      select: (data) => data ?? null,
-    });
+  const { data: selectedOrder } = api.order.getSelectedByUser.useQuery();
+
+  const selectOrder = api.order.selectOrder.useMutation({
+    onSuccess: async () => {
+      await utils.order.getSelectedByUser.invalidate();
+    },
+  });
+  const unselectOrder = api.order.unselectOrder.useMutation({
+    onSuccess: async () => {
+      await utils.order.getSelectedByUser.invalidate();
+    },
+  });
   const { data: selectedTable } = api.table.getSelectedTable.useQuery();
-  const orderId = selectedOrder?.id;
+  const orderId = selectedOrder !== "null" && selectedOrder?.id;
   // Utility function to handle successful mutations
   const handleSuccess = useCallback(
-    async (message: string, entity: UtilsKeys) => {
+    async (message: string, entity: UtilsKeys[]) => {
       toast({ title: message });
-      await utils[entity].invalidate();
-      await utils.order.invalidate();
-      await refetchSelectedOrder();
-
-      // If after refetch, selectedOrder is undefined, invalidate the query
-      if (selectedOrder === undefined) {
-        await utils.order.getSelectedByUser.invalidate();
-      }
+      await Promise.all(entity.map((e) => utils[e].invalidate()));
     },
-    [utils, refetchSelectedOrder, selectedOrder],
+    [utils, selectedOrder],
   );
 
-  // Mutations
   const setStatus = api.order.setStatus.useMutation({
-    onSuccess: () => handleSuccess("Order Status Changed", "order"),
+    onSuccess: () => handleSuccess("Order Status Changed", ["order"]),
   });
 
   const addItem = api.order.addItems.useMutation({
-    onSuccess: () => handleSuccess("Item Added", "order"),
+    onSuccess: () => handleSuccess("Item Added", ["order"]),
   });
 
   const addItemToOrder = api.order.addMoreItemsToOrder.useMutation({
-    onSuccess: () => handleSuccess("Order Updated", "order"),
+    onSuccess: () => handleSuccess("Order Updated", ["order"]),
   });
 
   const deleteOrder = api.order.deleteOne.useMutation({
-    onSuccess: () => handleSuccess("Order Deleted", "order"),
+    onSuccess: () => handleSuccess("Order Deleted", ["order", "table"]),
   });
 
   const removeItemFromOrder = api.order.removeItemFromOrder.useMutation({
-    onSuccess: () => handleSuccess("Order Updated", "order"),
+    onSuccess: async () => await handleSuccess("Order Updated", ["order"]),
   });
 
   const updateOrder = api.order.updateOrder.useMutation({
     onSuccess: async () => {
-      await handleSuccess("Order Updated", "order");
-      await utils.table.invalidate();
+      await handleSuccess("Order Updated", ["order", "table"]);
     },
   });
 
   const changeTableStatus = api.table.changeStatus.useMutation({
-    onSuccess: () => handleSuccess("Table Status Changed", "table"),
+    onSuccess: () => handleSuccess("Table Status Changed", ["table"]),
   });
 
   const unselectTableMutation = api.table.unselectTable.useMutation({
-    onSuccess: async () => handleSuccess("Table unselected", "table"),
+    onSuccess: async () => handleSuccess("Table unselected", ["table"]),
   });
 
   const setSelectedTable = api.table.setSelectedTable.useMutation({
-    onSuccess: () => handleSuccess("Table Selected", "table"),
+    onSuccess: () => handleSuccess("Table Selected", ["table"]),
   });
 
   // useEffect(() => {
@@ -125,19 +123,18 @@ export default function useOrder() {
 
   const proceedOrder = async () => {
     if (!orderId) return;
-    await unselectTableMutation.mutateAsync();
-    await updateOrder.mutateAsync({
+    unselectTableMutation.mutate();
+    updateOrder.mutate({
       id: orderId,
       body: { status: "In Progress", selectedBy: null },
     });
 
-    if (selectedTable?.id) {
+    if (selectedTable !== "null" && selectedTable?.id) {
       await changeTableStatus.mutateAsync({
         tableId: selectedTable.id,
         status: "occupied",
       });
     }
-    await refetchSelectedOrder();
   };
 
   const changeStatus = ({
@@ -150,10 +147,14 @@ export default function useOrder() {
     setStatus.mutate({ orderId, status });
   };
 
+  const setSelectedOrder = (orderId: string) => {
+    selectOrder.mutate({ orderId });
+  };
+
   const isLoading = addItem.isPending || addItemToOrder.isPending;
 
   return {
-    selectedOrder,
+    selectedOrder: selectedOrder !== "null" && selectedOrder,
     selectedTable,
     selectTable,
     unselectTable,
@@ -164,5 +165,7 @@ export default function useOrder() {
     isLoading,
     proceedOrder,
     changeStatus,
+    setSelectedOrder,
+    unselectOrder,
   };
 }

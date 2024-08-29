@@ -43,7 +43,7 @@ export default function ChooseTable({ close }: ChooseTableProps) {
     reserved: "🔒",
   };
 
-  if (selectedOrder?.table) {
+  if (selectedOrder && selectedOrder?.table) {
     return (
       <div className="flex items-center justify-center gap-4">
         <p>You Have selected table number {selectedOrder?.table.number}</p>

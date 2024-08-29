@@ -11,19 +11,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-// import { toast } from "@/components/ui/use-toast";
 import useOrder from "@/hooks/useOrder";
-// import { api } from "@/trpc/react";
 import { Cross1Icon } from "@radix-ui/react-icons";
-// import { useRouter } from "next/navigation";
 
-export function CloseCartDialog({ orderId }: { orderId?: string }) {
+export function CloseCartDialog({ orderId }: { orderId: string }) {
   const { deleteOne } = useOrder();
 
   const handleCloseDialog = () => {
-    if (orderId) {
-      deleteOne(orderId);
-    }
+    deleteOne(orderId);
   };
 
   return (

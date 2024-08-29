@@ -9,6 +9,7 @@ import {
   unselectTable,
   getAllByStatus,
   updateStatus,
+  guestLeave,
 } from "@/server/models/table";
 import { z } from "zod";
 
@@ -50,5 +51,10 @@ export const tableRouter = createTRPCRouter({
     .input(z.object({ tableId: z.string(), status: z.enum(tableStatusEnum) }))
     .mutation(async ({ input }) => {
       return await updateStatus(input.tableId, input.status);
+    }),
+  guestLeave: protectedProcedure
+    .input(z.object({ orderId: z.string() }))
+    .mutation(async ({ input }) => {
+      return await guestLeave(input.orderId);
     }),
 });
