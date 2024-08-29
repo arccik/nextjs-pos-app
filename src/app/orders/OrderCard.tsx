@@ -19,7 +19,6 @@ import { Badge } from "@/components/ui/badge";
 import { HandPlatter } from "lucide-react";
 import TableIcon from "@/components/navbar/TableIcon";
 import Link from "next/link";
-import { useState } from "react";
 import ActionButtons from "@/components/ActionButtons";
 
 type OrderCardProps = {
@@ -27,18 +26,13 @@ type OrderCardProps = {
   isOpen?: boolean;
 };
 
-export default function OrderCard({ order, isOpen }: OrderCardProps) {
-  const [showDetails, setShowDetails] = useState(isOpen);
-
+export default function OrderCard({ order }: OrderCardProps) {
   const tableNumber = order.table?.number;
   const serviceFee = order.bill?.serviceFee;
 
   return (
-    <Card className="w-full">
-      <CardHeader
-        className="cursor-pointer pb-5"
-        onClick={() => setShowDetails((prev) => !prev)}
-      >
+    <Card className="flex w-full flex-col justify-between">
+      <CardHeader className="pb-5">
         <CardTitle className="flex justify-between">
           <div className="flex tracking-tighter">
             <Link href={`/orders/${order.id}`}>
@@ -82,23 +76,21 @@ export default function OrderCard({ order, isOpen }: OrderCardProps) {
         </div>
       </CardHeader>
 
-      {showDetails && (
-        <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <div className="grid items-center">
-              <div className="font-medium">
-                <DisplayOrderItems items={order.orderItems} bill={order.bill} />
-              </div>
+      <CardContent className="grid gap-4">
+        <div className="grid gap-2">
+          <div className="grid items-center">
+            <div className="font-medium">
+              <DisplayOrderItems items={order.orderItems} bill={order.bill} />
             </div>
           </div>
-          {!!serviceFee && (
-            <div className="grid grid-cols-2 items-center gap-2 text-sm text-slate-900">
-              <div className="">Service fee</div>
-              <div className="text-right">{formatCurrency(serviceFee)}</div>
-            </div>
-          )}
-        </CardContent>
-      )}
+        </div>
+        {!!serviceFee && (
+          <div className="grid grid-cols-2 items-center gap-2 text-sm text-slate-900">
+            <div className="">Service fee</div>
+            <div className="text-right">{formatCurrency(serviceFee)}</div>
+          </div>
+        )}
+      </CardContent>
       <CardFooter className="flex flex-col justify-center gap-4 p-4">
         <ActionButtons
           status={order.status}

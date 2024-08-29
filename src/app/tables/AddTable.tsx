@@ -14,14 +14,14 @@ import { useState } from "react";
 import { PlusIcon } from "lucide-react";
 
 type AddTableProps = {
-  onComplete: () => void;
+  onComplete?: () => void;
 };
 
 export default function AddTable({ onComplete }: AddTableProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleFormClose = () => {
-    onComplete();
+    onComplete && onComplete();
     setIsOpen(false);
   };
   return (

@@ -12,7 +12,6 @@ import Loading from "@/components/Loading";
 
 import AddReservation from "@/components/reservations/AddReservation/AddReservation";
 import { Button } from "@/components/ui/button";
-import { AdminMenu } from "./AdminMenu";
 // import { getUnAssignedReservations } from "@/server/models/reservation";
 
 type TabelsGridProps = {
@@ -54,11 +53,10 @@ export default function TableCards({ standalone }: TabelsGridProps) {
         ))} */}
       <CardHeader className="flex flex-col items-center justify-between sm:flex-row">
         <CardTitle className="text-xl font-semibold">Tables</CardTitle>
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex gap-3 sm:flex-row md:flex-col">
           <AddReservation />
           <AddTable onComplete={refetch} />
         </div>
-        <AdminMenu />
       </CardHeader>
 
       <CardContent>

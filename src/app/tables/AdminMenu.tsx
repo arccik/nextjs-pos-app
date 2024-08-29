@@ -9,10 +9,12 @@ import {
 import { EllipsisVerticalIcon } from "lucide-react";
 import AddReservation from "@/components/reservations/AddReservation/AddReservation";
 import AddTable from "./AddTable";
+import { useState } from "react";
 
 export function AdminMenu() {
+  const [open, setOpen] = useState(false);
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <EllipsisVerticalIcon className="cursor-pointer rounded-md border p-1 hover:bg-gray-100" />
       </DropdownMenuTrigger>
@@ -20,7 +22,7 @@ export function AdminMenu() {
         <DropdownMenuLabel>Admin Panel</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <AddReservation />
+          <AddReservation open={true} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <AddTable />

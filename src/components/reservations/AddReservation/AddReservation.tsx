@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { PlusIcon } from "lucide-react";
 import NewResetvation from "./ReservationForm";
-
-export default function AddReservation() {
-  const [isOpen, setIsOpen] = useState(false);
+type AddReservationProps = { open?: boolean };
+export default function AddReservation({ open }: AddReservationProps) {
+  const [isOpen, setIsOpen] = useState(open);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
