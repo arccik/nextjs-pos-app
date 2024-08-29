@@ -40,7 +40,8 @@ export const COLORS = [
 ];
 
 export const MonthCalendar: React.FC<MonthlyRotaProps> = ({ month }) => {
-  const { data: rotaData } = api.rota.getAll.useQuery(month);
+  const { data: rotaData, refetch: refetchRota } =
+    api.rota.getAll.useQuery(month);
 
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const monthStart = startOfMonth(month);
@@ -56,7 +57,11 @@ export const MonthCalendar: React.FC<MonthlyRotaProps> = ({ month }) => {
 
   return (
     <Card className="flex min-h-full flex-col">
-      <SelectedDay date={selectedDay} diselect={() => setSelectedDay(null)} />
+      <SelectedDay
+        date={selectedDay}
+        diselect={() => setSelectedDay(null)}
+        refetchRota={refetchRota}
+      />
       <CardContent className="flex flex-grow flex-col p-2">
         {/* Display the days of the week */}
         <div className="hidden md:mb-2 md:mt-2 md:grid md:grid-cols-7 md:gap-1">

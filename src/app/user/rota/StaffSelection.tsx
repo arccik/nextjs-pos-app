@@ -1,4 +1,4 @@
-// components/StaffStatusSelector.tsx
+"use client";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +11,6 @@ import {
 import { api } from "@/trpc/react";
 import Loading from "@/components/Loading";
 import { toast } from "@/components/ui/use-toast";
-// import { type User } from "@/server/db/schemas";
 
 type Shift = "morning" | "evening" | "night";
 
@@ -37,7 +36,7 @@ export function StaffStatusSelector({
         title: "Rota saved successfully",
         description: "The rota has been saved to the database",
       });
-      await refetchStaffMembers();
+      onComplete();
     },
   });
 
@@ -61,7 +60,6 @@ export function StaffStatusSelector({
 
   const handleStatusChange = () => {
     staffStatus && saveRota.mutate(staffStatus);
-    onComplete();
   };
   const toggleStaffStatus = (staffId: string) => {
     setStaffStatus((prev) =>

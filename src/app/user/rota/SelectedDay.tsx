@@ -13,9 +13,14 @@ import { toast } from "@/components/ui/use-toast";
 type SelectedDayProps = {
   date: Date | null;
   diselect: () => void;
+  refetchRota: () => void;
 };
 
-export default function SelectedDay({ date, diselect }: SelectedDayProps) {
+export default function SelectedDay({
+  date,
+  diselect,
+  refetchRota,
+}: SelectedDayProps) {
   return (
     <Dialog open={!!date} onOpenChange={diselect}>
       <DialogContent>
@@ -26,7 +31,13 @@ export default function SelectedDay({ date, diselect }: SelectedDayProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <StaffStatusSelector date={date} onComplete={diselect} />
+        <StaffStatusSelector
+          date={date}
+          onComplete={() => {
+            refetchRota();
+            diselect();
+          }}
+        />
       </DialogContent>
     </Dialog>
   );

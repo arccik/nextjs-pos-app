@@ -10,7 +10,7 @@ export const getOne = async (id: string) => {
   });
 };
 export const getAll = async (month?: Date) => {
-  const now = month || new Date();
+  const now = month ?? new Date();
 
   return await db.query.rotas.findMany({
     where: month
