@@ -22,7 +22,7 @@ export default function Orders({ orderStatus }: OrderProps) {
 
   const total = data?.length;
   return (
-    <main className="p-2">
+    <main className="md:p-2">
       <Card>
         <ToggleGroup
           type="single"
@@ -33,7 +33,6 @@ export default function Orders({ orderStatus }: OrderProps) {
           <ToggleGroupItem value="In Progress"> In Progress</ToggleGroupItem>
           <ToggleGroupItem value="Served"> Served</ToggleGroupItem>
           <ToggleGroupItem value="Completed"> Completed</ToggleGroupItem>
-
         </ToggleGroup>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xl font-semibold">
@@ -52,7 +51,7 @@ export default function Orders({ orderStatus }: OrderProps) {
           </p>
           <div className="mt-4">
             {!!data?.length ? (
-              <div className="grid  gap-4 md:grid-cols-2 lg:justify-between xl:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-2 lg:justify-between xl:grid-cols-3">
                 {data.map((order) => (
                   <OrderCard key={order.id} order={order} />
                 ))}

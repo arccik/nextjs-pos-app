@@ -138,9 +138,6 @@ export default function useOrder() {
       });
     }
     await refetchSelectedOrder();
-    if (selectedOrder === undefined) {
-      await utils.order.getSelectedByUser.invalidate();
-    }
   };
 
   const changeStatus = ({

@@ -79,12 +79,6 @@ export default function OrderCard({ order, isOpen }: OrderCardProps) {
               </p>
             )}
           </div>
-          <div>
-            <span className="text-sm text-slate-400">
-              Created By {order.creator.name}
-            </span>
-            <CountDownOpenOrder date={order.createdAt} />
-          </div>
         </div>
       </CardHeader>
 
@@ -112,6 +106,12 @@ export default function OrderCard({ order, isOpen }: OrderCardProps) {
           isPaid={order.isPaid}
         />
       </CardFooter>
+      <div className="m-4 flex justify-between ">
+        <span className="text-[0.6rem] text-slate-400">
+          Serving By {order.creator.name}
+        </span>
+        <CountDownOpenOrder date={order.createdAt} />
+      </div>
     </Card>
   );
 }

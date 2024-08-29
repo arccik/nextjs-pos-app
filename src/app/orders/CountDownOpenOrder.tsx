@@ -19,8 +19,8 @@ export default function CountDownOpenOrder({ date }: { date: Date }) {
   }, [date]);
 
   return (
-    <div className="flex items-center text-right text-sm">
-      <ClockIcon className="mr-2 h-6 w-6" />
+    <div className="flex items-center gap-1 text-right text-xs">
+      <ClockIcon className="size-5" />
 
       <p>{minustes}</p>
     </div>

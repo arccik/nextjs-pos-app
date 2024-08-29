@@ -109,8 +109,12 @@ export const getAllByStatus = async (status: OrderStatus[number]) => {
 export type MainOrder = Unpromisify<ReturnType<typeof getAll>>[0];
 
 export const getAll = async (status?: OrderStatus[number]) => {
+  const today = startOfToday();
   return await db.query.orders.findMany({
-    where: status ? eq(orders.status, status) : undefined,
+    where: and(
+      status ? eq(orders.status, status) : undefined,
+      gte(orders.createdAt, today),
+    ),
     orderBy: (orders, { asc }) => [asc(orders.createdAt)],
 
     with: {

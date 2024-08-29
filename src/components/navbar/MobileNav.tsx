@@ -42,10 +42,10 @@ export default function MobileNav() {
                   <DialogClose
                     key={item.id}
                     asChild
-                    className="flex flex-col items-center justify-center rounded-lg border-2 border-gray-100 p-1 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-100/50 hover:text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:border-gray-700 "
+                    className="flex size-24 flex-col items-center justify-center rounded-lg border-2 border-gray-100 p-1 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-100/50 hover:text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:border-gray-700 "
                   >
                     <Link href={item.link} className="text-gray-400">
-                      <item.icon className="size-16" />
+                      <item.icon className="size-10 font-thin" />
 
                       {item.title}
                     </Link>
