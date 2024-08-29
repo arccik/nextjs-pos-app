@@ -117,11 +117,12 @@ export const guestLeave = async (orderId: string) => {
   const order = await db.query.orders.findFirst({
     where: eq(orders.id, orderId),
   });
+  console.log("GUEST LEAVE AAAA A A AA A", { orderId, order });
   if (!order) return null;
   if (order.tableId) {
     await db
       .update(tables)
-      .set({ selectedBy: null, requireCleaning: true })
+      .set({ selectedBy: null, requireCleaning: true, status: "available" })
       .where(eq(tables.id, order.tableId));
   }
 };

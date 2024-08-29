@@ -45,7 +45,7 @@ export default async function UserPage() {
                   <TableCell>
                     <Link
                       className="font-medium underline"
-                      href={`/user/edit?id=${user.id}`}
+                      href={`/user/edit/${user.id}`}
                     >
                       {user.name}
                     </Link>

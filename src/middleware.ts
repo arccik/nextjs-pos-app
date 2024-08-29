@@ -4,12 +4,18 @@ import { NextResponse } from "next/server";
 export default withAuth(
   function middleware(req) {
     // If the user is authenticated, allow the request
+    const pathname = req.nextUrl.pathname;
+    if (pathname === "/login") {
+      return NextResponse.next();
+    }
     if (req.nextauth.token) {
       return NextResponse.next();
     }
 
     // If not authenticated, redirect to login page
+    console.log("MiddleWARE: >>>!! ", req.url);
     return NextResponse.redirect(new URL("/login", req.url));
+
   },
   {
     callbacks: {
@@ -29,6 +35,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - auth (authentication routes - modify this if your auth routes are different)
      */
-    // "/((?!api|_next/static|_next/image|favicon.ico|auth).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|auth).*)",
   ],
 };

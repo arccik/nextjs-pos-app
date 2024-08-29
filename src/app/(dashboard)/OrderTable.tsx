@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -28,12 +29,12 @@ import {
 } from "@/components/ui/card";
 
 import { formatCurrency, formatId } from "@/lib/utils";
-import Link from "next/link";
-import { api } from "@/trpc/server";
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
 
-export default async function OrderTable() {
-  const data = await api.order.getAll();
-  console.log("Recent orders: ", data);
+export default function OrderTable() {
+  const { data } = api.order.getAll.useQuery();
+  const router = useRouter();
 
   return (
     <Tabs defaultValue="week">
@@ -83,10 +84,10 @@ export default async function OrderTable() {
                   <TableRow>
                     <TableHead>ID</TableHead>
                     <TableHead>Employee</TableHead>
+                    <TableHead className="hidden sm:table-cell">Role</TableHead>
                     <TableHead className="hidden sm:table-cell">
                       Status
                     </TableHead>
-                    <TableHead className="hidden sm:table-cell">Role</TableHead>
                     <TableHead className="hidden sm:table-cell">Paid</TableHead>
                     <TableHead className="hidden md:table-cell">Date</TableHead>
                     {/* <TableHead className="text-right">Amount</TableHead> */}
@@ -94,44 +95,45 @@ export default async function OrderTable() {
                 </TableHeader>
                 <TableBody>
                   {data.map((order) => (
-                    <Link
-                      href={`/orders/${order.id}`}
-                      prefetch={false}
+                    // <Link
+                    //   href={`/orders/${order.id}`}
+                    //   prefetch={false}
+                    //   key={order.id}
+                    // >
+                    <TableRow
                       key={order.id}
+                      className="cursor-pointer"
+                      onClick={() => router.push(`/orders/${order.id}`)}
                     >
-                      <TableRow className="cursor-pointer">
-                        <TableCell>
-                          <div className="font-medium">
-                            {formatId(order.id)}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="font-medium">
-                            {order.creator?.name}
-                          </div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            {order.creator?.role}
-                          </div>
-                        </TableCell>
+                      <TableCell>
+                        <div className="font-medium">{formatId(order.id)}</div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-medium">{order.creator?.name}</div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className="text-xs" variant="secondary">
+                          {order.creator?.role}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        <Badge className="text-xs" variant="secondary">
+                          {order.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {order.isPaid ? "Yes" : "No"}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {order.createdAt.toDateString()}
+                      </TableCell>
+                      {order.bill && (
                         <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="secondary">
-                            {order.status}
-                          </Badge>
+                          {formatCurrency(order.bill.totalAmount)}
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          {order.isPaid ? "Yes" : "No"}
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          {order.createdAt?.toDateString()}
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          {formatCurrency(order.bill?.totalAmount)}
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          {formatCurrency(order.bill?.totalAmount)}
-                        </TableCell>
-                      </TableRow>
-                    </Link>
+                      )}
+                    </TableRow>
+                    // </Link>
                   ))}
                 </TableBody>
               </Table>

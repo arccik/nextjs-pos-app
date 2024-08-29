@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { type OrderStatus } from "@/server/db/schemas";
+import { Order, type OrderStatus } from "@/server/db/schemas";
 import PaymentButton from "./payment/PaymentButton";
 import useOrder from "@/hooks/useOrder";
 import { cn } from "@/lib/utils";

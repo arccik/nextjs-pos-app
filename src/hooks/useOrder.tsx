@@ -155,7 +155,7 @@ export default function useOrder() {
 
   return {
     selectedOrder: selectedOrder !== "null" && selectedOrder,
-    selectedTable,
+    selectedTable: selectedTable !== "null" && selectedTable,
     selectTable,
     unselectTable,
     add,

@@ -97,7 +97,7 @@ export default function ActionCell(props: CellContext<Item, unknown>) {
           )}
           <DropdownMenuItem
             className="text-yellow-500 "
-            onClick={() => router.push(`/menu/items/edit?id=${rowId}`)}
+            onClick={() => router.push(`/menu/items/edit/${rowId}`)}
           >
             Edit
           </DropdownMenuItem>

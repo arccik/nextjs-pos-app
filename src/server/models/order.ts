@@ -97,7 +97,7 @@ export const getOneByTableId = async (tableId: string) => {
       table: true,
     },
   });
-  return order ?? null;
+  return order ?? "null";
 };
 export const getAllByStatus = async (status: OrderStatus[number]) => {
   return await db.query.orders.findMany({

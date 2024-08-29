@@ -47,7 +47,7 @@ export default function TableDialog({ tableData }: TableDIalogProps) {
   const { unselectTable, selectedTable } = useOrder();
 
   const DeselectButton = () => {
-    if (selectedTable?.id === tableData.id)
+    if (selectedTable && selectedTable?.id === tableData.id)
       return (
         <Button size="sm" variant="ghost" onClick={unselectTable}>
           <Cross1Icon className="text-red-500" />
@@ -73,19 +73,22 @@ export default function TableDialog({ tableData }: TableDIalogProps) {
               <DeselectButton />
             </div>
           </DialogTitle>
-          {tableData.description}
-          {orderData?.userId && (
-            <DialogDescription className="flex justify-between">
+          <DialogDescription className="flex justify-between">
+            {tableData.description}
+          </DialogDescription>
+
+          {orderData !== "null" && orderData?.userId && (
+            <>
               <span>
                 Order {formatId(orderData.id)} placed by user:{" "}
                 <strong>{orderData?.creator.name}</strong>
               </span>
               <span>{format(tableData.createdAt, "dd MMM yyyy HH:mm")}</span>
-            </DialogDescription>
+            </>
           )}
         </DialogHeader>
         {tableData.status === "occupied" ? (
-          orderData && <TableDetails data={orderData} />
+          orderData && orderData !== "null" && <TableDetails data={orderData} />
         ) : (
           <EmptyTable
             tableId={tableData.id}
@@ -95,13 +98,15 @@ export default function TableDialog({ tableData }: TableDIalogProps) {
         )}
 
         <DialogFooter className="flex justify-between">
-          {orderData && tableData.status === "occupied" && (
-            <ActionButtons
-              isPaid={orderData.isPaid}
-              orderId={orderData.id}
-              status={orderData.status}
-            />
-          )}
+          {orderData &&
+            orderData !== "null" &&
+            tableData.status === "occupied" && (
+              <ActionButtons
+                isPaid={orderData.isPaid}
+                orderId={orderData.id}
+                status={orderData.status}
+              />
+            )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
