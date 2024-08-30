@@ -61,6 +61,7 @@ export const MonthCalendar: React.FC<MonthlyRotaProps> = ({ month }) => {
         date={selectedDay}
         diselect={() => setSelectedDay(null)}
         refetchRota={refetchRota}
+        rotaData={rotaData}
       />
       <CardContent className="flex flex-grow flex-col p-2">
         {/* Display the days of the week */}

@@ -11,6 +11,7 @@ import {
 import { api } from "@/trpc/react";
 import Loading from "@/components/Loading";
 import { toast } from "@/components/ui/use-toast";
+import { Rota } from "@/server/db/schemas";
 
 type Shift = "morning" | "evening" | "night";
 
@@ -24,12 +25,16 @@ export interface StaffStatus {
 interface StaffStatusSelectorProps {
   date: Date | null;
   onComplete: () => void;
+  rotaData?: Rota[];
 }
 
 export function StaffStatusSelector({
   date,
   onComplete,
+  rotaData,
 }: StaffStatusSelectorProps) {
+  const [staffStatus, setStaffStatus] = useState<StaffStatus[] | undefined>();
+  console.log("ROTA DATA: ", rotaData);
   const saveRota = api.rota.saveRota.useMutation({
     onSuccess: async () => {
       toast({
@@ -40,21 +45,22 @@ export function StaffStatusSelector({
     },
   });
 
-  const {
-    data: staffMembers,
-    isLoading,
-    refetch: refetchStaffMembers,
-  } = api.user.getAll.useQuery();
-  const [staffStatus, setStaffStatus] = useState<StaffStatus[] | undefined>();
+  const { data: staffMembers, isLoading } = api.user.getAll.useQuery();
+  console.log({ staffMembers });
   useEffect(() => {
     setStaffStatus(
-      staffMembers?.map((staff) => ({
-        userId: staff.id,
-        working: false,
-        shift: null,
-        name: staff.name,
-        date: date!,
-      })),
+      staffMembers?.map((staff) => {
+        const item = rotaData?.find((v) => {
+          return v.userId === staff.id && v.date.getDate() === date?.getDate();
+        });
+        return {
+          userId: staff.id,
+          working: !!item?.working,
+          shift: item?.shift!,
+          name: staff.name,
+          date: date ?? item?.date!,
+        };
+      }),
     );
   }, [staffMembers]);
 

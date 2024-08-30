@@ -6,20 +6,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { type StaffStatus, StaffStatusSelector } from "./StaffSelection";
-import { api } from "@/trpc/react";
+import { StaffStatusSelector } from "./StaffSelection";
 import { format } from "date-fns";
-import { toast } from "@/components/ui/use-toast";
+import { Rota } from "@/server/db/schemas";
 type SelectedDayProps = {
   date: Date | null;
   diselect: () => void;
   refetchRota: () => void;
+  rotaData?: Rota[];
 };
 
 export default function SelectedDay({
   date,
   diselect,
   refetchRota,
+  rotaData,
 }: SelectedDayProps) {
   return (
     <Dialog open={!!date} onOpenChange={diselect}>
@@ -33,6 +34,7 @@ export default function SelectedDay({
 
         <StaffStatusSelector
           date={date}
+          rotaData={rotaData}
           onComplete={() => {
             refetchRota();
             diselect();
