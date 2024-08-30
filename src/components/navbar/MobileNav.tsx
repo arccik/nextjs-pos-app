@@ -18,6 +18,7 @@ import Link from "next/link";
 import navItems from "./NavItems";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { signOut } from "next-auth/react";
+import { ModeToggle } from "../DarkModeToggle";
 
 export default function MobileNav() {
   const handleLogOut = async () => {
@@ -42,10 +43,10 @@ export default function MobileNav() {
                   <DialogClose
                     key={item.id}
                     asChild
-                    className="flex size-24 flex-col items-center justify-center rounded-lg border-2 border-gray-100 p-1 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-100/50 hover:text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:border-gray-700 "
+                    className="flex size-24 flex-col items-center justify-center rounded-lg border-2 border-gray-100 p-1 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-100/50 hover:text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:border-gray-700 dark:text-slate-300 "
                   >
                     <Link href={item.link} className="text-gray-400">
-                      <item.icon className="size-10 font-thin" />
+                      <item.icon className="size-10 font-thin " />
 
                       {item.title}
                     </Link>
@@ -60,10 +61,13 @@ export default function MobileNav() {
                     <span className="text-destructive">Log Out</span>
                   </span>
                 </DialogClose>
+
                 <DialogTitle></DialogTitle>
-                <DialogDescription></DialogDescription>
               </NavigationMenuList>
             </NavigationMenu>
+            <DialogDescription>
+              <ModeToggle className="w-full" />
+            </DialogDescription>
           </DialogContent>
         </Dialog>
       </div>
