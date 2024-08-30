@@ -18,7 +18,7 @@ type Shift = "morning" | "evening" | "night";
 export interface StaffStatus {
   userId: string;
   working: boolean;
-  shift: Shift | null;
+  shift?: Shift | null;
   date: Date;
 }
 
@@ -56,9 +56,9 @@ export function StaffStatusSelector({
         return {
           userId: staff.id,
           working: !!item?.working,
-          shift: item?.shift!,
+          shift: item?.shift,
           name: staff.name,
-          date: date ?? item?.date!,
+          date: item?.date ?? date!,
         };
       }),
     );

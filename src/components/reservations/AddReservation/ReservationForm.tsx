@@ -7,9 +7,9 @@ import { Form } from "@/components/ui/form";
 
 import ReservationSteps from "./ReservationSteps";
 
-type NewReservationProps = {
-  onComplete: () => void;
-};
+// type NewReservationProps = {
+//   onComplete: () => void;
+// };
 
 export default function NewResetvation() {
   // const queryClient = useQueryClient();

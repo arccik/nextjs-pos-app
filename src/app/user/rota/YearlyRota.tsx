@@ -1,11 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import React, { useState } from "react";
 import { format, addMonths, subMonths } from "date-fns";
 import { MonthCalendar } from "./MonthCalendar";
-import { type Rota } from "@/server/db/schemas";
 
 interface YearlyRotaProps {
   today: Date;
