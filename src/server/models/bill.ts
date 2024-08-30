@@ -90,12 +90,14 @@ export const updateBill = async ({
 }) => {
   console.log("Updating bill: ", { orderId, userId, tipsAmount });
   const order = await getOneOrder(orderId);
+  console.log("GET ORDER : >> >>  ", order?.orderItems[0]?.items);
   if (!order || !("orderItems" in order)) throw new Error("Order not found");
 
   let totalAmount = tipsAmount ? tipsAmount : 0;
   for (const orderItem of order.orderItems) {
-    totalAmount += orderItem.quantity * Number(orderItem.items.price);
+    totalAmount += orderItem.quantity * orderItem.items.price;
   }
+  console.log(" : NEW TOTAL :  ", totalAmount);
   const bill = await getOneByOrderId(orderId);
   console.log('Update bill Stage II ', bill)
   if (bill) {

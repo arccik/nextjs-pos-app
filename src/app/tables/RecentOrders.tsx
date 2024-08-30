@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatId } from "@/lib/utils";
 // import { recentCompletedOrders } from "@/server/models/order";
 import { api } from "@/trpc/react";
 // import { api } from "@/trpc/server";
@@ -64,7 +64,7 @@ export default function RecentOrders({ tableId }: RecentOrdersProps) {
                     className="font-medium underline"
                     href={`/orders/${order.id}`}
                   >
-                    #{order.id}
+                    #{formatId(order.id)}
                   </Link>
                 </TableCell>
                 <TableCell>

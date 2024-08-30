@@ -103,10 +103,10 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true,
-  // pages: {
-  //   signIn: "/login",
-  // },
+  // debug: true,
+  pages: {
+    signIn: "/login",
+  },
 };
 
 export const getServerAuthSession = () => getServerSession(authOptions);

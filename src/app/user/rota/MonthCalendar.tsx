@@ -56,7 +56,7 @@ export const MonthCalendar: React.FC<MonthlyRotaProps> = ({ month }) => {
   };
 
   return (
-    <Card className="flex min-h-full flex-col">
+    <div className="flex min-h-full flex-col">
       <SelectedDay
         date={selectedDay}
         diselect={() => setSelectedDay(null)}
@@ -110,6 +110,6 @@ export const MonthCalendar: React.FC<MonthlyRotaProps> = ({ month }) => {
           })}
         </div>
       </CardContent>
-    </Card>
+    </div>
   );
 };

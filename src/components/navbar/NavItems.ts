@@ -7,6 +7,7 @@ import {
   BookMarked,
   Users2Icon,
   Play,
+  SquareChevronDown,
 } from "lucide-react";
 
 import TableIcon from "./TableIcon";
@@ -74,5 +75,11 @@ export default [
     title: "Users",
     icon: Users2Icon,
     link: "/user",
+  },
+  {
+    id: 1255,
+    title: "Rota",
+    icon: SquareChevronDown,
+    link: "/user/rota",
   },
 ];

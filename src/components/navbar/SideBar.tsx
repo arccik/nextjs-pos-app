@@ -28,7 +28,7 @@ export default function SideBar() {
   if (!session) return null;
   return (
     <>
-      <aside className="fixed inset-y-0 left-0 z-10 hidden flex-col border-r bg-background sm:flex md:w-20">
+      <aside className="fixed inset-y-0 left-0 z-10 hidden flex-col overflow-auto border-r bg-background sm:flex md:w-20">
         <TooltipProvider>
           <nav className="flex flex-col items-center gap-4 px-2 sm:py-4">
             {navItems.map((navItem) => (

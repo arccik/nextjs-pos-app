@@ -21,7 +21,7 @@ import { signOut } from "next-auth/react";
 
 export default function MobileNav() {
   const handleLogOut = async () => {
-    await signOut();
+    await signOut({ callbackUrl: "/login" });
   };
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">

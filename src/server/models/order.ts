@@ -262,6 +262,7 @@ export const addItem = async (data: {
       .where(eq(orderItems.itemId, existingItem.itemId));
   } else {
     // Add a new item to the order
+
     await db.insert(orderItems).values({
       quantity: data.quantity,
       itemId: data.itemId,

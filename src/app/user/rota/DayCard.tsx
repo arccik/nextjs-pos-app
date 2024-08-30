@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 import { format, isToday } from "date-fns";
 import { type Rota } from "@/server/db/schemas";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 type DayCardProps = {
   rotaItem?: Rota[];
@@ -20,11 +22,14 @@ export default function DayCard({
   const today = isToday(day);
   return (
     <div
-      onClick={() => onClick(day)}
+      onClick={() => isCurrentMonth && onClick(day)}
       className={cn(
         className,
-        "bg-glowing-gradient hover:animate-glow relative min-h-14 cursor-pointer rounded-sm border bg-gray-100 bg-[length:200%_200%] p-1 transition-all duration-300 ease-in-out hover:border-slate-700 hover:bg-slate-200 md:min-h-24 ",
-        { "bg-slate-50": isCurrentMonth, "border-slate-700": today },
+        "bg-glowing-gradient hover:animate-glow 0 relative min-h-14 cursor-pointer flex-wrap rounded-sm border bg-[length:200%_200%] p-1 transition-all duration-300 ease-in-out md:min-h-24 ",
+        {
+          "bg-slate-50": isCurrentMonth,
+          "hover:bg-slate-20 border-slate-700 hover:border-slate-700": today,
+        },
       )}
     >
       <div className="absolute left-1 top-1 text-sm">{format(day, "d")}</div>
@@ -32,16 +37,17 @@ export default function DayCard({
         {rotaItem?.map(
           (item) =>
             item.shift && (
-              <div
+              <Badge
+                variant="outline"
                 className={cn("rounded p-1 text-xs", {
-                  "bg-blue-500": item?.shift === "morning",
-                  "bg-green-500": item?.shift === "evening",
-                  "bg-purple-500": item?.shift === "night",
+                  "bg-yellow-400": item?.shift === "morning",
+                  "bg-orange-500": item?.shift === "evening",
+                  "bg-indigo-600": item?.shift === "night",
                 })}
                 key={item.id}
               >
                 {item.name}
-              </div>
+              </Badge>
             ),
         )}
       </div>
