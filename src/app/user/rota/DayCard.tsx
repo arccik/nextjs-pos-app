@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import { format, isToday } from "date-fns";
 import { type Rota } from "@/server/db/schemas";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 type DayCardProps = {
@@ -22,6 +21,7 @@ export default function DayCard({
   const today = isToday(day);
   return (
     <div
+      role="button"
       onClick={() => isCurrentMonth && onClick(day)}
       className={cn(
         className,

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { StaffStatusSelector } from "./StaffSelection";
 import { format } from "date-fns";
-import { Rota } from "@/server/db/schemas";
+import { type Rota } from "@/server/db/schemas";
 type SelectedDayProps = {
   date: Date | null;
   diselect: () => void;

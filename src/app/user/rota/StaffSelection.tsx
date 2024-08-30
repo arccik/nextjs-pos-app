@@ -62,7 +62,7 @@ export function StaffStatusSelector({
         };
       }),
     );
-  }, [staffMembers]);
+  }, [staffMembers, date]);
 
   const handleStatusChange = () => {
     staffStatus && saveRota.mutate(staffStatus);

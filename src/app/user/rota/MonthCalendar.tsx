@@ -8,7 +8,7 @@ import {
   getDay,
   addDays,
 } from "date-fns";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import DayCard from "./DayCard";
 import SelectedDay from "./SelectedDay";
 
