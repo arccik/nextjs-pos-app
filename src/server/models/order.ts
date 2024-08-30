@@ -184,9 +184,7 @@ export const update = async (id: string, body: NewOrder) => {
 };
 
 export const newOrder = async (body: NewOrder) => {
-  console.log("NEw ORDER ??? ", { body });
   const [order] = await db.insert(orders).values(body).returning();
-  console.log("NEw END <<>>  ??? ", { order });
 
   if (!order?.id) throw new Error("Error: Order ID is missing");
   console.log(" ✓ New ORder Creted:>>>>> ", order);
@@ -251,11 +249,9 @@ export const addItem = async (data: {
   const existingItem =
     "orderItems" in order &&
     order.orderItems?.find((item) => item.itemId === data.itemId);
-  console.log(" existingItem: ", { order, existingItem });
   if (existingItem) {
     // Update the quantity of the existing item
     existingItem.quantity += data.quantity ?? 1;
-    console.log("Existing Item::: ", existingItem);
     await db
       .update(orderItems)
       .set({ quantity: existingItem.quantity })
@@ -281,7 +277,6 @@ async function findOrCreateOrder(
   userId: string,
   orderId?: string | null,
 ): Promise<OrderWithItems | { id: string } | undefined> {
-  console.log("findOrCreateOrder triggered!!!", { userId, orderId });
   const selectedOrder = await getSelectedByUser(userId);
   if (selectedOrder && selectedOrder !== "null") return selectedOrder;
   if (!orderId) {
@@ -307,7 +302,6 @@ async function findOrCreateOrder(
     //   where: eq(orders.id, orderId),
     //   with: { orderItems: true },
     // });
-    console.log("Triggered Else block", { existingOrder });
     if (!existingOrder) {
       throw new Error("Order not found");
     }
@@ -511,7 +505,6 @@ export const ready = async ({
     },
   });
 
-  console.log("REady ? , ", order);
   const result = await db
     .update(orders)
     .set({ status: "Ready" })
@@ -570,7 +563,6 @@ export const updateOrder = async ({
   id: string;
   body: NewOrder & { userId?: string };
 }) => {
-  console.log("UPDATE ORDER >>> ", { body });
   return await db
     .update(orders)
     .set(body)

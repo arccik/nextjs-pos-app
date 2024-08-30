@@ -80,7 +80,7 @@ export const mostSoldItems = async () => {
       item: items,
     })
     .from(orderItems)
-    .groupBy(orderItems.itemId)
+    .groupBy(orderItems.itemId, items.id)
     .leftJoin(items, eq(orderItems.itemId, items.id));
   // .where(lt(orderItems.createdAt, today))
   return result;
@@ -105,7 +105,6 @@ export async function getMonthlyPaymentTotals() {
     "Dec",
   ];
 
-  console.log("Executing database query...");
   const result = await db
     .select({
       month: sql<number>`EXTRACT(MONTH FROM ${payments.createdAt})`,

@@ -64,8 +64,6 @@ export const updateStatus = async (id: string, status: TableStatus) => {
 };
 
 export const markClean = async (id: string) => {
-  console.log("MARK AS CLEAN >>>> ", id);
-
   return await db
     .update(tables)
     .set({ requireCleaning: false })

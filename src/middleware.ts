@@ -13,9 +13,7 @@ export default withAuth(
     }
 
     // If not authenticated, redirect to login page
-    console.log("MiddleWARE: >>>!! ", req.url);
     return NextResponse.redirect(new URL("/login", req.url));
-
   },
   {
     callbacks: {
