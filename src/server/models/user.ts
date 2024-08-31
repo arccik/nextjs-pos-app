@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 import { db } from "../db";
 import { type NewUser, type UpdateUser, users } from "../db/schemas/user";
@@ -18,11 +19,15 @@ export const getAll = async () => {
 
 type UpdateUserProp = {
   id: string;
-  body: UpdateUser;
+  body: Omit<UpdateUser, "role">;
 };
 export const update = async ({ id, body }: UpdateUserProp) => {
   const user = await getOne(id);
   if (!user) return null;
+  if (body.password) {
+    const password = await bcrypt.hash(body.password, 10);
+    body.password = password;
+  }
   return await db.update(users).set(body).where(eq(users.id, id)).returning();
 };
 

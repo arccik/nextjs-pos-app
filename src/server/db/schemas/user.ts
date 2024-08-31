@@ -14,6 +14,7 @@ import { tables } from "./table";
 import { z } from "zod";
 import { orders } from "./order";
 
+
 export const userRoles = [
   "admin",
   "user",
@@ -33,6 +34,8 @@ export const users = pgTable("user", {
   image: text("image"),
   emailVerified: timestamp("emailVerified").defaultNow().notNull(),
   role: varchar("role", { enum: userRoles }).notNull().default("user"),
+  employeeId: varchar("employee_id", { length: 255 }).unique(),
+  shiftPreference: varchar("shift_preference", { length: 255 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .notNull()

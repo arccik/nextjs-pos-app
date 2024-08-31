@@ -55,7 +55,12 @@ export default function SideBar() {
           </nav>
           <nav className="mt-auto flex rotate-180 flex-col items-center gap-4 px-2 sm:py-4">
             <p className="text-xl font-bold uppercase [writing-mode:vertical-rl]">
-              {session?.user.name}
+              <Link
+                href={`/user/profile/${session.user.id}`}
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+              >
+                {session?.user.name}
+              </Link>
             </p>
           </nav>
           <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-4">
