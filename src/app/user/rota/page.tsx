@@ -1,6 +1,6 @@
 import { YearlyRota } from "./YearlyRota";
 
-export default async function App() {
+export default async function RotaPage() {
   const currentMonth = new Date();
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Settings, Camera } from "lucide-react";
+import { Settings } from "lucide-react";
 import { api } from "@/trpc/react";
 import { newUserSchema } from "@/server/db/schemas";
 import { toast } from "@/components/ui/use-toast";
@@ -72,18 +72,18 @@ export default function ProfilePage({ params: { userId } }: ProfilePageProps) {
   useEffect(() => {
     if (userData) {
       form.reset({
-        name: userData.name || "",
-        email: userData.email || "",
+        name: userData.name ?? "",
+        email: userData.email ?? "",
         role: userData.role,
         password: "",
-        employeeId: userData.employeeId || "",
+        employeeId: userData.employeeId ?? "",
         shiftPreference: userData.shiftPreference as
           | "morning"
           | "afternoon"
           | "evening"
           | "night",
       });
-      setImageUrl(userData.image || "/placeholder.svg?height=100&width=100");
+      setImageUrl(userData.image ?? "/placeholder.svg?height=100&width=100");
     }
   }, [userData, form]);
 

@@ -109,6 +109,22 @@ export const MonthCalendar: React.FC<MonthlyRotaProps> = ({ month }) => {
             );
           })}
         </div>
+        <div className="mt-4 flex justify-center">
+          <div className="flex space-x-4 rounded-md bg-gray-100 p-4 shadow dark:bg-gray-800">
+            <div className="flex items-center space-x-2">
+              <div className="h-4 w-4 rounded bg-yellow-400"></div>
+              <span className="text-gray-700 dark:text-gray-300">Morning</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="h-4 w-4 rounded bg-orange-500"></div>
+              <span className="text-gray-700 dark:text-gray-300">Evening</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="h-4 w-4 rounded bg-indigo-600"></div>
+              <span className="text-gray-700 dark:text-gray-300">Night</span>
+            </div>
+          </div>
+        </div>
       </CardContent>
     </div>
   );

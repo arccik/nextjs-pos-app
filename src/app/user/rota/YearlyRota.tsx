@@ -32,15 +32,7 @@ export const YearlyRota: React.FC<YearlyRotaProps> = ({ today }) => {
         </Button>
       </CardHeader>
       <CardContent className="flex-grow overflow-auto">
-        <MonthCalendar
-          month={currentMonth}
-          // rotaData={rotaData.filter(
-          //   (item) =>
-          //     new Date(item.date).getFullYear() ===
-          //       currentMonth.getFullYear() &&
-          //     new Date(item.date).getMonth() === currentMonth.getMonth(),
-          // )}
-        />
+        <MonthCalendar month={currentMonth} />
       </CardContent>
     </div>
   );

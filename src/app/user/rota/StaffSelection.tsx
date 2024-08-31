@@ -11,7 +11,7 @@ import {
 import { api } from "@/trpc/react";
 import Loading from "@/components/Loading";
 import { toast } from "@/components/ui/use-toast";
-import { Rota } from "@/server/db/schemas";
+import { type Rota } from "@/server/db/schemas";
 
 type Shift = "morning" | "evening" | "night";
 
@@ -34,7 +34,6 @@ export function StaffStatusSelector({
   rotaData,
 }: StaffStatusSelectorProps) {
   const [staffStatus, setStaffStatus] = useState<StaffStatus[] | undefined>();
-  console.log("ROTA DATA: ", rotaData);
   const saveRota = api.rota.saveRota.useMutation({
     onSuccess: async () => {
       toast({
@@ -46,7 +45,6 @@ export function StaffStatusSelector({
   });
 
   const { data: staffMembers, isLoading } = api.user.getAll.useQuery();
-  console.log({ staffMembers });
   useEffect(() => {
     setStaffStatus(
       staffMembers?.map((staff) => {
@@ -91,7 +89,7 @@ export function StaffStatusSelector({
 
   if (isLoading) return <Loading />;
   return (
-    <div className="rounded-lg bg-white">
+    <div>
       <div className="space-y-4">
         {staffMembers?.map((staff) => {
           const status = staffStatus?.find((s) => s.userId === staff.id);

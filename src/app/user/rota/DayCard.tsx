@@ -25,10 +25,11 @@ export default function DayCard({
       onClick={() => isCurrentMonth && onClick(day)}
       className={cn(
         className,
-        "bg-glowing-gradient hover:animate-glow 0 relative min-h-14 cursor-pointer flex-wrap rounded-sm border bg-[length:200%_200%] p-1 transition-all duration-300 ease-in-out md:min-h-24 ",
+        "bg-glowing-gradient hover:animate-glow 0 relative hidden min-h-14 cursor-pointer flex-wrap rounded-sm border bg-[length:200%_200%] p-1 transition-all duration-300 ease-in-out md:min-h-24 ",
         {
-          "bg-slate-50": isCurrentMonth,
-          "hover:bg-slate-20 border-slate-700 hover:border-slate-700": today,
+          "block bg-slate-50 dark:bg-slate-950": isCurrentMonth,
+          "hover:bg-slate-20 border-slate-700 hover:border-slate-700 dark:border-slate-100":
+            today,
         },
       )}
     >

@@ -492,19 +492,7 @@ export const getOrderItems = async () => {
     .leftJoin(tables, eq(orders.tableId, tables.id));
 };
 
-export const ready = async ({
-  orderId,
-}: {
-  orderId: string;
-  itemId: string;
-}) => {
-  const order = await db.query.orders.findFirst({
-    where: eq(orders.id, orderId),
-    with: {
-      orderItems: true,
-    },
-  });
-
+export const ready = async ({ orderId }: { orderId: string; itemId: string }) => {
   const result = await db
     .update(orders)
     .set({ status: "Ready" })
