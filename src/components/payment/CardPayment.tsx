@@ -1,6 +1,6 @@
+"use client";
 import { useState } from "react";
 
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -36,50 +36,47 @@ export default function CardPayment({
 
   return (
     <form onSubmit={handleSubmit}>
-      <Card>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="inputValue"></Label>
-            <Input
-              id="inputValue"
-              placeholder="Enter payment amount"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-            />
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="inputValue"></Label>
+          <Input
+            id="inputValue"
+            placeholder="Enter payment amount"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
           <p className="text-center text-2xl text-slate-400">OR</p>
+        </div>
+        <div className="space-y-2">
+          <Label>Payment Split</Label>
+          <Tabs
+            defaultValue="account"
+            value={splitOption}
+            onValueChange={setSplitOption}
+          >
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="1">No Split</TabsTrigger>
+              <TabsTrigger value="2">50%</TabsTrigger>
+              <TabsTrigger value="3">33%</TabsTrigger>
+              <TabsTrigger value="4">25%</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        <div className="space-y-2">
+          <Label>Payment Summary</Label>
+          <div className="text-sm">
+            {tipAmount && <p>Tip: £{tipAmount}</p>}
+            <p className="font-semibold">
+              {splitOption} x £{calculateSplitAmount()}
+            </p>
           </div>
-          <div className="space-y-2">
-            <Label>Payment Split</Label>
-            <Tabs
-              defaultValue="account"
-              className="w-[400px]"
-              value={splitOption}
-              onValueChange={setSplitOption}
-            >
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="1">No Split</TabsTrigger>
-                <TabsTrigger value="2">50%</TabsTrigger>
-                <TabsTrigger value="3">33%</TabsTrigger>
-                <TabsTrigger value="4">25%</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-          <div className="space-y-2">
-            <Label>Payment Summary</Label>
-            <div className="text-sm">
-              <p>Tip: £{tipAmount}</p>
-              <p className="font-semibold">
-                {splitOption} x £{calculateSplitAmount()}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button type="submit" className="w-full">
-            Pay £{calculateSplitAmount()}
-          </Button>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
+      <footer>
+        <Button type="submit" className="w-full">
+          Pay £{calculateSplitAmount()}
+        </Button>
+      </footer>
     </form>
   );
 }

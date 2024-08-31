@@ -31,7 +31,7 @@ export const orders = pgTable("orders", {
     .$defaultFn(() => crypto.randomUUID()),
   userId: varchar("user_id", { length: 255 })
     .notNull()
-    .references(() => users.id, { onDelete: "set null" }),
+    .references(() => users.id, { onDelete: "cascade" }),
   selectedBy: varchar("selected_by", { length: 255 }).references(
     () => users.id,
     {
@@ -47,9 +47,7 @@ export const orders = pgTable("orders", {
     .notNull(),
   guestLeft: boolean("guest_left").default(false).notNull(),
   specialRequest: text("special_request"),
-  billId: varchar("bill_id", { length: 255 }).references(() => bills.id, {
-    onDelete: "set null",
-  }),
+  billId: varchar("bill_id", { length: 255 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .notNull()
@@ -91,11 +89,11 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
     fields: [orders.selectedBy],
     references: [users.id],
   }),
-  bill: one(bills, {
-    fields: [orders.billId],
-    references: [bills.id],
-  }),
   orderItems: many(orderItems),
+  // bill: one(bills, {
+  //   fields: [orders.billId],
+  //   references: [bills.id],
+  // }),
 }));
 
 export const orderItemsRelations = relations(orderItems, ({ one }) => ({

@@ -40,7 +40,6 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
 
   const { total, pay, addTips, billId } = useBill(orderId);
 
-  // const { makePayment, generateBill } = usePayments();
 
   const handleAddTips = () => {
     if (!tipsAmount) return;
@@ -54,10 +53,13 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
       // generateBill({ orderId, tipsAmount });
     }
   };
-  const handlePayment = (paymentMethod: WhatComponentToShow, total: number) => {
-    pay(paymentMethod, total);
+  const handlePayment = (
+    paymentMethod: WhatComponentToShow,
+    paidAmount: number,
+  ) => {
+    pay(paymentMethod, paidAmount);
 
-    setIsOpen((prev) => !prev);
+    if (paidAmount === total) setIsOpen(false);
   };
 
   if (!total) return null;
@@ -75,7 +77,7 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
         <AlertDialogDescription>
           Please choose payment method
         </AlertDialogDescription>
-        {showMethod && (
+        {showMethod ? (
           <Button
             onClick={() => setShowMethod(null)}
             className="absolute right-5 top-5"
@@ -83,50 +85,48 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
           >
             Back
           </Button>
+        ) : (
+          <>
+            <div className="flex justify-evenly">
+              <Button
+                onClick={() => setShowMethod("Card")}
+                className="flex size-24 flex-col gap-2"
+                variant="outline"
+              >
+                <CreditCard />
+                Card
+              </Button>
+              <Button
+                onClick={() => setShowMethod("Cash")}
+                className="flex size-24 flex-col gap-2"
+                variant="outline"
+              >
+                <Banknote />
+                Cash
+              </Button>
+            </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <TipsButton setValue={handleAddTips} orderId={orderId} />
+            </AlertDialogFooter>
+          </>
         )}
 
-        {!showMethod && (
-          <div className="flex justify-evenly">
-            <Button
-              onClick={() => setShowMethod("Card")}
-              className="flex size-24 flex-col gap-2"
-              variant="outline"
-            >
-              <CreditCard />
-              Card
-            </Button>
-            <Button
-              onClick={() => setShowMethod("Cash")}
-              className="flex size-24 flex-col gap-2"
-              variant="outline"
-            >
-              <Banknote />
-              Cash
-            </Button>
-          </div>
+        {showMethod === "Cash" && (
+          <CashPayment
+            totalAmount={total}
+            tipsAmount={tipsAmount}
+            onPay={(amount) => handlePayment("Cash", amount)}
+          />
         )}
-
-        <ScrollArea className=" w-full rounded-md">
-          {showMethod === "Cash" && (
-            <CashPayment
-              totalAmount={total}
-              tipsAmount={tipsAmount}
-              onPay={(amount) => handlePayment("Cash", amount)}
-            />
-          )}
-          {showMethod === "Card" && (
-            <CardPayment
-              tipAmount={tipsAmount}
-              totalAmount={total}
-              onPay={(amount) => handlePayment("Card", amount)}
-            />
-          )}
-          {billId && <PaymentsList billId={billId} tipsAmount={tipsAmount} />}
-        </ScrollArea>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <TipsButton setValue={handleAddTips} orderId={orderId} />
-        </AlertDialogFooter>
+        {showMethod === "Card" && (
+          <CardPayment
+            tipAmount={tipsAmount}
+            totalAmount={total}
+            onPay={(amount) => handlePayment("Card", amount)}
+          />
+        )}
+        {billId && <PaymentsList billId={billId} tipsAmount={tipsAmount} />}
       </AlertDialogContent>
     </AlertDialog>
   );

@@ -1,10 +1,13 @@
-import * as schema from "@/server/db/schemas";
-import { tables } from "@/server/db/schemas";
+import "dotenv/config";
+import { neon, NeonQueryFunction } from "@neondatabase/serverless";
+import * as schema from "../db/schemas";
 import bcrypt from "bcryptjs";
 import { drizzle } from "drizzle-orm/neon-http";
-import { conn } from ".";
 
-export const db = drizzle(conn, { schema });
+const client: NeonQueryFunction<boolean, boolean> = neon(
+  process.env.DATABASE_URL!,
+);
+export const db = drizzle(client, { schema });
 
 export async function GET() {
   console.log("Starting Seeding the Database");
@@ -45,7 +48,7 @@ async function seedDatabase() {
       })
       .returning();
 
-    await db.insert(tables).values([
+    await db.insert(schema.tables).values([
       { number: 1, seats: 4, status: "available" },
       { number: 2, seats: 4, status: "available" },
       { number: 3, seats: 4, status: "available" },

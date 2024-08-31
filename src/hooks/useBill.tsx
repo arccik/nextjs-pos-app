@@ -7,6 +7,7 @@ export default function useBill(orderId: string) {
   const makePayment = api.payment.create.useMutation({
     onSuccess: async () => {
       await utils.order.invalidate();
+      await refetchBill();
     },
   });
   const saveTips = api.bill.addTips.useMutation({

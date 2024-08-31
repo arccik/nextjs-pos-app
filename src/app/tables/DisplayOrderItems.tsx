@@ -33,6 +33,8 @@ export default function DisplayOrderItems({
     return acc + Number(item.items.price) * item.quantity;
   }, 0);
 
+  console.log("DisplayOrderItems", { items, bill });
+
   return (
     <Table className="mb-5">
       <TableHeader>
