@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import type { Order, OrderStatus } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 type AddToOrderProps = {
   itemId: string;
@@ -13,7 +14,7 @@ type UtilsKeys = "order" | "table" | "bill" | "payment";
 
 export default function useOrder() {
   const utils = api.useUtils();
-
+  const router = useRouter();
   const { data: selectedOrder } = api.order.getSelectedByUser.useQuery();
 
   const selectOrder = api.order.selectOrder.useMutation({
@@ -58,9 +59,8 @@ export default function useOrder() {
   });
 
   const updateOrder = api.order.updateOrder.useMutation({
-    onSuccess: async () => {
-      await handleSuccess("Order Updated", ["order", "table"]);
-    },
+    onSuccess: async () =>
+      await handleSuccess("Order Updated", ["order", "table"]),
   });
 
   const changeTableStatus = api.table.changeStatus.useMutation({
@@ -135,6 +135,7 @@ export default function useOrder() {
         status: "occupied",
       });
     }
+    router.push(`/orders/${orderId}`);
   };
 
   const changeStatus = ({
