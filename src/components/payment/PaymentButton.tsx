@@ -21,6 +21,7 @@ import TipsButton from "./TipsButton";
 import CardPayment from "./CardPayment";
 // import Loading from "../Loading";
 import useBill from "@/hooks/useBill";
+import { useRouter } from "next/navigation";
 // import { api } from "@/trpc/react";
 
 type PaymentButtonProps = {
@@ -55,6 +56,8 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
   };
   const handlePayment = (paymentMethod: WhatComponentToShow, total: number) => {
     pay(paymentMethod, total);
+
+    setIsOpen((prev) => !prev);
   };
 
   if (!total) return null;

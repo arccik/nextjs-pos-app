@@ -81,7 +81,8 @@ export const mostSoldItems = async () => {
     })
     .from(orderItems)
     .groupBy(orderItems.itemId, items.id)
-    .leftJoin(items, eq(orderItems.itemId, items.id));
+    .leftJoin(items, eq(orderItems.itemId, items.id))
+    .limit(6);
   // .where(lt(orderItems.createdAt, today))
   return result;
   // const response = await db.query.orderItems.findMany({

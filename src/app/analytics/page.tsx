@@ -24,8 +24,6 @@ import { api } from "@/trpc/react";
 export default function DashboardPage() {
   const { data: totalSales } = api.payment.getTotalSales.useQuery();
   const { data: soldTotal } = api.payment.getTotalSoldItems.useQuery();
-  const { data: mostSold } = api.payment.mostSoldItems.useQuery();
-  console.log("!!!!!DashboardPage ", { soldTotal, mostSold });
 
   return (
     <div className="hidden flex-col md:flex">

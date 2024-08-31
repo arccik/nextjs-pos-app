@@ -48,6 +48,7 @@ export default function ActionButtons({
       orderId,
       status: nextStatus,
     });
+    router.refresh();
   };
 
   const handleAddMoreItems = () => {

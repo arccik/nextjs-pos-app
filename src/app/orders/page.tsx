@@ -14,7 +14,6 @@ export default function OrdersPage() {
   //TODO: make api requiest with limit and offset
 
   const { data, isLoading } = api.order.getAll.useQuery(status);
-  console.log("Orders", { data, status });
 
   const total = data?.length;
   return (

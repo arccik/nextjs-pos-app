@@ -1,10 +1,8 @@
 import "@/styles/globals.css";
 
 import { Toaster } from "@/components/ui/toaster";
-import { TRPCReactProvider } from "@/trpc/react";
 import SideBar from "@/components/navbar/SideBar";
 import { Providers } from "./providers";
-import { ThemeProvider } from "./ThemeProvider";
 
 export const metadata = {
   title: "Point Of Sales | 4D Comfort",
@@ -19,24 +17,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
-      />
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+        />
+      </head>
       <body className="ml-0 sm:ml-20">
         <Providers>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <TRPCReactProvider>
-              <SideBar />
-              {children}
-              <Toaster />
-            </TRPCReactProvider>
-          </ThemeProvider>
+          <SideBar />
+          {children}
+          <Toaster />
         </Providers>
       </body>
     </html>
