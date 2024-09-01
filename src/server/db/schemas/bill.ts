@@ -32,12 +32,6 @@ export const bills = pgTable(
     updatedAt: timestamp("updated_at")
       .notNull()
       .$onUpdate(() => new Date()),
-<<<<<<< HEAD
-    orderId: varchar("order_id", { length: 255 })
-      .notNull()
-      .references(() => orders.id),
-=======
->>>>>>> 2e02c26
   },
   (t) => ({ unq: unique().on(t.userId, t.id) }),
 );

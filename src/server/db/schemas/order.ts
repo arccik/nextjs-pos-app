@@ -47,13 +47,9 @@ export const orders = pgTable("orders", {
     .notNull(),
   guestLeft: boolean("guest_left").default(false).notNull(),
   specialRequest: text("special_request"),
-<<<<<<< HEAD
-  billId: varchar("bill_id", { length: 255 }),
-=======
   billId: varchar("bill_id", { length: 255 }).references(() => bills.id, {
     onDelete: "cascade",
   }),
->>>>>>> 2e02c26
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .notNull()
