@@ -32,12 +32,27 @@ export const bills = pgTable(
     updatedAt: timestamp("updated_at")
       .notNull()
       .$onUpdate(() => new Date()),
+<<<<<<< HEAD
     orderId: varchar("order_id", { length: 255 })
       .notNull()
       .references(() => orders.id),
+=======
+>>>>>>> 2e02c26
   },
-  (t) => ({ unq: unique().on(t.userId, t.orderId) }),
+  (t) => ({ unq: unique().on(t.userId, t.id) }),
 );
+
+export const billsRelations = relations(bills, ({ one, many }) => ({
+  payments: many(payments),
+  order: one(orders, {
+    fields: [bills.id],
+    references: [orders.billId],
+  }),
+  user: one(users, {
+    fields: [bills.userId],
+    references: [users.id],
+  }),
+}));
 
 export const payments = pgTable("payments", {
   id: varchar("id", { length: 255 })
@@ -57,19 +72,10 @@ export const payments = pgTable("payments", {
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdate(() => new Date()),
+  orderId: varchar("order_id", { length: 255 })
+    .notNull()
+    .references(() => orders.id),
 });
-
-export const billsRelations = relations(bills, ({ one, many }) => ({
-  payments: many(payments),
-  orders: one(orders, {
-    fields: [bills.orderId],
-    references: [orders.id],
-  }),
-  user: one(users, {
-    fields: [bills.userId],
-    references: [users.id],
-  }),
-}));
 
 export const paymentsRelations = relations(payments, ({ one }) => ({
   bill: one(bills, {
@@ -79,6 +85,10 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
   user: one(users, {
     fields: [payments.userId],
     references: [users.id],
+  }),
+  order: one(orders, {
+    fields: [payments.orderId],
+    references: [orders.id],
   }),
 }));
 

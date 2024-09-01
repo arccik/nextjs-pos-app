@@ -11,22 +11,15 @@ type KitchenOrderItemsProps = {
   items: OrderWithItems["orderItems"];
   orderId: string;
 };
-export default function KitchenOrderItems({
-  items,
-  orderId,
-}: KitchenOrderItemsProps) {
-  // const [checked, setChecked] = useState<string[]>([]);
+export default function KitchenOrderItems({ items, orderId }: KitchenOrderItemsProps) {
   const { add, remove, cookedItems } = useCookedItem(orderId);
-  console.log("cookedItems", cookedItems);
 
   const isChecked = (itemId: string) => cookedItems?.includes(itemId);
 
   const handleChecked = (e: CheckedState, itemId: string) => {
     if (e) {
       add(itemId);
-      // setChecked((prev) => [...prev, itemId]);
     } else {
-      // setChecked((prev) => prev.filter((id) => id !== itemId));
       remove(itemId);
     }
   };

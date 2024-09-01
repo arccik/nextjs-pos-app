@@ -1,5 +1,4 @@
 import { eq, gte } from "drizzle-orm";
-
 import {
   type NewBill,
   type NewPayment,
@@ -14,27 +13,39 @@ import { db } from "../db";
 export const getOneById = async (billId: string) => {
   return await db.query.bills.findFirst({
     where: eq(bills.id, billId),
-    with: { payments: true, user: { columns: { name: true, role: true } } },
+    with: {
+      payments: true,
+      user: { columns: { name: true, role: true } },
+      order: true,
+    },
   });
 };
 
 export const getOneByOrderId = async (orderId: string) => {
-  return await db.query.bills.findFirst({
-    where: eq(bills.orderId, orderId),
-    with: { payments: true, user: { columns: { name: true, role: true } } },
+  const order = await db.query.orders.findFirst({
+    where: eq(orders.id, orderId),
+    with: {
+      bill: true,
+      creator: { columns: { name: true, role: true } },
+    },
   });
+  return order?.bill;
 };
+
 export const getAllPaid = async ({ paid }: { paid: boolean }) => {
   return await db.query.bills.findMany({
     where: eq(bills.paid, paid),
+    with: { order: true },
   });
 };
+
 export const getAll = async () => {
   return await db.query.bills.findMany({
     orderBy: (bills, { asc }) => [asc(bills.id)],
-    with: { payments: true },
+    with: { payments: true, order: true },
   });
 };
+
 export const update = async (data: NewBill) => {
   if (!data.id) return { error: "Bill id is required" };
   return await db
@@ -45,17 +56,13 @@ export const update = async (data: NewBill) => {
 };
 
 export const create = async (data: NewBill) => {
-  const [billId] = await db.insert(bills).values(data).returning();
-  if (!billId) return { error: "Bill id is required" };
-  return await db
-    .update(orders)
-    .set({ billId: billId.id })
-    .where(eq(orders.id, data.orderId));
+  return await db.insert(bills).values(data).returning();
 };
 
 export const deleteOne = async (id: string) => {
   return await db.delete(bills).where(eq(bills.id, id));
 };
+
 export const generateBill = async (
   orderId: string,
   tipsAmount?: number | null,
@@ -63,20 +70,27 @@ export const generateBill = async (
   const order = await getOneOrder(orderId);
   if (!order || !("orderItems" in order)) return { error: "Order not found" };
 
-  const tipsAmountNumber = tipsAmount ? tipsAmount : 0;
+  const tipsAmountNumber = tipsAmount ?? 0;
   let totalAmount = 0;
   for (const orderItem of order.orderItems) {
     totalAmount += orderItem.quantity * Number(orderItem.items.price);
   }
   const total = totalAmount + tipsAmountNumber;
-  if (order.billId) {
+
+  const existingBill = await getOneByOrderId(orderId);
+  if (existingBill) {
     return await db
       .update(bills)
-      .set({ totalAmount })
-      .where(eq(bills.id, order.billId))
+      .set({ totalAmount: total, tipAmount: tipsAmountNumber })
+      .where(eq(bills.id, existingBill.id))
       .returning();
   }
-  return await create({ orderId, totalAmount: total, userId: "1" });
+
+  return await create({
+    totalAmount: total,
+    userId: order.userId,
+    tipAmount: tipsAmountNumber,
+  });
 };
 
 export const updateBill = async ({
@@ -88,29 +102,28 @@ export const updateBill = async ({
   userId: string;
   tipsAmount?: number;
 }) => {
-  console.log("Updating bill: ", { orderId, userId, tipsAmount });
   const order = await getOneOrder(orderId);
-  console.log("GET ORDER : >> >>  ", order?.orderItems[0]?.items);
   if (!order || !("orderItems" in order)) throw new Error("Order not found");
 
-  let totalAmount = tipsAmount ? tipsAmount : 0;
+  let totalAmount = tipsAmount ?? 0;
   for (const orderItem of order.orderItems) {
     totalAmount += orderItem.quantity * orderItem.items.price;
   }
-  console.log(" : NEW TOTAL :  ", totalAmount);
-  const bill = await getOneByOrderId(orderId);
-  console.log('Update bill Stage II ', bill)
-  if (bill) {
+
+  const existingBill = await getOneByOrderId(orderId);
+  if (existingBill) {
     return await db
       .update(bills)
-      .set({ totalAmount })
-      .where(eq(bills.id, bill.id))
+      .set({ totalAmount, tipAmount: tipsAmount })
+      .where(eq(bills.id, existingBill.id))
       .returning();
   }
-  return await db
-    .insert(bills)
-    .values({ totalAmount, orderId, userId })
-    .returning();
+
+  return await create({
+    totalAmount,
+    userId,
+    tipAmount: tipsAmount,
+  });
 };
 
 export const paidThisWeek = async () => {
@@ -119,12 +132,12 @@ export const paidThisWeek = async () => {
     .select()
     .from(bills)
     .where(gte(bills.createdAt, subDays(today, 7)));
-    if (!result) return;
-    return result
-      .reduce((acc, cur) => {
-        return acc + Number(cur.totalAmount);
-      }, 0)
-      .toFixed(2);
+  if (!result) return;
+  return result
+    .reduce((acc, cur) => {
+      return acc + Number(cur.totalAmount);
+    }, 0)
+    .toFixed(2);
 };
 
 export const paidThisMonth = async () => {
@@ -142,11 +155,13 @@ export const paidThisMonth = async () => {
 
 export const payBill = async (data: NewPayment) => {
   const payment = await db.insert(payments).values(data).returning();
-  await db
+  const [order] = await db
     .update(orders)
     .set({ isPaid: true })
-    .where(eq(orders.billId, data.billId));
-  await db.update(bills).set({ paid: true }).where(eq(bills.id, data.billId));
+    .where(eq(orders.id, data.orderId))
+    .returning({ billId: orders.billId });
+  if (!order?.billId) throw new Error("Order has no bill");
+  await db.update(bills).set({ paid: true }).where(eq(bills.id, order.billId));
   return payment;
 };
 

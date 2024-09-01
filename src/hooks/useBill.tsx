@@ -20,6 +20,7 @@ export default function useBill(orderId: string) {
       billId: bill.id,
       chargedAmount: amount,
       paymentMethod: type,
+      orderId,
     });
   };
 

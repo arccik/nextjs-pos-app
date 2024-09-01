@@ -35,7 +35,6 @@ export const userRouter = createTRPCRouter({
       updateUserSchema.extend({ id: z.string(), role: z.string().optional() }),
     )
     .mutation(async ({ input }) => {
-      console.log("UPDATE USER: ?? !!! ", input);
       return await update({ id: input.id, body: { ...input } });
     }),
 });

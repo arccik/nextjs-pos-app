@@ -20,7 +20,7 @@ type UploadFileProps = {
 };
 
 export default function UploadFile({ form }: UploadFileProps) {
-  const [file, setFile] = useState<File | undefined>();
+  // const [file, setFile] = useState<File | undefined>();
   // const [filename, setFileName] = useState("");
   //   useEffect(() => {
   //     if (form.formState.isSubmitSuccessful && file) {
@@ -65,16 +65,16 @@ export default function UploadFile({ form }: UploadFileProps) {
   //       });
   //   };
 
-  if (file) {
-    return (
-      <div className="relative">
-        <div className="absolute right-1 top-0">
-          <TrashIcon className="size-10 text-red-400" />
-        </div>
-        <img src={URL.createObjectURL(file)} />
-      </div>
-    );
-  }
+  // if (file) {
+  //   return (
+  //     <div className="relative">
+  //       <div className="absolute right-1 top-0">
+  //         <TrashIcon className="size-10 text-red-400" />
+  //       </div>
+  //       <img src={URL.createObjectURL(file)} />
+  //     </div>
+  //   );
+  // }
   return (
     <div>
       <FormField

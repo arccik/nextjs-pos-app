@@ -138,7 +138,7 @@ async function seedDatabase() {
       },
     ]);
 
-    await db
+    const categoryIds = await db
       .insert(schema.categories)
       .values([
         { name: "Appetizers" },
@@ -146,15 +146,23 @@ async function seedDatabase() {
         { name: "Desserts" },
         { name: "Beverages" },
         { name: "Salad" },
-      ]);
+      ])
+      .returning({ id: schema.categories.id, name: schema.categories.name });
+    const categoryMap = categoryIds.reduce(
+      (map, cat) => {
+        map[cat.name] = cat.id;
+        return map;
+      },
+      {} as Record<string, string>,
+    );
 
-    const categoryIds = await db
-      .select({ id: schema.categories.id })
-      .from(schema.categories);
+    // const categoryIds = await db
+    //   .select({ id: schema.categories.id })
+    //   .from(schema.categories);
 
-    if (!categoryIds.some((category) => category.id)) {
-      return console.log("Category Ids not created ");
-    }
+    // if (!categoryIds.some((category) => category.id)) {
+    //   return console.log("Category Ids not created ");
+    // }
     await db.insert(schema.items).values([
       {
         imageUrl: "/img/food.jpg",
@@ -166,7 +174,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 10,
-        categoryId: categoryIds[0].id,
+        categoryId: categoryMap.Appetizers,
         isAvailable: true,
       },
       {
@@ -180,7 +188,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 20,
-        categoryId: categoryIds[1]?.id,
+        categoryId: categoryMap.Appetizers,
         isAvailable: true,
       },
       {
@@ -194,7 +202,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryIds[2]?.id,
+        categoryId: categoryMap.Salad,
         isAvailable: true,
       },
       {
@@ -208,7 +216,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 25,
-        categoryId: categoryIds[2]?.id,
+        categoryId: categoryMap["Main Course"],
         isAvailable: true,
       },
       {
@@ -222,7 +230,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 30,
-        categoryId: categoryIds[3]?.id,
+        categoryId: categoryMap["Main Course"],
         isAvailable: true,
       },
       {
@@ -236,7 +244,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: false,
         preparationTime: 25,
-        categoryId: categoryIds[3]?.id,
+        categoryId: categoryMap["Main Course"],
         isAvailable: true,
       },
       {
@@ -250,7 +258,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryIds[4]?.id,
+        categoryId: categoryMap.Beverages,
         isAvailable: true,
       },
       {
@@ -264,7 +272,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 20,
-        categoryId: categoryIds[4]?.id,
+        categoryId: categoryMap.Beverages,
         isAvailable: true,
       },
       {
@@ -278,7 +286,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: false,
         preparationTime: 35,
-        categoryId: categoryIds[4]?.id,
+        categoryId: categoryMap.Desserts,
         isAvailable: true,
       },
       {
@@ -292,11 +300,11 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryIds[4]?.id,
+        categoryId: categoryMap.Desserts,
         isAvailable: true,
       },
     ]);
-
+    if (!user?.id) return;
     await db.insert(schema.venueSettings).values({
       name: "Rest App",
       address: "123 London Main St",
@@ -308,7 +316,7 @@ async function seedDatabase() {
       amenities: "Pool",
       capacity: 100,
       description: "This is a default venue",
-      updatedBy: user?.id,
+      updatedBy: user.id,
     });
   } catch (error) {
     console.error("Error seeding database:", error);

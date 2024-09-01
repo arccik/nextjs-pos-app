@@ -26,16 +26,23 @@ export const create = async (data: NewPayment) => {
   const [payment] = await db.insert(payments).values(data).returning();
   const bill = await db.query.bills.findFirst({
     where: eq(bills.id, data.billId),
+    with: {
+      payments: true,
+    },
   });
   if (!payment || !bill) return;
-  const totalAmount = bill.totalAmount - payment.chargedAmount;
-  await db.update(bills).set({ totalAmount }).where(eq(bills.id, data.billId));
+  const totalPaid = bill.payments.reduce(
+    (acc, curr) => acc + curr.chargedAmount,
+    0,
+  );
+  const totalAmount = bill.totalAmount - totalPaid;
+  // await db.update(bills).set({ totalAmount }).where(eq(bills.id, data.billId));
 
   if (totalAmount <= 0) {
     await db
       .update(orders)
       .set({ isPaid: true })
-      .where(eq(orders.id, bill.orderId));
+      .where(eq(orders.id, data.orderId));
     await db.update(bills).set({ paid: true }).where(eq(bills.id, data.billId));
   }
 
@@ -116,7 +123,7 @@ export async function getMonthlyPaymentTotals() {
     .orderBy(sql`EXTRACT(MONTH FROM ${payments.createdAt})`);
 
   if (result.length === 0) {
-    console.log("No data returned from the query.");
+    throw new Error("No payments found");
   }
 
   const monthlyTotals = monthNames.map((name, index) => {

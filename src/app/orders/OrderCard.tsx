@@ -96,6 +96,7 @@ export default function OrderCard({ order }: OrderCardProps) {
           status={order.status}
           orderId={order.id}
           isPaid={order.isPaid}
+          guestLeft={order.guestLeft}
         />
       </CardFooter>
       <div className="m-4 flex justify-between ">

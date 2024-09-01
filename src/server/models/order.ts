@@ -6,7 +6,6 @@ import {
   orders,
   orderItems,
   type OrderStatus,
-  type NewOrderWithItems,
   tables,
   type NewOrderItem,
   items,
@@ -187,17 +186,14 @@ export const newOrder = async (body: NewOrder) => {
   const [order] = await db.insert(orders).values(body).returning();
 
   if (!order?.id) throw new Error("Error: Order ID is missing");
-  console.log(" ✓ New ORder Creted:>>>>> ", order);
 
   const [bill] = await db
     .insert(bills)
     .values({
       totalAmount: 0,
-      orderId: order?.id ? order?.id : "Error: Order ID is missing",
       userId: body.userId,
     })
     .returning();
-  console.log(" ✓ New Bill Creted:>>>>> ", bill);
 
   if (!bill?.id) throw new Error("Error: Bill ID is missing");
   const [res] = await db
@@ -205,36 +201,35 @@ export const newOrder = async (body: NewOrder) => {
     .set({ billId: bill.id })
     .where(eq(orders.id, order.id))
     .returning({ id: orders.id });
-  console.log(" ✓ New ORder UPDATED:>>>>> ", res);
 
   return res;
 };
 
-export const create = async (values: NewOrderWithItems) => {
-  const [insertedOrder] = await db
-    .insert(orders)
-    .values({ tableId: values.tableId, userId: values.userId })
-    .returning();
-  const orderId = insertedOrder?.id;
+// export const create = async (values: NewOrderWithItems) => {
+//   console.log("!! ORDER CREATE FUNC: !!", values);
+//   const [insertedOrder] = await db
+//     .insert(orders)
+//     .values({ tableId: values.tableId, userId: values.userId })
+//     .returning();
+//   const orderId = insertedOrder?.id;
 
-  if (!orderId) throw new Error("Order ID is missing");
-  await db
-    .insert(orderItems)
-    .values(values.items.map((item) => ({ ...item, orderId })));
-  await db.insert(bills).values([
-    {
-      totalAmount: 0,
-      orderId,
-      userId: values.userId,
-    },
-  ]);
-  return {
-    success: true,
-    orderId,
-    items: values.items,
-    tableId: values.tableId,
-  };
-};
+//   if (!orderId) throw new Error("Order ID is missing");
+//   await db
+//     .insert(orderItems)
+//     .values(values.items.map((item) => ({ ...item, orderId })));
+//   await db.insert(bills).values([
+//     {
+//       totalAmount: 0,
+//       userId: values.userId,
+//     },
+//   ]);
+//   return {
+//     success: true,
+//     orderId,
+//     items: values.items,
+//     tableId: values.tableId,
+//   };
+// };
 
 export const addItem = async (data: {
   userId: string;
@@ -280,16 +275,25 @@ async function findOrCreateOrder(
   const selectedOrder = await getSelectedByUser(userId);
   if (selectedOrder && selectedOrder !== "null") return selectedOrder;
   if (!orderId) {
+    const [bill] = await db
+      .insert(bills)
+      .values({
+        totalAmount: 0,
+        userId,
+      })
+      .returning({ id: bills.id });
+    if (!bill) throw new Error("Issue creating new bill.");
     const [newOrder] = await db
       .insert(orders)
-      .values({ status: "Pending", userId, selectedBy: userId })
+      .values({
+        status: "Pending",
+        userId,
+        selectedBy: userId,
+        billId: bill.id,
+      })
       .returning({ id: orders.id });
     if (!newOrder?.id) throw new Error("Issue creating new order.");
-    await db.insert(bills).values({
-      totalAmount: 0,
-      orderId: newOrder.id,
-      userId,
-    });
+
     return newOrder;
   } else {
     // combined findFirst and update. Once order updated it will be returned; if not found - undefined will be returned

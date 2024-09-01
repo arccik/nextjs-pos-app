@@ -47,33 +47,19 @@ export const orders = pgTable("orders", {
     .notNull(),
   guestLeft: boolean("guest_left").default(false).notNull(),
   specialRequest: text("special_request"),
+<<<<<<< HEAD
   billId: varchar("bill_id", { length: 255 }),
+=======
+  billId: varchar("bill_id", { length: 255 }).references(() => bills.id, {
+    onDelete: "cascade",
+  }),
+>>>>>>> 2e02c26
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdate(() => new Date()),
 });
 
-export const orderItems = pgTable(
-  "order_items",
-  {
-    orderId: varchar("user_id", { length: 255 })
-      .notNull()
-      .references(() => orders.id, { onDelete: "cascade" }),
-    itemId: varchar("item_id", { length: 255 })
-      .notNull()
-      .references(() => items.id, { onDelete: "cascade" }),
-    quantity: integer("quantity").notNull().default(1),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
-      .notNull()
-      .$onUpdate(() => new Date()),
-  },
-
-  (t) => ({
-    pk: primaryKey({ columns: [t.orderId, t.itemId] }),
-  }),
-);
 export const ordersRelations = relations(orders, ({ one, many }) => ({
   table: one(tables, {
     fields: [orders.tableId],
@@ -95,6 +81,28 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
   //   references: [bills.id],
   // }),
 }));
+
+export const orderItems = pgTable(
+  "order_items",
+  {
+    orderId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+    itemId: varchar("item_id", { length: 255 })
+      .notNull()
+      .references(() => items.id, { onDelete: "cascade" }),
+    quantity: integer("quantity").notNull().default(1),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+
+  (t) => ({
+    pk: primaryKey({ columns: [t.orderId, t.itemId] }),
+  }),
+);
+
 
 export const orderItemsRelations = relations(orderItems, ({ one }) => ({
   items: one(items, {
