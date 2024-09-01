@@ -29,20 +29,19 @@ import Loading from "@/components/Loading";
 import useOrder from "@/hooks/useOrder";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { formatId } from "@/lib/utils";
+import { EllipsisVertical } from "lucide-react";
+import { AdminMenu } from "./AdminMenu";
 
-type TableDIalogProps = {
+type TableCardProps = {
   tableData: TableWithReservation;
 };
 
-export default function TableDialog({ tableData }: TableDIalogProps) {
+export default function TableCard({ tableData }: TableCardProps) {
+  const tableId = tableData.id;
+  const enabled = tableData.status === "occupied";
   const { data: orderData, isLoading } = api.order.getOneByTableId.useQuery(
-    {
-      tableId: tableData.id,
-    },
-    {
-      enabled: tableData.status === "occupied",
-      refetchOnWindowFocus: false,
-    },
+    { tableId },
+    { enabled },
   );
   const { unselectTable, selectedTable } = useOrder();
 
@@ -69,14 +68,14 @@ export default function TableDialog({ tableData }: TableDIalogProps) {
               Table #{tableData.prefix}
               {tableData.number}
             </div>
-            <div>
+            <div className="ml-2">
               <DeselectButton />
+              <AdminMenu tableId={tableId} />
             </div>
           </DialogTitle>
           <DialogDescription className="flex justify-between">
             {tableData.description}
           </DialogDescription>
-
           {orderData !== "null" && orderData?.userId && (
             <>
               <span>

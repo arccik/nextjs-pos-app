@@ -3,14 +3,12 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import {
   newOrderSchema,
-  newOrderWithItemsSchema,
   orderItemsSchema,
   orderStatus,
 } from "../../db/schemas";
 import {
   addMoreItemsToOrder,
   addItem,
-  create,
   getAll,
   getOne,
   getOneByTableId,
@@ -55,11 +53,11 @@ export const orderRouter = createTRPCRouter({
     .query(async ({ input }) => {
       return await getOrderWithItems(input.id);
     }),
-  create: protectedProcedure
-    .input(newOrderWithItemsSchema)
-    .mutation(async ({ input }) => {
-      return await create(input);
-    }),
+  // create: protectedProcedure
+  //   .input(newOrderWithItemsSchema)
+  //   .mutation(async ({ input }) => {
+  //     return await create(input);
+  //   }),
   addItems: protectedProcedure
     .input(
       z.object({

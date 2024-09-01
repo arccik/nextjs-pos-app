@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 import { cn } from "@/lib/utils";
-import TablesDialog from "./TablesDialog";
+import TableCard from "./TableCard";
 import AddTable from "./AddTable";
 import type { TableStatus } from "@/server/db/schemas/table";
 import Loading from "@/components/Loading";
@@ -26,8 +26,6 @@ export default function TableCards({ standalone }: TabelsGridProps) {
     refetch,
     isLoading,
   } = api.table.getAll.useQuery(status);
-
-  // console.log("TableCards", tables);
 
   // const { data: reservations } =
   //   api.reservation.getUnAssignedReservations.useQuery();
@@ -53,7 +51,7 @@ export default function TableCards({ standalone }: TabelsGridProps) {
         ))} */}
       <CardHeader className="flex flex-col items-center justify-between sm:flex-row">
         <CardTitle className="text-xl font-semibold">Tables</CardTitle>
-        <div className="flex gap-3 sm:flex-row md:flex-col">
+        <div className="flex flex-row gap-3 ">
           <AddReservation />
           <AddTable onComplete={refetch} />
         </div>
@@ -71,7 +69,7 @@ export default function TableCards({ standalone }: TabelsGridProps) {
             )}
           >
             {tables.map((table) => (
-              <TablesDialog key={table.id} tableData={table} />
+              <TableCard key={table.id} tableData={table} />
             ))}
           </div>
         ) : isLoading ? (

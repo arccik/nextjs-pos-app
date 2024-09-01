@@ -17,7 +17,6 @@ export const getStopItems = async () => {
   });
 };
 export const update = async (body: NewItem & { id: string }) => {
-  console.log("Updating item :::: ", body);
   return await db
     .update(items)
     .set(body)

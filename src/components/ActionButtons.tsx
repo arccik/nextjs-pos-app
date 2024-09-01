@@ -14,12 +14,14 @@ type ActionButtonsProps = {
   orderId: string;
   status: OrderStatus[number];
   isPaid?: boolean | null;
+  guestLeft?: boolean;
 };
 
 export default function ActionButtons({
   orderId,
   status,
   isPaid,
+  guestLeft,
 }: ActionButtonsProps) {
   const { changeStatus, setSelectedOrder } = useOrder();
   const utils = api.useUtils();
@@ -86,7 +88,7 @@ export default function ActionButtons({
           </Button>
         )}
 
-        {isPaid && status === "Completed" && (
+        {!guestLeft && isPaid && status === "Completed" && (
           <Button onClick={handleGuestLeave} className="w-full">
             Guest Left
           </Button>

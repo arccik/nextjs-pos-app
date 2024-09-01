@@ -28,6 +28,7 @@ export default function AddItemToOrderButton({
     itemId: string;
     quantity: number;
   }) => {
+    setQuantity(1);
     add({ itemId, quantity, id: orderId });
   };
 
@@ -38,13 +39,13 @@ export default function AddItemToOrderButton({
         variant="outline"
         size="sm"
         onClick={() => handleAddItem({ itemId: item.id, quantity })}
-        disabled={!item.isAvailable}
+        disabled={!item.isAvailable || isLoading}
       >
         {isLoading ? (
           <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <>
-            <PlusIcon className="mr-2 h-4 w-4" /> Add to Order{" "}
+            <PlusIcon className="mr-2 h-4 w-4" /> Add to Order
           </>
         )}
       </Button>

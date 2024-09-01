@@ -10,6 +10,7 @@ import {
   getAllByStatus,
   updateStatus,
   guestLeave,
+  markClean,
 } from "@/server/models/table";
 import { z } from "zod";
 
@@ -56,5 +57,10 @@ export const tableRouter = createTRPCRouter({
     .input(z.object({ orderId: z.string() }))
     .mutation(async ({ input }) => {
       return await guestLeave(input.orderId);
+    }),
+  markClean: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      return await markClean(input);
     }),
 });

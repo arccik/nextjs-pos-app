@@ -35,7 +35,7 @@ export default function useOrder() {
       toast({ title: message });
       await Promise.all(entity.map((e) => utils[e].invalidate()));
     },
-    [utils, selectedOrder],
+    [utils],
   );
 
   const setStatus = api.order.setStatus.useMutation({
@@ -123,10 +123,12 @@ export default function useOrder() {
 
   const proceedOrder = async () => {
     if (!orderId) return;
-    unselectTableMutation.mutate();
     updateOrder.mutate({
       id: orderId,
-      body: { status: "In Progress", selectedBy: null },
+      body: {
+        status: "In Progress",
+        selectedBy: null,
+      },
     });
 
     if (selectedTable !== "null" && selectedTable?.id) {

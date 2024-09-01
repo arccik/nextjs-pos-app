@@ -31,6 +31,7 @@ export const paymentRouter = createTRPCRouter({
         paymentMethod: z.enum(["Card", "Cash"]),
         chargedAmount: z.number(),
         billId: z.string(),
+        orderId: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
