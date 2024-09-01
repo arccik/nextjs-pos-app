@@ -1,3 +1,4 @@
+import PaymentsList from "@/components/payment/PaymentsList";
 import {
   TableHead,
   TableRow,
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { formatCurrency, type ItemToSummerize } from "@/lib/utils";
 import { type Bill } from "@/server/db/schemas";
+import { useMemo } from "react";
 
 type DisplayOrderItemsProps = {
   items: ItemToSummerize[];
@@ -19,9 +21,13 @@ export default function DisplayOrderItems({
   items,
   bill,
 }: DisplayOrderItemsProps) {
-  const subTotal = items?.reduce((acc, item) => {
-    return acc + Number(item.items.price) * item.quantity;
-  }, 0);
+  const subTotal = useMemo(
+    () =>
+      items?.reduce((acc, item) => {
+        return acc + Number(item.items.price) * item.quantity;
+      }, 0),
+    [items],
+  );
 
   return (
     <Table className="mb-5">
@@ -59,16 +65,23 @@ export default function DisplayOrderItems({
             </TableCell>
           </TableRow>
         )}
-        {bill && bill.paid && (
+        <TableRow>
+          <TableCell colSpan={4}>
+            Payments
+            {bill?.id && <PaymentsList billId={bill?.id} />}
+          </TableCell>
+        </TableRow>
+
+        {/* {bill && bill.paid && (
           <TableRow className="bg-gray-200">
-            <TableCell colSpan={3} className="font-bold">
-              Paid
-            </TableCell>
-            <TableCell className="text-right">
-              {formatCurrency(bill.totalAmount)}
-            </TableCell>
+          <TableCell colSpan={3} className="font-bold">
+          Paid
+          </TableCell>
+          <TableCell className="text-right">
+          {formatCurrency(bill.totalAmount)}
+          </TableCell>
           </TableRow>
-        )}
+          )} */}
       </TableFooter>
     </Table>
   );

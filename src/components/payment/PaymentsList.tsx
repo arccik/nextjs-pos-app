@@ -20,7 +20,7 @@ type PaymentsListProps = {
 export default function PaymentsList({ total, tipsAmount, billId }: PaymentsListProps) {
   const { data: payments } = api.payment.getAll.useQuery({ billId });
 
-  const summary = total ?? 0 + (tipsAmount ? Number(tipsAmount) : 0);
+  const summary = (total ?? 0) + (tipsAmount ? Number(tipsAmount) : 0);
   return (
     <Table>
       <TableHeader>
@@ -63,11 +63,11 @@ export default function PaymentsList({ total, tipsAmount, billId }: PaymentsList
           </TableCell>
         </TableRow>
 
-        {/* {!!totalPaid && (
+        {/* {!!summary && (
           <TableRow className="bg-slate-200">
             <TableCell colSpan={2}>Paid</TableCell>
             <TableCell className="text-right">
-              {formatCurrency(totalPaid)}
+              {formatCurrency(summary)}
             </TableCell>
           </TableRow>
         )} */}

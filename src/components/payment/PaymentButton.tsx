@@ -38,7 +38,7 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
   // const { data: settings } = api.settings.get.useQuery();
   // const currency = settings?.currency ?? "USD";
 
-  const { total, pay, addTips, billId } = useBill(orderId);
+  const { total, pay, addTips, billId, payments } = useBill(orderId);
 
   // const { makePayment, generateBill } = usePayments();
 

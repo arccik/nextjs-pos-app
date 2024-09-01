@@ -13,6 +13,11 @@ export default function useBill(orderId: string) {
     onSuccess: () => refetchBill(),
   });
 
+  const { data: payments } = api.payment.getAll.useQuery(
+    { billId: bill?.id! },
+    { enabled: !!bill?.id },
+  );
+
   const pay = (type: "Card" | "Cash", amount: number) => {
     if (!bill?.id) return null;
     makePayment.mutate({
@@ -27,5 +32,5 @@ export default function useBill(orderId: string) {
     if (!bill?.id) return null;
     saveTips.mutate({ billId: bill.id, amount });
   };
-  return { total: bill?.totalAmount, pay, addTips, billId: bill?.id };
+  return { total: bill?.totalAmount, pay, addTips, billId: bill?.id, payments };
 }
