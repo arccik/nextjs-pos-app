@@ -13,7 +13,7 @@ import { type AdapterAccount } from "next-auth/adapters";
 import { tables } from "./table";
 import { z } from "zod";
 import { orders } from "./order";
-
+import { notifications } from "./notification";
 
 export const userRoles = [
   "admin",
@@ -49,6 +49,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   // orders: many(orders),
   creator: many(orders, { relationName: "creator" }),
   selector: many(orders, { relationName: "selector" }),
+  notification: many(notifications),
 }));
 
 export const profileInfo = pgTable("profile", {

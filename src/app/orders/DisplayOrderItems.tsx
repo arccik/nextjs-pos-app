@@ -56,7 +56,7 @@ export default function DisplayOrderItems({
         ))}
       </TableBody>
 
-      <TableFooter>
+      <TableFooter className="border">
         {!!subTotal && (
           <TableRow>
             <TableCell colSpan={3}>Sub Total</TableCell>
@@ -67,7 +67,6 @@ export default function DisplayOrderItems({
         )}
         <TableRow>
           <TableCell colSpan={4}>
-            Payments
             {bill?.id && <PaymentsList billId={bill?.id} />}
           </TableCell>
         </TableRow>
