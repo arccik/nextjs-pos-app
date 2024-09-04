@@ -28,6 +28,7 @@ export const appRouter = createTRPCRouter({
   rota: rotaRouter,
   cookedItem: cookedItemRouter,
   payment: paymentRouter,
+  // analytics:
 });
 
 // export type definition of API

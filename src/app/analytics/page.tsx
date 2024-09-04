@@ -24,6 +24,12 @@ import { api } from "@/trpc/react";
 export default function DashboardPage() {
   const { data: totalSales } = api.payment.getTotalSales.useQuery();
   const { data: soldTotal } = api.payment.getTotalSoldItems.useQuery();
+  const { data: orders } = api.order.getAll.useQuery();
+
+  const activeOrders = orders?.filter((order) => order.status !== "Completed");
+
+  const activeOrderUsers = orders?.map((order) => order.userId);
+
 
   return (
     <div className="hidden flex-col md:flex">
@@ -70,12 +76,14 @@ export default function DashboardPage() {
                 value="+12,234"
                 icon={<CircleDashed />}
               />
-              <ScoreCard
-                title="Active Now"
-                change="+43.2% from last month"
-                value="+573"
-                icon={<PanelsTopLeft />}
-              />
+              {!!activeOrders?.length && (
+                <ScoreCard
+                  title="Active Now"
+                  change={activeOrderUsers?.join(" ")}
+                  value={activeOrders.length + ""}
+                  icon={<PanelsTopLeft />}
+                />
+              )}
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
               <Card className="col-span-4">

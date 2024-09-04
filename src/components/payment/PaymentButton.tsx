@@ -38,7 +38,7 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
   // const { data: settings } = api.settings.get.useQuery();
   // const currency = settings?.currency ?? "USD";
 
-  const { total, pay, addTips, billId, payments } = useBill(orderId);
+  const { total, pay, addTips, billId } = useBill(orderId);
 
   // const { makePayment, generateBill } = usePayments();
 
@@ -48,22 +48,26 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
     setTipAmount(tipsAmount);
   };
 
-  const handleDialogButton = () => {
-    setIsOpen((prev) => !prev);
-    if (!isOpen) {
-      // generateBill({ orderId, tipsAmount });
-    }
-  };
-  const handlePayment = (paymentMethod: WhatComponentToShow, total: number) => {
-    pay(paymentMethod, total);
+  // const handleDialogButton = () => {
+  //   setIsOpen((prev) => !prev);
+  //   if (!isOpen) {
+  //     // generateBill({ orderId, tipsAmount });
+  //   }
+  // };
+  const handlePayment = (
+    paymentMethod: WhatComponentToShow,
+    paidAmount: number,
+  ) => {
+    pay(paymentMethod, paidAmount);
 
-    setIsOpen((prev) => !prev);
+    if (paidAmount === total) setIsOpen(false);
+    // setIsOpen((prev) => !prev);
   };
 
   if (!total) return null;
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={handleDialogButton}>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button className="w-full dark:bg-gray-700 dark:text-white">
           <Banknote className="mr-2" />
