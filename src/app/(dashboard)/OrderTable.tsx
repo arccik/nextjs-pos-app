@@ -33,7 +33,7 @@ import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
 export default function OrderTable() {
-  const { data } = api.order.getAllByToday.useQuery();
+  const { data } = api.order.getAll.useQuery();
   const router = useRouter();
 
   return (
@@ -125,7 +125,7 @@ export default function OrderTable() {
                         {order.isPaid ? "Yes" : "No"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {order.createdAt.toDateString()}
+                        {order.createdAt.toLocaleDateString()}
                       </TableCell>
                       {order.bill && (
                         <TableCell className="hidden sm:table-cell">
