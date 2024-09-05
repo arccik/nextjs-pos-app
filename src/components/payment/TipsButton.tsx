@@ -1,8 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import useBill from "@/hooks/useBill";
 import { useQueryClient } from "@tanstack/react-query";
-import { HandCoins } from "lucide-react";
+import { HandCoins, HandCoinsIcon } from "lucide-react";
 import { useState } from "react";
 
 type TipsButtonProps = {
@@ -12,15 +13,14 @@ type TipsButtonProps = {
 export default function TipsButton({ setValue, orderId }: TipsButtonProps) {
   const [show, setShow] = useState(false);
   const [tipValue, setTipValue] = useState<number | null>(null);
+  const { addTips } = useBill(orderId);
 
   const handleClick = async () => {
     if (!tipValue) return;
     setValue(tipValue);
     setShow(false);
-    await queryClient.invalidateQueries({ queryKey: ["bill", orderId] });
-    setTipValue(null);
+    addTips(tipValue);
   };
-  const queryClient = useQueryClient();
 
   return (
     <>
@@ -37,9 +37,9 @@ export default function TipsButton({ setValue, orderId }: TipsButtonProps) {
       )}
       <Button
         onClick={() => setShow((prev) => !prev)}
-        variant={show ? "outline" : "default"}
+        variant={show ? "default" : "outline"}
       >
-        <HandCoins className="mr-1" /> Tip
+        <HandCoinsIcon className="mr-1" /> Tip
       </Button>
     </>
   );

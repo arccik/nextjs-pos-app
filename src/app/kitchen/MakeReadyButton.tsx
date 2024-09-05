@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import useCookedItem from "@/hooks/useCookedItem";
+import { formatId } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
 type MakeReadyButtonProps = {
@@ -17,7 +18,7 @@ export default function MakeReadyButton({
   const handleClick = () => {
     setOrderReady();
     sendNotification.mutate({
-      message: `Order ${orderId} is ready`,
+      message: `Order ${formatId(orderId)} is ready`,
       title: "Order Ready",
       userId: sendNotificationTo,
     });

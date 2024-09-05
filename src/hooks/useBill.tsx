@@ -9,6 +9,8 @@ export default function useBill(orderId: string) {
     { enabled: !!billId },
   );
 
+  const tips = bill?.tipAmount ?? 0;
+
   const utils = api.useUtils();
   const makePayment = api.payment.create.useMutation({
     onSuccess: async () => {
@@ -34,5 +36,5 @@ export default function useBill(orderId: string) {
     if (!billId) return null;
     saveTips.mutate({ billId, amount });
   };
-  return { total: bill?.totalAmount, pay, addTips, billId, payments };
+  return { total: bill?.totalAmount, pay, addTips, billId, payments, tips };
 }

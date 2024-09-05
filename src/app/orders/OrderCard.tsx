@@ -20,6 +20,7 @@ import { HandPlatter } from "lucide-react";
 import TableIcon from "@/components/navbar/TableIcon";
 import Link from "next/link";
 import ActionButtons from "@/components/ActionButtons";
+import PaymentsList from "@/components/payment/PaymentsList";
 
 type OrderCardProps = {
   order: MainOrder;
@@ -29,6 +30,7 @@ type OrderCardProps = {
 export default function OrderCard({ order }: OrderCardProps) {
   const tableNumber = order.table?.number;
   const serviceFee = order.bill?.serviceFee;
+  const tipAmount = order.bill?.tipAmount;
 
   return (
     <Card className="flex w-full flex-col justify-between">
@@ -89,6 +91,10 @@ export default function OrderCard({ order }: OrderCardProps) {
             <div className="">Service fee</div>
             <div className="text-right">{formatCurrency(serviceFee)}</div>
           </div>
+        )}
+        {/* {tipAmount && <p className="text-right text-sm">Tips: {tipAmount}</p>} */}
+        {order.bill?.id && (
+          <PaymentsList billId={order.bill?.id} tipsAmount={tipAmount} />
         )}
       </CardContent>
       <CardFooter className="flex flex-col justify-center gap-4 p-4">

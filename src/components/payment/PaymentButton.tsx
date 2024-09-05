@@ -29,15 +29,14 @@ type PaymentButtonProps = {
 type WhatComponentToShow = "Cash" | "Card";
 
 export default function PaymentButton({ orderId }: PaymentButtonProps) {
+  const { total, pay, addTips, billId, tips } = useBill(orderId);
   const [isOpen, setIsOpen] = useState(false);
   const [showMethod, setShowMethod] = useState<WhatComponentToShow | null>(
     null,
   );
-  const [tipsAmount, setTipAmount] = useState<number | null>(null);
+  const [tipsAmount, setTipAmount] = useState<number>(tips);
   // const { data: settings } = api.settings.get.useQuery();
   // const currency = settings?.currency ?? "USD";
-
-  const { total, pay, addTips, billId } = useBill(orderId);
 
   // const { makePayment, generateBill } = usePayments();
 
@@ -109,23 +108,23 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
           </div>
         )}
 
-        <ScrollArea className=" w-full rounded-md">
-          {showMethod === "Cash" && (
-            <CashPayment
-              totalAmount={total}
-              tipsAmount={tipsAmount}
-              onPay={(amount) => handlePayment("Cash", amount)}
-            />
-          )}
-          {showMethod === "Card" && (
-            <CardPayment
-              tipAmount={tipsAmount}
-              totalAmount={total}
-              onPay={(amount) => handlePayment("Card", amount)}
-            />
-          )}
-          {billId && <PaymentsList billId={billId} tipsAmount={tipsAmount} />}
-        </ScrollArea>
+        {/* <ScrollArea> */}
+        {showMethod === "Cash" && (
+          <CashPayment
+            totalAmount={total}
+            tipsAmount={tipsAmount}
+            onPay={(amount) => handlePayment("Cash", amount)}
+          />
+        )}
+        {showMethod === "Card" && (
+          <CardPayment
+            tipAmount={tipsAmount}
+            totalAmount={total}
+            onPay={(amount) => handlePayment("Card", amount)}
+          />
+        )}
+        {billId && <PaymentsList billId={billId} tipsAmount={tipsAmount} />}
+        {/* </ScrollArea> */}
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <TipsButton setValue={handleAddTips} orderId={orderId} />

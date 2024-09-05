@@ -65,22 +65,6 @@ export default function DisplayOrderItems({
             </TableCell>
           </TableRow>
         )}
-        <TableRow>
-          <TableCell colSpan={4}>
-            {bill?.id && <PaymentsList billId={bill?.id} />}
-          </TableCell>
-        </TableRow>
-
-        {/* {bill && bill.paid && (
-          <TableRow className="bg-gray-200">
-          <TableCell colSpan={3} className="font-bold">
-          Paid
-          </TableCell>
-          <TableCell className="text-right">
-          {formatCurrency(bill.totalAmount)}
-          </TableCell>
-          </TableRow>
-          )} */}
       </TableFooter>
     </Table>
   );
