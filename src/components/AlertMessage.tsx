@@ -29,7 +29,6 @@ export default function AlertMessage({ notification }: AlertMessageProps) {
   const handleClose = (id: string) => {
     markAsRead.mutate({ id });
   };
-  if (markAsRead.isPending) return <Loading />;
 
   return (
     <Alert variant={notification.type === "error" ? "destructive" : "default"}>

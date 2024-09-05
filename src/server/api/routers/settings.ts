@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 
 export const settingsRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(newVenueSettingsSchema)
+    .input(newVenueSettingsSchema.omit({ updatedBy: true }))
     .mutation(async ({ ctx, input }) => {
       const id = input.id;
       if (id) {
@@ -18,11 +18,13 @@ export const settingsRouter = createTRPCRouter({
         if (isExist) {
           return await ctx.db
             .update(venueSettings)
-            .set(input)
+            .set({ ...input, updatedBy: ctx.session.user.id })
             .where(eq(venueSettings.id, id));
         }
       }
-      return await ctx.db.insert(venueSettings).values(input);
+      return await ctx.db
+        .insert(venueSettings)
+        .values({ ...input, updatedBy: ctx.session.user.id });
     }),
   get: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.db.query.venueSettings.findFirst();

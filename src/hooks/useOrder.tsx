@@ -122,20 +122,23 @@ export default function useOrder() {
   };
 
   const proceedOrder = async () => {
+    const tableId = selectedTable !== "null" ? selectedTable?.id : undefined;
     if (!orderId) return;
     updateOrder.mutate({
       id: orderId,
       body: {
         status: "In Progress",
         selectedBy: null,
+        tableId,
       },
     });
 
-    if (selectedTable !== "null" && selectedTable?.id) {
+    if (tableId) {
       await changeTableStatus.mutateAsync({
-        tableId: selectedTable.id,
+        tableId,
         status: "occupied",
       });
+      await unselectTableMutation.mutateAsync();
     }
     router.push(`/orders/${orderId}`);
   };

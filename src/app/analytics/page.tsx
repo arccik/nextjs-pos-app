@@ -24,7 +24,7 @@ import { api } from "@/trpc/react";
 export default function DashboardPage() {
   const { data: totalSales } = api.payment.getTotalSales.useQuery();
   const { data: soldTotal } = api.payment.getTotalSoldItems.useQuery();
-  const { data: orders } = api.order.getAll.useQuery();
+  const { data: orders } = api.order.getAllByToday.useQuery();
 
   const activeOrders = orders?.filter((order) => order.status !== "Completed");
 

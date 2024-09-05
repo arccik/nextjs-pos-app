@@ -33,7 +33,7 @@ import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
 export default function OrderTable() {
-  const { data } = api.order.getAll.useQuery();
+  const { data } = api.order.getAllByToday.useQuery();
   const router = useRouter();
 
   return (

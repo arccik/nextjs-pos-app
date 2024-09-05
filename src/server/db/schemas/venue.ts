@@ -35,9 +35,7 @@ export const venueSettings = pgTable("venue_settings", {
   currency: text("currency"),
   updatedBy: varchar("updated_by", { length: 255 }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .notNull()
-    .$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
 });
 
 export const venueSettingsSchema = createSelectSchema(venueSettings).extend({

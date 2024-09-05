@@ -11,9 +11,8 @@ import Loading from "@/components/Loading";
 
 export default function OrdersPage() {
   const [status, setStatus] = useState<OrderStatus[number]>();
-  //TODO: make api requiest with limit and offset
 
-  const { data, isLoading } = api.order.getAll.useQuery(status);
+  const { data, isLoading } = api.order.getAllByToday.useQuery(status);
 
   const total = data?.length;
   return (
