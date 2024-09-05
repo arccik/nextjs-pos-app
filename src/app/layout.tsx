@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import SideBar from "@/components/navbar/SideBar";
 import { Providers } from "./providers";
+import AlertMessages from "@/components/AlertMessages";
 
 export const metadata = {
   title: "Point Of Sales | 4D Comfort",
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body className="ml-0 sm:ml-20">
         <Providers>
           <SideBar />
+          <AlertMessages />
           {children}
           <Toaster />
         </Providers>

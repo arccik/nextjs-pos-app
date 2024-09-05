@@ -13,17 +13,20 @@ import { api } from "@/trpc/react";
 
 type PaymentsListProps = {
   tipsAmount?: number | null;
-  total?: number;
   billId: string;
 };
 
-export default function PaymentsList({ total, tipsAmount, billId }: PaymentsListProps) {
+export default function PaymentsList({
+  tipsAmount,
+  billId,
+}: PaymentsListProps) {
   const { data: payments } = api.payment.getAll.useQuery({ billId });
 
   if (payments?.length === 0) return null;
   console.log("PaymentsList", payments);
 
-  const summary = (total ?? 0) + (tipsAmount ? Number(tipsAmount) : 0);
+  const summary = payments?.reduce((a, b) => a + b.chargedAmount, 0);
+  const tips = payments?.reduce((a, b) => a + (b?.tipAmount ?? 0), 0) ?? 0;
   return (
     <section className="p-4 ">
       <h1> Payments</h1>
@@ -51,13 +54,13 @@ export default function PaymentsList({ total, tipsAmount, billId }: PaymentsList
           ))}
         </TableBody>
         <TableFooter>
-          {!!tipsAmount && (
+          {!!tips && (
             <TableRow>
               <TableCell colSpan={2} className="text-bold text-xs">
                 Tips
               </TableCell>
               <TableCell className="text-right">
-                {formatCurrency(tipsAmount)}
+                {formatCurrency(tips)}
               </TableCell>
             </TableRow>
           )}

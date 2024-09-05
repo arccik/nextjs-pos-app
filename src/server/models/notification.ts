@@ -1,10 +1,14 @@
 import { eq, and } from "drizzle-orm";
 import { db } from "../db";
-import { notifications, Notification } from "../db/schemas";
+import {
+  notifications,
+  type Notification,
+  type NewNotification,
+} from "../db/schemas";
 
 // Create a new notification
 export const createNotification = async (
-  notification: Omit<Notification, "id">,
+  notification: Omit<NewNotification, "id">,
 ) => {
   return await db.insert(notifications).values(notification).returning();
 };

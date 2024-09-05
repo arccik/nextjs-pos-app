@@ -1,15 +1,18 @@
 import { reservationRouter } from "@/server/api/routers/reservation";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
-import { tableRouter } from "./routers/table";
-import { settingsRouter } from "./routers/settings";
-import { orderRouter } from "./routers/order";
-import { billRouter } from "./routers/bill";
-import { categoryRouter } from "./routers/category";
-import { itemRouter } from "./routers/item";
-import { userRouter } from "./routers/user";
-import { rotaRouter } from "./routers/rota";
-import { cookedItemRouter } from "./routers/cookedItem";
-import { paymentRouter } from "./routers/payment";
+import {
+  tableRouter,
+  settingsRouter,
+  orderRouter,
+  billRouter,
+  categoryRouter,
+  itemRouter,
+  userRouter,
+  rotaRouter,
+  cookedItemRouter,
+  paymentRouter,
+  notificationRouter,
+} from "./routers";
 
 /**
  * This is the primary router for your server.
@@ -28,6 +31,7 @@ export const appRouter = createTRPCRouter({
   rota: rotaRouter,
   cookedItem: cookedItemRouter,
   payment: paymentRouter,
+  notification: notificationRouter,
   // analytics:
 });
 

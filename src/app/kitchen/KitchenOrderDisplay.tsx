@@ -40,7 +40,10 @@ export default function KitchenOrderDisplay({
                 )}
               </span>
             </div>
-            <MakeReadyButton orderId={order.id} />
+            <MakeReadyButton
+              orderId={order.id}
+              sendNotificationTo={order.creator.id}
+            />
           </div>
 
           <hr className="my-2" />

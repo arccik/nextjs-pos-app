@@ -37,8 +37,8 @@ export function StaffStatusSelector({
   const saveRota = api.rota.saveRota.useMutation({
     onSuccess: async () => {
       toast({
-        title: "Rota saved successfully",
-        description: "The rota has been saved to the database",
+        title: "Rota updated successfully",
+        description: "The changes have been saved to the database",
       });
       onComplete();
     },

@@ -21,7 +21,6 @@ import TipsButton from "./TipsButton";
 import CardPayment from "./CardPayment";
 // import Loading from "../Loading";
 import useBill from "@/hooks/useBill";
-import { useRouter } from "next/navigation";
 // import { api } from "@/trpc/react";
 
 type PaymentButtonProps = {

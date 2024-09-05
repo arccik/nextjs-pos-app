@@ -1,0 +1,11 @@
+export { tableRouter } from "./table";
+export { settingsRouter } from "./settings";
+export { orderRouter } from "./order";
+export { billRouter } from "./bill";
+export { categoryRouter } from "./category";
+export { itemRouter } from "./item";
+export { userRouter } from "./user";
+export { rotaRouter } from "./rota";
+export { cookedItemRouter } from "./cookedItem";
+export { paymentRouter } from "./payment";
+export { notificationRouter } from "./notification";

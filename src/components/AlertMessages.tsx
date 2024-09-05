@@ -1,0 +1,18 @@
+import { api } from "@/trpc/server";
+import AlertMessage from "./AlertMessage";
+
+export default async function AlertMessages() {
+  const notifications = await api.notification.getUnread();
+
+  if (notifications?.length === 0) return null;
+
+  return (
+    <div className="p-2">
+      <div className="flex flex-col gap-3">
+        {notifications?.map((notification) => (
+          <AlertMessage key={notification.id} notification={notification} />
+        ))}
+      </div>
+    </div>
+  );
+}

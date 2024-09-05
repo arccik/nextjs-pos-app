@@ -29,7 +29,7 @@ import Loading from "@/components/Loading";
 import useOrder from "@/hooks/useOrder";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { formatId } from "@/lib/utils";
-import { EllipsisVertical } from "lucide-react";
+// import { EllipsisVertical } from "lucide-react";
 import { AdminMenu } from "./AdminMenu";
 
 type TableCardProps = {

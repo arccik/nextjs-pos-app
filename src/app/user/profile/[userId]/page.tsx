@@ -89,11 +89,11 @@ export default function ProfilePage({ params: { userId } }: ProfilePageProps) {
     }
   }, [userData, form]);
 
-  const onSubmit: SubmitHandler<ProfileFormValues> = (data) => {
+  const onSubmit: SubmitHandler<ProfileFormValues> = async (data) => {
     console.log("onSubmit: ", data);
     delete data.role;
     if (data.name !== session?.user.name) {
-      update({ name: data.name });
+      await update({ name: data.name });
     }
     updateProfile.mutate({ id: userId, ...data, image: imageUrl });
   };

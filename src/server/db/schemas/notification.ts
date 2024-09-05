@@ -24,7 +24,10 @@ export const notifications = pgTable("notifications", {
 });
 
 export const notificationRelations = relations(notifications, ({ one }) => ({
-  user: one(users),
+  user: one(users, {
+    fields: [notifications.userId],
+    references: [users.id],
+  }),
 }));
 
 export const newNotificationSchema = createInsertSchema(notifications);

@@ -1,7 +1,7 @@
 import { MenuList } from "./MenuList";
 import Cart from "./cart/Cart";
 import AddNewCategoryButton from "./category/AddNewCategoryButton";
-import CategoryGrid from "./grid/MenuGrid";
+// import CategoryGrid from "./grid/MenuGrid";
 
 export default function MenuPage() {
   return (
