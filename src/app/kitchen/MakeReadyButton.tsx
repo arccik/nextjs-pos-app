@@ -1,13 +1,28 @@
 import { Button } from "@/components/ui/button";
 import useCookedItem from "@/hooks/useCookedItem";
+import { api } from "@/trpc/react";
 
 type MakeReadyButtonProps = {
   orderId: string;
+  sendNotificationTo: string;
 };
 
-export default function MakeReadyButton({ orderId }: MakeReadyButtonProps) {
+export default function MakeReadyButton({
+  orderId,
+  sendNotificationTo,
+}: MakeReadyButtonProps) {
   const { isAllChecked, setOrderReady } = useCookedItem(orderId);
+  const sendNotification = api.notification.create.useMutation();
+
+  const handleClick = () => {
+    setOrderReady();
+    sendNotification.mutate({
+      message: `Order ${orderId} is ready`,
+      title: "Order Ready",
+      userId: sendNotificationTo,
+    });
+  };
   if (!isAllChecked) return null;
 
-  return <Button onClick={() => setOrderReady()}>Order Ready</Button>;
+  return <Button onClick={handleClick}>Order Ready</Button>;
 }

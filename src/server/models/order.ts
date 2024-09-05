@@ -16,6 +16,12 @@ import { combineOrderItems } from "../../lib/utils";
 import { endOfToday, startOfToday } from "date-fns";
 import { updateBill } from "./bill";
 
+export const getAll = async () => {
+  return await db.query.orders.findMany({
+    with: { creator: true, bill: true, orderItems: { with: { items: true } } },
+  });
+};
+
 export const getOne = async (id: string) => {
   const result = await db.query.orders.findFirst({
     where: and(eq(orders.id, id)),
@@ -105,9 +111,9 @@ export const getAllByStatus = async (status: OrderStatus[number]) => {
   });
 };
 
-export type MainOrder = Unpromisify<ReturnType<typeof getAll>>[0];
+export type MainOrder = Unpromisify<ReturnType<typeof getAllByToday>>[0];
 
-export const getAll = async (status?: OrderStatus[number]) => {
+export const getAllByToday = async (status?: OrderStatus[number]) => {
   const today = startOfToday();
   return await db.query.orders.findMany({
     where: and(

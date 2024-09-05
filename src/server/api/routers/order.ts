@@ -28,6 +28,7 @@ import {
   getSelectedByUser,
   unselectOrder,
   selectOrder,
+  getAllByToday,
 } from "@/server/models/order";
 
 export const orderRouter = createTRPCRouter({
@@ -36,17 +37,18 @@ export const orderRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       return newOrder({ ...input, userId: ctx.session.user.id });
     }),
-
+  getAll: protectedProcedure.query(async () => {
+    return await getAll();
+  }),
   getOne: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       return await getOne(input.id);
     }),
-  getAll: protectedProcedure
+  getAllByToday: protectedProcedure
     .input(z.enum(orderStatus).optional())
     .query(async ({ input }) => {
-      // if (input) return await getAllByStatus(input);
-      return await getAll(input);
+      return await getAllByToday(input);
     }),
   getOrderWithItems: protectedProcedure
     .input(z.object({ id: z.string() }))

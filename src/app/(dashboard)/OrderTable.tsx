@@ -125,7 +125,7 @@ export default function OrderTable() {
                         {order.isPaid ? "Yes" : "No"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {order.createdAt.toDateString()}
+                        {order.createdAt.toLocaleDateString()}
                       </TableCell>
                       {order.bill && (
                         <TableCell className="hidden sm:table-cell">

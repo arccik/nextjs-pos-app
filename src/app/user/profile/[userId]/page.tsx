@@ -34,6 +34,7 @@ import { api } from "@/trpc/react";
 import { newUserSchema } from "@/server/db/schemas";
 import { toast } from "@/components/ui/use-toast";
 import Loading from "@/components/Loading";
+import { useSession } from "next-auth/react";
 
 type ProfileFormValues = z.infer<typeof newUserSchema>;
 
@@ -44,6 +45,7 @@ type ProfilePageProps = {
 };
 
 export default function ProfilePage({ params: { userId } }: ProfilePageProps) {
+  const { data: session, update } = useSession();
   const { data: userData, isLoading } = api.user.getOne.useQuery(userId);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState(
@@ -87,9 +89,12 @@ export default function ProfilePage({ params: { userId } }: ProfilePageProps) {
     }
   }, [userData, form]);
 
-  const onSubmit: SubmitHandler<ProfileFormValues> = (data) => {
+  const onSubmit: SubmitHandler<ProfileFormValues> = async (data) => {
     console.log("onSubmit: ", data);
     delete data.role;
+    if (data.name !== session?.user.name) {
+      await update({ name: data.name });
+    }
     updateProfile.mutate({ id: userId, ...data, image: imageUrl });
   };
 

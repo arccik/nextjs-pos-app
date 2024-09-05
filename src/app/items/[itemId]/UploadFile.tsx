@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+// import { useState } from "react";
 import {
   FormControl,
   FormField,
@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { type UseFormReturn } from "react-hook-form";
 import { type Item } from "@/server/db/schemas";
 
-import { TrashIcon } from "@radix-ui/react-icons";
+// import { TrashIcon } from "@radix-ui/react-icons";
 
 // const API_URL = import.meta.env.VITE_API_URL;
 

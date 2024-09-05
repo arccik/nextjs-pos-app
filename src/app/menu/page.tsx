@@ -1,6 +1,7 @@
 import { MenuList } from "./MenuList";
 import Cart from "./cart/Cart";
 import AddNewCategoryButton from "./category/AddNewCategoryButton";
+// import CategoryGrid from "./grid/MenuGrid";
 
 export default function MenuPage() {
   return (
@@ -19,6 +20,7 @@ export default function MenuPage() {
         </div>
         <div className="grid grid-flow-row gap-4 md:grid-flow-col md:grid-cols-2">
           <MenuList />
+          {/* <CategoryGrid /> */}
           <div>
             <Cart />
           </div>

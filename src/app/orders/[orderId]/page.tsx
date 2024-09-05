@@ -19,7 +19,7 @@ export default function OrderPage({ params }: { params: { orderId: string } }) {
   });
 
   return (
-    <div className="container mx-auto p-0 md:p-4">
+    <div className="container mx-auto max-w-[700px] p-0 md:p-4">
       <CardHeader>
         <CardTitle className="text-xl font-semibold">Order Details</CardTitle>
       </CardHeader>

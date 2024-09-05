@@ -21,7 +21,6 @@ import TipsButton from "./TipsButton";
 import CardPayment from "./CardPayment";
 // import Loading from "../Loading";
 import useBill from "@/hooks/useBill";
-import { useRouter } from "next/navigation";
 // import { api } from "@/trpc/react";
 
 type PaymentButtonProps = {
@@ -39,7 +38,6 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
   // const currency = settings?.currency ?? "USD";
 
   const { total, pay, addTips, billId } = useBill(orderId);
-
 
   const handleAddTips = () => {
     if (!tipsAmount) return;
@@ -65,7 +63,7 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
   if (!total) return null;
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={handleDialogButton}>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button className="w-full dark:bg-gray-700 dark:text-white">
           <Banknote className="mr-2" />

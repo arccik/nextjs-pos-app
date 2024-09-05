@@ -5,7 +5,7 @@ import { api } from "@/trpc/react";
 import Loading from "@/components/Loading";
 
 export default function KitchenPage() {
-  const { data, isLoading } = api.order.getAll.useQuery("In Progress");
+  const { data, isLoading } = api.order.getAllByToday.useQuery("In Progress");
   const { data: cookedItems } = api.cookedItem.getTodayTotal.useQuery();
   return (
     <main className="p-2 sm:p-5">

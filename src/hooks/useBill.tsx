@@ -3,11 +3,17 @@ import { api } from "@/trpc/react";
 export default function useBill(orderId: string) {
   const { data: bill, refetch: refetchBill } =
     api.bill.getOneByOrderId.useQuery(orderId);
+  const billId = bill?.id;
+  const { data: payments } = api.payment.getAll.useQuery(
+    { billId: billId ?? "" },
+    { enabled: !!billId },
+  );
+
   const utils = api.useUtils();
   const makePayment = api.payment.create.useMutation({
     onSuccess: async () => {
       await utils.order.invalidate();
-      await refetchBill();
+      await utils.payment.invalidate();
     },
   });
   const saveTips = api.bill.addTips.useMutation({
@@ -15,9 +21,9 @@ export default function useBill(orderId: string) {
   });
 
   const pay = (type: "Card" | "Cash", amount: number) => {
-    if (!bill?.id) return null;
+    if (!billId) return null;
     makePayment.mutate({
-      billId: bill.id,
+      billId,
       chargedAmount: amount,
       paymentMethod: type,
       orderId,
@@ -25,8 +31,8 @@ export default function useBill(orderId: string) {
   };
 
   const addTips = (amount: number) => {
-    if (!bill?.id) return null;
-    saveTips.mutate({ billId: bill.id, amount });
+    if (!billId) return null;
+    saveTips.mutate({ billId, amount });
   };
-  return { total: bill?.totalAmount, pay, addTips, billId: bill?.id };
+  return { total: bill?.totalAmount, pay, addTips, billId, payments };
 }

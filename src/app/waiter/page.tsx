@@ -9,11 +9,13 @@ import {
   TableIcon,
 } from "lucide-react";
 import SelectTableDialog from "./SelectTable";
+import { useSession } from "next-auth/react";
 // import { useSearchParams } from "next/navigation";
 // import TableIcon from "@/components/layout/navigation/TableIcon";
 // import TablesCards from "@/components/tables/TableCards";
 
 export default function Waiter() {
+  const { data: userData } = useSession();
   // const searchParams = useSearchParams();
   // const params = new URLSearchParams(searchParams.toString());
 
@@ -27,9 +29,9 @@ export default function Waiter() {
 
   return (
     <main className="space-y-5 p-4">
-      {/* <p className="text-sm">
-        Welcome back <b>user {userId}</b>
-      </p> */}
+      <p className="text-sm">
+        Welcome back <b>{userData?.user.name}</b>
+      </p>
 
       <div className="grid grid-cols-2 place-content-center items-center justify-center gap-4 md:grid-cols-4">
         <SelectTableDialog
