@@ -31,7 +31,9 @@ export default function OrderPage({ params }: { params: { orderId: string } }) {
               <Link href="/orders">
                 <Button variant="outline">Back to Orders</Button>
               </Link>
-              <Button variant="default">Print Order</Button>
+              <Button variant="default" onClick={() => window.print()}>
+                Print Order
+              </Button>
             </div>
           </>
         ) : isLoading ? (

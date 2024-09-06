@@ -28,7 +28,7 @@ export default function PaymentsList({
   return (
     <section>
       <h1> Payments</h1>
-      <Table className="rounded-lg bg-slate-100">
+      <Table className="rounded-lg bg-slate-100 dark:border dark:bg-transparent">
         <TableHeader>
           {!!payments?.length && (
             <TableRow>
