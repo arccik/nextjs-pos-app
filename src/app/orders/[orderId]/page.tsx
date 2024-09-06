@@ -26,7 +26,7 @@ export default function OrderPage({ params }: { params: { orderId: string } }) {
       <CardContent>
         {order ? (
           <>
-            <OrderCard order={order} isOpen />
+            <OrderCard order={order} />
             <div className="mt-5 flex justify-end space-x-2">
               <Link href="/orders">
                 <Button variant="outline">Back to Orders</Button>

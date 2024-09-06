@@ -54,14 +54,14 @@ export const payments = pgTable("payments", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   billId: varchar("bill_id", { length: 255 })
-    .references(() => bills.id)
+    .references(() => bills.id, { onDelete: "cascade" })
     .notNull(),
   paymentMethod: varchar("payment_method", { enum: paymentMethod }).notNull(),
   chargedAmount: real("charged_amount").notNull(),
   tipAmount: real("tip_amount"),
   userId: varchar("user_id", { length: 255 })
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")
     .notNull()

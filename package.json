@@ -12,7 +12,7 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "db:seed": "ts-node --esm src/server/seeder.ts"
+    "db:seed": "tsc --noEmit src/server/db/seed.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.1.0",

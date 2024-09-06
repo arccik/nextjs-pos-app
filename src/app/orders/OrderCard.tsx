@@ -24,7 +24,6 @@ import PaymentsList from "@/components/payment/PaymentsList";
 
 type OrderCardProps = {
   order: MainOrder;
-  isOpen?: boolean;
 };
 
 export default function OrderCard({ order }: OrderCardProps) {

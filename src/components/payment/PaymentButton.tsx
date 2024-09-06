@@ -46,12 +46,12 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
     setTipAmount(tipsAmount);
   };
 
-  // const handleDialogButton = () => {
-  //   setIsOpen((prev) => !prev);
-  //   if (!isOpen) {
-  //     // generateBill({ orderId, tipsAmount });
-  //   }
-  // };
+  const handleDialogButton = () => {
+    setIsOpen((prev) => !prev);
+    if (!isOpen) {
+      // generateBill({ orderId, tipsAmount });
+    }
+  };
   const handlePayment = (
     paymentMethod: WhatComponentToShow,
     paidAmount: number,
@@ -59,7 +59,6 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
     pay(paymentMethod, paidAmount);
 
     if (paidAmount === total) setIsOpen(false);
-    // setIsOpen((prev) => !prev);
   };
 
   if (!total) return null;
@@ -77,7 +76,7 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
         <AlertDialogDescription>
           Please choose payment method
         </AlertDialogDescription>
-        {showMethod && (
+        {showMethod ? (
           <Button
             onClick={() => setShowMethod(null)}
             className="absolute right-5 top-5"
@@ -85,30 +84,33 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
           >
             Back
           </Button>
+        ) : (
+          <>
+            <div className="flex justify-evenly">
+              <Button
+                onClick={() => setShowMethod("Card")}
+                className="flex size-24 flex-col gap-2"
+                variant="outline"
+              >
+                <CreditCard />
+                Card
+              </Button>
+              <Button
+                onClick={() => setShowMethod("Cash")}
+                className="flex size-24 flex-col gap-2"
+                variant="outline"
+              >
+                <Banknote />
+                Cash
+              </Button>
+            </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <TipsButton setValue={handleAddTips} orderId={orderId} />
+            </AlertDialogFooter>
+          </>
         )}
 
-        {!showMethod && (
-          <div className="flex justify-evenly">
-            <Button
-              onClick={() => setShowMethod("Card")}
-              className="flex size-24 flex-col gap-2"
-              variant="outline"
-            >
-              <CreditCard />
-              Card
-            </Button>
-            <Button
-              onClick={() => setShowMethod("Cash")}
-              className="flex size-24 flex-col gap-2"
-              variant="outline"
-            >
-              <Banknote />
-              Cash
-            </Button>
-          </div>
-        )}
-
-        {/* <ScrollArea> */}
         {showMethod === "Cash" && (
           <CashPayment
             totalAmount={total}
@@ -124,11 +126,6 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
           />
         )}
         {billId && <PaymentsList billId={billId} tipsAmount={tipsAmount} />}
-        {/* </ScrollArea> */}
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <TipsButton setValue={handleAddTips} orderId={orderId} />
-        </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );

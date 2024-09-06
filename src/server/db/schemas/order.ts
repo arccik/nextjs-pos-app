@@ -31,7 +31,7 @@ export const orders = pgTable("orders", {
     .$defaultFn(() => crypto.randomUUID()),
   userId: varchar("user_id", { length: 255 })
     .notNull()
-    .references(() => users.id, { onDelete: "set null" }),
+    .references(() => users.id, { onDelete: "cascade" }),
   selectedBy: varchar("selected_by", { length: 255 }).references(
     () => users.id,
     {
@@ -71,11 +71,11 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
     fields: [orders.selectedBy],
     references: [users.id],
   }),
+  orderItems: many(orderItems),
   bill: one(bills, {
     fields: [orders.billId],
     references: [bills.id],
   }),
-  orderItems: many(orderItems),
 }));
 
 export const orderItems = pgTable(
