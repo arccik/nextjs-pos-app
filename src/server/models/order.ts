@@ -110,6 +110,7 @@ export const getAllByStatus = async (status: OrderStatus[number]) => {
     with: { creator: true, bill: true, orderItems: { with: { items: true } } },
   });
 };
+type Unpromisify<T> = T extends Promise<infer U> ? U : T;
 
 export type MainOrder = Unpromisify<ReturnType<typeof getAllByToday>>[0];
 
@@ -151,7 +152,6 @@ export const getAllByToday = async (status?: OrderStatus[number]) => {
     },
   });
 };
-type Unpromisify<T> = T extends Promise<infer U> ? U : T;
 
 export type OrderWithItems = Unpromisify<
   ReturnType<typeof getOrdersWithItems>
@@ -485,7 +485,7 @@ export const getOrderWithItems = async (id: string) => {
 };
 
 export const getOrderItems = async () => {
-  const { password, ...rest } = getTableColumns(users);
+  const { password: _unused, ...rest } = getTableColumns(users);
   return await db
     .select({
       order_items: orderItems,

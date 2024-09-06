@@ -72,10 +72,10 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
     references: [users.id],
   }),
   orderItems: many(orderItems),
-  // bill: one(bills, {
-  //   fields: [orders.billId],
-  //   references: [bills.id],
-  // }),
+  bill: one(bills, {
+    fields: [orders.billId],
+    references: [bills.id],
+  }),
 }));
 
 export const orderItems = pgTable(

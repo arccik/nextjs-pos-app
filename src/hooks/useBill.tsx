@@ -5,7 +5,7 @@ export default function useBill(orderId: string) {
     api.bill.getOneByOrderId.useQuery(orderId);
   const billId = bill?.id;
   const { data: payments } = api.payment.getAll.useQuery(
-    { billId: billId ?? "" },
+    { billId: billId! },
     { enabled: !!billId },
   );
 

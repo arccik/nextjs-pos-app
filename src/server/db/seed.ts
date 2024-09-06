@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { neon, NeonQueryFunction } from "@neondatabase/serverless";
+import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 import * as schema from "../db/schemas";
 import bcrypt from "bcryptjs";
 import { drizzle } from "drizzle-orm/neon-http";

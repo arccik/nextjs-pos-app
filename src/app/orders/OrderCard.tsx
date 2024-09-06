@@ -23,7 +23,6 @@ import ActionButtons from "@/components/ActionButtons";
 
 type OrderCardProps = {
   order: MainOrder;
-  isOpen?: boolean;
 };
 
 export default function OrderCard({ order }: OrderCardProps) {
