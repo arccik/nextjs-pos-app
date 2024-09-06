@@ -35,7 +35,7 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
       <div className="rounded-lg bg-card p-8 text-card-foreground shadow-md">
         <h1 className="mb-4 text-2xl font-bold">Something went wrong!</h1>
         <p className="mb-2">
-          {error.message || "An unexpected error occurred."}
+          {error.message ?? "An unexpected error occurred."}
         </p>
         {error.digest && (
           <p className="mb-4 text-sm text-muted-foreground">

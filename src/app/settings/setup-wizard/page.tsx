@@ -41,7 +41,8 @@ const VenueSetupWizard: React.FC = () => {
 
   const getCurrentStep = (): Step => {
     const step = steps[currentStep];
-    return step || steps[0]!;
+    const result = step ?? steps[0];
+    return result!;
   };
 
   const CurrentStepComponent = getCurrentStep().component;
