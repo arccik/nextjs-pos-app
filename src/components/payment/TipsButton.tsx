@@ -2,22 +2,20 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useBill from "@/hooks/useBill";
-import { useQueryClient } from "@tanstack/react-query";
-import { HandCoins, HandCoinsIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { HandCoinsIcon } from "lucide-react";
 import { useState } from "react";
 
 type TipsButtonProps = {
-  setValue: (amount: number) => void;
   orderId: string;
 };
-export default function TipsButton({ setValue, orderId }: TipsButtonProps) {
+export default function TipsButton({ orderId }: TipsButtonProps) {
   const [show, setShow] = useState(false);
   const [tipValue, setTipValue] = useState<number | null>(null);
   const { addTips } = useBill(orderId);
 
   const handleClick = async () => {
     if (!tipValue) return;
-    setValue(tipValue);
     setShow(false);
     addTips(tipValue);
   };
@@ -25,22 +23,28 @@ export default function TipsButton({ setValue, orderId }: TipsButtonProps) {
   return (
     <>
       {show && (
-        <>
-          <Input
-            type="number"
-            onChange={(e) => setTipValue(+e.target.value)}
-            value={tipValue ?? ""}
-            autoFocus
-          />
-          {tipValue && <Button onClick={handleClick}>Submit </Button>}
-        </>
+        <Input
+          type="number"
+          className="my-4"
+          onChange={(e) => setTipValue(+e.target.value)}
+          value={tipValue ?? ""}
+          autoFocus
+        />
       )}
-      <Button
-        onClick={() => setShow((prev) => !prev)}
-        variant={show ? "default" : "outline"}
-      >
-        <HandCoinsIcon className="mr-1" /> Tip
-      </Button>
+      <div className="flex justify-between gap-2">
+        <Button
+          onClick={() => setShow((prev) => !prev)}
+          variant="outline"
+          className={cn("W-full", show && "bg-slate-100 ring-1 ring-green-400")}
+        >
+          <HandCoinsIcon className="mr-1" /> Tip
+        </Button>
+        {show && tipValue && (
+          <Button className="W-full" onClick={handleClick}>
+            Submit
+          </Button>
+        )}
+      </div>
     </>
   );
 }

@@ -170,7 +170,7 @@ export const addTips = async (billId: string, tipAmount: number) => {
   if (!bill) throw new Error("Bill not found");
   return await db
     .update(bills)
-    .set({ totalAmount: bill?.totalAmount + tipAmount, tipAmount })
+    .set({ tipAmount })
     .where(eq(bills.id, billId))
     .returning();
 };

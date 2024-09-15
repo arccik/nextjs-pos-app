@@ -15,8 +15,8 @@ export default function useCookedItem(orderId: string) {
   const createCookedItem = api.cookedItem.create.useMutation({
     onSuccess: async () => {
       toast({
-        title: "Item Added",
-        description: `Item been added to the order.`,
+        title: "Item Cooked Updated",
+        description: `Thank you for mark it as cooked.`,
       });
       await refetchCookedItems();
       await utils.cookedItem.invalidate();

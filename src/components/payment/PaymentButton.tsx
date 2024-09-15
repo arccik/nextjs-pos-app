@@ -10,18 +10,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Banknote, CreditCard } from "lucide-react";
+import { ArrowRight, Banknote, CreditCard } from "lucide-react";
 import CashPayment from "./CashPayment";
-// import TipsButton from "./TipsButton";
-// import usePayments from "@/hooks/usePayments";
 import PaymentsList from "./PaymentsList";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import TipsButton from "./TipsButton";
-// import { AlertDescription } from "../ui/alert";
 import CardPayment from "./CardPayment";
-// import Loading from "../Loading";
 import useBill from "@/hooks/useBill";
-// import { api } from "@/trpc/react";
 
 type PaymentButtonProps = {
   orderId: string;
@@ -29,29 +23,13 @@ type PaymentButtonProps = {
 type WhatComponentToShow = "Cash" | "Card";
 
 export default function PaymentButton({ orderId }: PaymentButtonProps) {
-  const { total, pay, addTips, billId, tips } = useBill(orderId);
+  const { total, pay, billId, tips } = useBill(orderId);
+
   const [isOpen, setIsOpen] = useState(false);
   const [showMethod, setShowMethod] = useState<WhatComponentToShow | null>(
     null,
   );
-  const [tipsAmount, setTipAmount] = useState<number>(tips);
-  // const { data: settings } = api.settings.get.useQuery();
-  // const currency = settings?.currency ?? "USD";
 
-  // const { makePayment, generateBill } = usePayments();
-
-  const handleAddTips = () => {
-    if (!tipsAmount) return;
-    addTips(tipsAmount);
-    setTipAmount(tipsAmount);
-  };
-
-  const handleDialogButton = () => {
-    setIsOpen((prev) => !prev);
-    if (!isOpen) {
-      // generateBill({ orderId, tipsAmount });
-    }
-  };
   const handlePayment = (
     paymentMethod: WhatComponentToShow,
     paidAmount: number,
@@ -63,6 +41,8 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
 
   if (!total) return null;
 
+  console.log("PaymentButton", total);
+
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
@@ -73,16 +53,14 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogTitle>Total: £{total?.toFixed(2)}</AlertDialogTitle>
-        <AlertDialogDescription>
-          Please choose payment method
-        </AlertDialogDescription>
+        {!showMethod && (
+          <AlertDialogDescription>
+            Please choose payment method
+          </AlertDialogDescription>
+        )}
         {showMethod ? (
-          <Button
-            onClick={() => setShowMethod(null)}
-            className="absolute right-5 top-5"
-            variant="outline"
-          >
-            Back
+          <Button onClick={() => setShowMethod(null)} variant="outline">
+            Back <ArrowRight className="size-5" />
           </Button>
         ) : (
           <>
@@ -106,7 +84,7 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
             </div>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <TipsButton setValue={handleAddTips} orderId={orderId} />
+              <TipsButton orderId={orderId} />
             </AlertDialogFooter>
           </>
         )}
@@ -114,18 +92,20 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
         {showMethod === "Cash" && (
           <CashPayment
             totalAmount={total}
-            tipsAmount={tipsAmount}
+            tipsAmount={tips}
             onPay={(amount) => handlePayment("Cash", amount)}
           />
         )}
         {showMethod === "Card" && (
           <CardPayment
-            tipAmount={tipsAmount}
+            tipAmount={tips}
             totalAmount={total}
             onPay={(amount) => handlePayment("Card", amount)}
           />
         )}
-        {billId && <PaymentsList billId={billId} tipsAmount={tipsAmount} />}
+        {billId && (
+          <PaymentsList billId={billId} tipsAmount={tips} total={total} />
+        )}
       </AlertDialogContent>
     </AlertDialog>
   );

@@ -22,16 +22,13 @@ export default function CardPayment({
   const [inputValue, setInputValue] = useState("");
 
   const calculateSplitAmount = () => {
-    return ((totalAmount + Number(tipAmount)) / parseInt(splitOption)).toFixed(
-      2,
-    );
+    const result = (totalAmount + Number(tipAmount)) / parseInt(splitOption);
+    return result.toFixed(2);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically handle the payment processing
     const amount = calculateSplitAmount();
-    console.log(`Paying: £${amount}`);
     onPay(parseFloat(amount));
   };
 
@@ -52,7 +49,7 @@ export default function CardPayment({
           <Label>Payment Split</Label>
           <Tabs
             defaultValue="account"
-            className="w-[400px]"
+            className="mx-auto w-[400px] sm:w-full"
             value={splitOption}
             onValueChange={setSplitOption}
           >
@@ -64,28 +61,34 @@ export default function CardPayment({
             </TabsList>
           </Tabs>
         </div>
-        <Card className="w-full max-w-sm rounded-lg p-4 shadow-md">
+        <Card className="mx-auto rounded-lg shadow-md">
           <CardContent>
             <Label className="text-lg font-bold">Payment Summary</Label>
-            <div className="mt-4 space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>Tip:</span>
-                <span>£{tipAmount?.toFixed(2)}</span>
+            {splitOption !== "1" && (
+              <div className="mt-4 space-y-2 border-b text-sm">
+                <div className="flex justify-between font-semibold">
+                  <span>{splitOption} x</span>
+                  <span>£{calculateSplitAmount()}</span>
+                </div>
               </div>
-              <div className="flex justify-between font-semibold">
-                <span>{splitOption} x</span>
-                <span>£{calculateSplitAmount()}</span>
-              </div>
-            </div>
+            )}
           </CardContent>
-          <CardFooter className="mt-4 flex justify-between border-t pt-4 text-base font-semibold">
-            <span>Total:</span>
-            <span>£{totalAmount.toFixed(2)}</span>
+          <CardFooter className="flex flex-col gap-5">
+            <div className="flex w-full justify-between">
+              <span>Tip:</span>
+              <span className="text-right">£{tipAmount?.toFixed(2)}</span>
+            </div>
+            <div className="flex w-full justify-between border-t text-base font-semibold">
+              <span>Total:</span>
+              <span className="text-right">
+                £{(tipAmount ?? 0) + totalAmount}
+              </span>
+            </div>
           </CardFooter>
         </Card>
       </div>
       <div>
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="mt-10 w-full">
           Pay £{calculateSplitAmount()}
         </Button>
       </div>

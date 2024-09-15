@@ -70,7 +70,7 @@ export default function SettingsPage() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <section className="col-span-3 row-span-1 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-900 md:col-span-1 md:row-span-3">
+            <section className="col-span-3 row-span-1 rounded-lg bg-white p-6 shadow-sm dark:bg-transparent md:col-span-1 md:row-span-3">
               <h2 className="mb-4 text-xl font-semibold">Restaurant Details</h2>
               <div className="grid gap-4">
                 <FormField
@@ -185,7 +185,7 @@ export default function SettingsPage() {
               </div>
             </section>
 
-            <section className="col-span-3 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-900 md:col-span-1 md:h-[250px]">
+            <section className="col-span-3 rounded-lg bg-white p-6 shadow-sm dark:bg-transparent md:col-span-1 md:h-[250px]">
               <h2 className="mb-4 text-xl font-semibold">Payment Options</h2>
               <div className="grid gap-4">
                 <FormField
@@ -240,7 +240,7 @@ export default function SettingsPage() {
               </div>
             </section>
 
-            <section className="col-span-3 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-900 sm:h-[250px] md:col-span-1">
+            <section className="col-span-3 rounded-lg bg-white p-6 shadow-sm dark:bg-transparent sm:h-[250px] md:col-span-1">
               <h2 className="mb-4 text-xl font-semibold">User Permissions</h2>
               <div className="grid gap-4">
                 <FormField

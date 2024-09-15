@@ -13,7 +13,7 @@ export const paidThisWeek = async () => {
     .from(bills)
     .where(gte(bills.createdAt, subDays(new Date(), 7)));
 
-  return result?.totalAmountSum || 0;
+  return result?.totalAmountSum ?? 0;
 };
 
 export const paidThisMonth = async () => {
@@ -24,5 +24,5 @@ export const paidThisMonth = async () => {
     .from(bills)
     .where(gte(bills.createdAt, subDays(new Date(), 30)));
 
-  return result?.totalAmountSum || 0;
+  return result?.totalAmountSum ?? 0;
 };

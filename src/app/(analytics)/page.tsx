@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarDateRangePicker } from "./DateRangePicker";
-import { Overview } from "./Overview";
 import { RecentSales } from "./RecentSales";
 import ScoreCard from "./ScoreCard";
 import {
@@ -20,6 +19,9 @@ import {
   SubscriptIcon,
 } from "lucide-react";
 import { api } from "@/trpc/react";
+import Link from "next/link";
+import { formatId } from "@/lib/utils";
+import { Overview } from "./Overview";
 
 export default function DashboardPage() {
   const { data: totalSales } = api.payment.getTotalSales.useQuery();
@@ -28,8 +30,11 @@ export default function DashboardPage() {
 
   const activeOrders = orders?.filter((order) => order.status !== "Completed");
 
-  const activeOrderUsers = orders?.map((order) => order.userId);
-
+  const activeOrderUsers = orders?.map((order) => (
+    <Link key={order.id} href={"/orders/" + order.userId}>
+      {formatId(order.userId)}
+    </Link>
+  ));
 
   return (
     <div className="hidden flex-col md:flex">
@@ -58,7 +63,15 @@ export default function DashboardPage() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {totalSales && (
                 <ScoreCard
-                  title="Total Revenue"
+                  title="Monthly Revenue"
+                  icon={<DollarSign />}
+                  change="+20.1% from last month"
+                  value={`£${totalSales}`}
+                />
+              )}
+              {totalSales && (
+                <ScoreCard
+                  title="Weekly Revenue"
                   icon={<DollarSign />}
                   change="+20.1% from last month"
                   value={`£${totalSales}`}
@@ -79,7 +92,7 @@ export default function DashboardPage() {
               {!!activeOrders?.length && (
                 <ScoreCard
                   title="Active Now"
-                  change={activeOrderUsers?.join(" ")}
+                  change={activeOrderUsers}
                   value={activeOrders.length + ""}
                   icon={<PanelsTopLeft />}
                 />
@@ -98,7 +111,7 @@ export default function DashboardPage() {
                 <CardHeader>
                   <CardTitle>Recent Sales</CardTitle>
                   <CardDescription>
-                    You made 265 sales this month.
+                    You made {soldTotal} sales this month.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

@@ -1,12 +1,6 @@
 "use client";
 import { api } from "@/trpc/react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import OrderCard from "../OrderCard";
 import Link from "next/link";
@@ -23,7 +17,7 @@ export default function OrderPage({ params }: { params: { orderId: string } }) {
       <CardHeader>
         <CardTitle className="text-xl font-semibold">Order Details</CardTitle>
       </CardHeader>
-      <CardContent>
+      <div className="p-2">
         {order ? (
           <>
             <OrderCard order={order} />
@@ -41,7 +35,7 @@ export default function OrderPage({ params }: { params: { orderId: string } }) {
         ) : (
           <OrderNotFound />
         )}
-      </CardContent>
+      </div>
     </div>
   );
 }

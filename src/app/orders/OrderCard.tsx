@@ -15,12 +15,12 @@ import CountDownOpenOrder from "./CountDownOpenOrder";
 import { formatCurrency, formatId } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
-// import ActionButtons from "@/components/ActionButtons";
 import { HandPlatter } from "lucide-react";
 import TableIcon from "@/components/navbar/TableIcon";
 import Link from "next/link";
 import ActionButtons from "@/components/ActionButtons";
 import PaymentsList from "@/components/payment/PaymentsList";
+import Loading from "@/components/Loading";
 
 type OrderCardProps = {
   order: MainOrder;
@@ -93,7 +93,11 @@ export default function OrderCard({ order }: OrderCardProps) {
         )}
         {/* {tipAmount && <p className="text-right text-sm">Tips: {tipAmount}</p>} */}
         {order.bill?.id && (
-          <PaymentsList billId={order.bill?.id} tipsAmount={tipAmount} />
+          <PaymentsList
+            billId={order.bill?.id}
+            tipsAmount={tipAmount}
+            total={order.bill.totalAmount}
+          />
         )}
       </CardContent>
       <CardFooter className="flex flex-col justify-center gap-4 p-4">

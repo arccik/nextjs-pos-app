@@ -3,8 +3,6 @@
 import { api } from "@/trpc/react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
-
-
 export function Overview() {
   const { data } = api.payment.getMonthlyPaymentTotals.useQuery();
   return (

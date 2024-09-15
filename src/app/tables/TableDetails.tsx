@@ -11,7 +11,7 @@ type tableDetailsProps = {
 };
 export default function TableDetails({ data }: tableDetailsProps) {
   return (
-    <ScrollArea className="max-h-[500px] rounded-md">
+    <>
       <div className="flex justify-between  p-5">
         <Badge className="border border-green-500">{data.status}</Badge>
         <Badge variant="outline">
@@ -25,10 +25,12 @@ export default function TableDetails({ data }: tableDetailsProps) {
             <CardTitle>Items</CardTitle>
           </CardHeader>
           <CardContent>
-            <DisplayOrderItems items={data.orderItems} />
+            <ScrollArea className="max-h-[500px] rounded-md">
+              <DisplayOrderItems items={data.orderItems} />
+            </ScrollArea>
           </CardContent>
         </Card>
       </div>
-    </ScrollArea>
+    </>
   );
 }

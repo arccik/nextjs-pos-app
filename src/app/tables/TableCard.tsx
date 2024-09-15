@@ -79,7 +79,7 @@ export default function TableCard({ tableData }: TableCardProps) {
           {orderData !== "null" && orderData?.userId && (
             <>
               <span>
-                Order {formatId(orderData.id)} placed by user:{" "}
+                Order {formatId(orderData.id)} placed by:{" "}
                 <strong>{orderData?.creator.name}</strong>
               </span>
               <span>{format(tableData.createdAt, "dd MMM yyyy HH:mm")}</span>

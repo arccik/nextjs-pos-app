@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 type ScoreCardProps = {
   title: string;
   value: string;
-  change?: string;
+  change?: string | JSX.Element[];
   icon?: React.ReactNode;
 };
 export default function ScoreCard({
