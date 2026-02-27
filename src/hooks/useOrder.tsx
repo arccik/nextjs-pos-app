@@ -4,6 +4,9 @@ import type { Order, OrderStatus } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useOnlineStatus } from "@/lib/onlineStatus";
+import { db } from "@/lib/db/localDb";
+import { enqueue } from "@/lib/syncQueue";
 
 type AddToOrderProps = {
   itemId: string;
@@ -15,6 +18,7 @@ type UtilsKeys = "order" | "table" | "bill" | "payment";
 export default function useOrder() {
   const utils = api.useUtils();
   const router = useRouter();
+  const isOnline = useOnlineStatus();
   const { data: selectedOrder } = api.order.getSelectedByUser.useQuery();
 
   const selectOrder = api.order.selectOrder.useMutation({
@@ -29,7 +33,7 @@ export default function useOrder() {
   });
   const { data: selectedTable } = api.table.getSelectedTable.useQuery();
   const orderId = selectedOrder !== "null" && selectedOrder?.id;
-  // Utility function to handle successful mutations
+
   const handleSuccess = useCallback(
     async (message: string, entity: UtilsKeys[]) => {
       toast({ title: message });
@@ -75,17 +79,36 @@ export default function useOrder() {
     onSuccess: () => handleSuccess("Table Selected", ["table"]),
   });
 
-  // useEffect(() => {
-  //   if (selectedOrder) {
-  //     setOrder((prevOrder) => ({
-  //       ...selectedOrder,
-  //       table: selectedTable ?? prevOrder?.table ?? null,
-  //     }));
-  //   }
-  // }, [selectedOrder, selectedTable]);
+  // --- Action functions ---
 
-  // Action functions
   const add = ({ itemId, quantity, id }: AddToOrderProps) => {
+    if (!isOnline) {
+      const targetOrderId = id ?? (orderId !== false ? orderId : undefined);
+      if (!targetOrderId) return;
+      void (async () => {
+        const existing = await db.orderItems
+          .where("[orderId+itemId]")
+          .equals([targetOrderId, itemId])
+          .first();
+        if (existing) {
+          await db.orderItems.update([targetOrderId, itemId], {
+            quantity: existing.quantity + quantity,
+          });
+        } else {
+          await db.orderItems.add({
+            orderId: targetOrderId,
+            itemId,
+            quantity,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+        }
+        await enqueue("order.addItems", { itemId, orderId: targetOrderId, quantity });
+        toast({ title: "Item saved offline" });
+        await utils.order.invalidate();
+      })();
+      return;
+    }
     addItem.mutate({ itemId, orderId: id, quantity });
   };
 
@@ -124,6 +147,35 @@ export default function useOrder() {
   const proceedOrder = async () => {
     const tableId = selectedTable !== "null" ? selectedTable?.id : undefined;
     if (!orderId) return;
+
+    if (!isOnline) {
+      // Offline path: update local DB and queue mutations
+      await db.orders.update(orderId, {
+        status: "In Progress",
+        selectedBy: null,
+        tableId: tableId ?? null,
+        updatedAt: new Date(),
+      });
+      await enqueue("order.updateOrder", {
+        id: orderId,
+        body: { status: "In Progress", selectedBy: null, tableId },
+      });
+
+      if (tableId) {
+        await db.restaurantTables.update(tableId, {
+          status: "occupied",
+          updatedAt: new Date(),
+        });
+        await enqueue("table.changeStatus", { tableId, status: "occupied" });
+        await enqueue("table.unselectTable", {});
+      }
+
+      toast({ title: "Order saved offline — will sync on reconnect" });
+      await utils.invalidate();
+      router.push(`/orders/${orderId}`);
+      return;
+    }
+
     updateOrder.mutate({
       id: orderId,
       body: {
@@ -150,6 +202,15 @@ export default function useOrder() {
     status: OrderStatus[number];
     orderId: string;
   }) => {
+    if (!isOnline) {
+      void (async () => {
+        await db.orders.update(orderId, { status, updatedAt: new Date() });
+        await enqueue("order.setStatus", { orderId, status });
+        toast({ title: "Status saved offline" });
+        await utils.order.invalidate();
+      })();
+      return;
+    }
     setStatus.mutate({ orderId, status });
   };
 

@@ -4,9 +4,24 @@
  */
 await import("./src/env.js");
 
+import withPWAInit from "@ducanh2912/next-pwa";
+
+const withPWA = withPWAInit({
+  dest: "public",
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  reloadOnOnline: true,
+  fallbacks: {
+    document: "/offline",
+  },
+  workboxOptions: {
+    disableDevLogs: true,
+  },
+});
+
 /** @type {import("next").NextConfig} */
 const config = {
-    swcMinify: true,
+  swcMinify: true,
 };
 
-export default config;
+export default withPWA(config);

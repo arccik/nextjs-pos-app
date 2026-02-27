@@ -6,6 +6,7 @@ import {
   orderItemsSchema,
   orderStatus,
 } from "../../db/schemas";
+import { emitOrderUpdate } from "@/lib/socketServer";
 import {
   addMoreItemsToOrder,
   addItem,
@@ -35,7 +36,9 @@ export const orderRouter = createTRPCRouter({
   newOrder: protectedProcedure
     .input(newOrderSchema.optional())
     .mutation(async ({ input, ctx }) => {
-      return newOrder({ ...input, userId: ctx.session.user.id });
+      const result = await newOrder({ ...input, userId: ctx.session.user.id });
+      emitOrderUpdate(result?.id ?? "", { action: "created" });
+      return result;
     }),
   getAll: protectedProcedure.query(async () => {
     return await getAll();
@@ -129,10 +132,12 @@ export const orderRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await updateOrder({
+      const result = await updateOrder({
         id: input.id,
         body: { ...input.body, userId: ctx.session.user.id },
       });
+      emitOrderUpdate(input.id, { action: "updated" });
+      return result;
     }),
   getByBillId: protectedProcedure
     .input(z.object({ billId: z.string() }))
@@ -142,7 +147,9 @@ export const orderRouter = createTRPCRouter({
   setStatus: protectedProcedure
     .input(z.object({ orderId: z.string(), status: z.enum(orderStatus) }))
     .mutation(async ({ input }) => {
-      return await setOrderStatus(input);
+      const result = await setOrderStatus(input);
+      emitOrderUpdate(input.orderId, { action: "status", status: input.status });
+      return result;
     }),
   getSelectedByUser: protectedProcedure.query(async ({ ctx }) => {
     return await getSelectedByUser(ctx.session.user.id);

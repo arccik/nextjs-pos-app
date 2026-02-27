@@ -1,6 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { insertTableSchema, tableStatusEnum, tables } from "../../db/schemas";
 import { eq } from "drizzle-orm";
+import { emitTableUpdate } from "@/lib/socketServer";
 import {
   getAll,
   getOne,
@@ -51,16 +52,22 @@ export const tableRouter = createTRPCRouter({
   changeStatus: protectedProcedure
     .input(z.object({ tableId: z.string(), status: z.enum(tableStatusEnum) }))
     .mutation(async ({ input }) => {
-      return await updateStatus(input.tableId, input.status);
+      const result = await updateStatus(input.tableId, input.status);
+      emitTableUpdate(input.tableId, { action: "status", status: input.status });
+      return result;
     }),
   guestLeave: protectedProcedure
     .input(z.object({ orderId: z.string() }))
     .mutation(async ({ input }) => {
-      return await guestLeave(input.orderId);
+      const result = await guestLeave(input.orderId);
+      emitTableUpdate("", { action: "guestLeave", orderId: input.orderId });
+      return result;
     }),
   markClean: protectedProcedure
     .input(z.string())
     .mutation(async ({ input }) => {
-      return await markClean(input);
+      const result = await markClean(input);
+      emitTableUpdate(input, { action: "markClean" });
+      return result;
     }),
 });

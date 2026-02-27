@@ -14,6 +14,8 @@ import { api } from "@/trpc/react";
 import OrderCard from "@/app/orders/OrderCard";
 import Loading from "@/components/Loading";
 import { type OrderStatus } from "@/server/db/schemas";
+import { useOnlineStatus } from "@/lib/onlineStatus";
+import { useLocalOrders } from "@/hooks/useLocalData";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -74,6 +76,7 @@ function Tile({
 export default function Waiter() {
   const { data: userData } = useSession();
   const [selectedTab, setSelectedTab] = useState<Tab>(null);
+  const isOnline = useOnlineStatus();
 
   const isOrdersTab = selectedTab === "orders" || selectedTab === "completedOrders";
   const orderStatus: OrderStatus[number] | undefined =
@@ -83,9 +86,14 @@ export default function Waiter() {
         ? "Completed"
         : undefined;
 
-  const { data: orders, isLoading } = api.order.getAllByToday.useQuery(orderStatus, {
-    enabled: isOrdersTab,
-  });
+  const { data: serverOrders, isLoading: serverLoading } = api.order.getAllByToday.useQuery(
+    orderStatus,
+    { enabled: isOrdersTab && isOnline },
+  );
+  const localOrders = useLocalOrders(orderStatus);
+
+  const orders = isOnline ? serverOrders : localOrders;
+  const isLoading = isOnline ? serverLoading : false;
 
   const handleTabClick = (value: Tab) => {
     setSelectedTab(selectedTab === value ? null : value);
@@ -180,9 +188,28 @@ export default function Waiter() {
             <Loading />
           ) : orders?.length ? (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {orders.map((order) => (
-                <OrderCard key={order.id} order={order} />
-              ))}
+              {isOnline
+                ? (orders as Parameters<typeof OrderCard>[0]["order"][]).map((order) => (
+                    <OrderCard key={order.id} order={order} />
+                  ))
+                : orders.map((order) => (
+                    <a
+                      key={order.id}
+                      href={`/orders/${order.id}`}
+                      className="flex flex-col gap-1 rounded-xl border p-4 hover:bg-muted/40"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold">Order #{order.id.slice(-6)}</span>
+                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+                          {order.status}
+                        </span>
+                      </div>
+                      {order.tableId && (
+                        <span className="text-sm text-muted-foreground">Table assigned</span>
+                      )}
+                      <span className="text-xs text-muted-foreground">Saved offline</span>
+                    </a>
+                  ))}
             </div>
           ) : (
             <p className="my-10 text-center text-sm text-muted-foreground">No orders found</p>

@@ -10,6 +10,7 @@ import {
   paidThisWeek,
 } from "@/server/models/bill";
 import { newPaymentSchema } from "@/server/db/schemas";
+import { emitPaymentCreated } from "@/lib/socketServer";
 
 export const billRouter = createTRPCRouter({
   generateBill: protectedProcedure
@@ -25,7 +26,9 @@ export const billRouter = createTRPCRouter({
   payBill: protectedProcedure
     .input(newPaymentSchema.extend({ userId: z.string().optional() }))
     .mutation(async ({ input, ctx }) => {
-      return await payBill({ ...input, userId: ctx.session.user.id });
+      const result = await payBill({ ...input, userId: ctx.session.user.id });
+      emitPaymentCreated(input.billId, { action: "paid" });
+      return result;
     }),
   addTips: protectedProcedure
     .input(z.object({ billId: z.string(), amount: z.number() }))
