@@ -28,8 +28,7 @@ export default function AddItem({ onClose }: AddItemProps) {
       });
       onClose();
     },
-    onError: (error) => {
-      console.error("Saving item went wrong", error);
+    onError: () => {
       toast({
         title: "Uh oh! Something went wrong.",
       });

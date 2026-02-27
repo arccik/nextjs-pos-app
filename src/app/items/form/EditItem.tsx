@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { type Item, itemsSchema } from "@/server/db/schemas";
+import { type NewItem, newItemSchema } from "@/server/db/schemas";
 
 import { Button } from "@/components/ui/button";
 import { ItemFields } from "./ItemFields";
@@ -35,8 +35,8 @@ export default function EditItem() {
       console.error("error Updating item: ", error);
     },
   });
-  const form = useForm<Item>({
-    resolver: zodResolver(itemsSchema),
+  const form = useForm<NewItem>({
+    resolver: zodResolver(newItemSchema),
     defaultValues,
   });
   useEffect(() => {
@@ -45,9 +45,9 @@ export default function EditItem() {
     }
   }, [data]);
 
-  const onSubmit = (values: Item) => {
-    update(values);
-    console.log("SUBMITTING");
+  const onSubmit = (values: NewItem) => {
+    if (!values.id) return;
+    update({ ...values, id: values.id });
   };
 
   if (isItemLoading) return <Loading />;
@@ -68,12 +68,7 @@ export default function EditItem() {
               <Button type="submit" className="w-full">
                 Save Changes
               </Button>
-              <Button
-                // onClick={() => navigate(-1)}
-                type="reset"
-                variant="secondary"
-                className="w-full"
-              >
+              <Button type="reset" variant="secondary" className="w-full">
                 Back
               </Button>
             </div>

@@ -1,7 +1,7 @@
 "use client";
-// import Orders from "@/components/pages/orders/OrdersList";
-import { Button } from "@/components/ui/button";
 
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import {
   User2Icon,
   CheckCircle,
@@ -10,21 +10,34 @@ import {
 } from "lucide-react";
 import SelectTableDialog from "./SelectTable";
 import { useSession } from "next-auth/react";
-// import { useSearchParams } from "next/navigation";
-// import TableIcon from "@/components/layout/navigation/TableIcon";
-// import TablesCards from "@/components/tables/TableCards";
+import TableCards from "@/app/tables/TableCards";
+import { api } from "@/trpc/react";
+import OrderCard from "@/app/orders/OrderCard";
+import Loading from "@/components/Loading";
+import { type OrderStatus } from "@/server/db/schemas";
+
+type Tab = "orders" | "completedOrders" | "tables" | null;
 
 export default function Waiter() {
   const { data: userData } = useSession();
-  // const searchParams = useSearchParams();
-  // const params = new URLSearchParams(searchParams.toString());
+  const [selectedTab, setSelectedTab] = useState<Tab>(null);
 
-  // const selectedTab = params.get("tab");
-  // const userId = 1;
+  const isOrdersTab =
+    selectedTab === "orders" || selectedTab === "completedOrders";
+  const orderStatus: OrderStatus[number] | undefined =
+    selectedTab === "orders"
+      ? "In Progress"
+      : selectedTab === "completedOrders"
+        ? "Completed"
+        : undefined;
 
-  const handleTabClick = (value: string) => {
-    // params.set("tab", value);
-    console.log("handleTabClick", value);
+  const { data: orders, isLoading } = api.order.getAllByToday.useQuery(
+    orderStatus,
+    { enabled: isOrdersTab },
+  );
+
+  const handleTabClick = (value: Tab) => {
+    setSelectedTab(selectedTab === value ? null : value);
   };
 
   return (
@@ -48,7 +61,7 @@ export default function Waiter() {
           onClick={() => handleTabClick("orders")}
           className="h-24"
           size="lg"
-          variant="outline"
+          variant={selectedTab === "orders" ? "default" : "outline"}
         >
           <div className="flex flex-col items-center gap-1">
             <ShoppingBasket className="h-6 w-6" />
@@ -59,7 +72,7 @@ export default function Waiter() {
           onClick={() => handleTabClick("completedOrders")}
           className="h-24"
           size="lg"
-          variant="outline"
+          variant={selectedTab === "completedOrders" ? "default" : "outline"}
         >
           <div className="flex flex-col items-center gap-1">
             <CheckCircle className="h-6 w-6" />
@@ -72,7 +85,7 @@ export default function Waiter() {
           onClick={() => handleTabClick("tables")}
           className="h-24"
           size="lg"
-          variant="outline"
+          variant={selectedTab === "tables" ? "default" : "outline"}
         >
           <div className="flex flex-col items-center gap-1">
             <TableIcon className="h-6 w-6" />
@@ -80,9 +93,23 @@ export default function Waiter() {
           </div>
         </Button>
       </div>
-      {/* {selectedTab == "orders" && <Orders orderStatus="In Progress" />}
-      {selectedTab == "completedOrders" && <Orders orderStatus="Completed" />}
-      {selectedTab == "tables" && <TablesCards standalone />} */}
+
+      {isOrdersTab &&
+        (isLoading ? (
+          <Loading />
+        ) : orders?.length ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {orders.map((order) => (
+              <OrderCard key={order.id} order={order} />
+            ))}
+          </div>
+        ) : (
+          <p className="my-10 text-center font-sans text-gray-600">
+            No orders found
+          </p>
+        ))}
+
+      {selectedTab === "tables" && <TableCards standalone />}
     </main>
   );
 }

@@ -123,7 +123,7 @@ export async function getMonthlyPaymentTotals() {
     .orderBy(sql`EXTRACT(MONTH FROM ${payments.createdAt})`);
 
   if (result.length === 0) {
-    throw new Error("No payments found");
+    return monthNames.map((name) => ({ name, total: 0 }));
   }
 
   const monthlyTotals = monthNames.map((name, index) => {

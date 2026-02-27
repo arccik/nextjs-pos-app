@@ -39,8 +39,7 @@ export default function AddNewCategory({ onClose }: AddNewCategoryProps) {
       onClose();
       router.refresh();
     },
-    onError: (error) => {
-      console.error("Saving item went wrong", error);
+    onError: () => {
       toast({
         title: "Uh oh! Something went wrong.",
       });

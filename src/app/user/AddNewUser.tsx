@@ -50,8 +50,7 @@ export function AddNewUser({ onComplete }: AddNewUserProps) {
       router.refresh();
       onComplete();
     },
-    onError: (error) => {
-      console.error(error);
+    onError: () => {
       form.setError("email", {
         message: "Email already exists",
       });

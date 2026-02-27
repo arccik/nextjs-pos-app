@@ -40,10 +40,7 @@ export default function OrdersPage() {
             <AddNewOrderButton />
           </div>
 
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            +180.1% from last month
-          </p>
-          <div className="mt-4">
+<div className="mt-4">
             {!!data?.length ? (
               <div className="grid gap-4 md:grid-cols-2 lg:justify-between xl:grid-cols-3">
                 {data.map((order) => (

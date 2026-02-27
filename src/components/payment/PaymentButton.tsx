@@ -41,8 +41,6 @@ export default function PaymentButton({ orderId }: PaymentButtonProps) {
 
   if (!total) return null;
 
-  console.log("PaymentButton", total);
-
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>

@@ -6,6 +6,8 @@ import {
   generateBill,
   payBill,
   addTips,
+  paidThisMonth,
+  paidThisWeek,
 } from "@/server/models/bill";
 import { newPaymentSchema } from "@/server/db/schemas";
 
@@ -30,4 +32,10 @@ export const billRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return await addTips(input.billId, input.amount);
     }),
+  getMonthlySales: protectedProcedure.query(async () => {
+    return await paidThisMonth();
+  }),
+  getWeeklySales: protectedProcedure.query(async () => {
+    return await paidThisWeek();
+  }),
 });

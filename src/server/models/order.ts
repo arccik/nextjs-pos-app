@@ -339,39 +339,6 @@ export const removeItemFromOrder = async ({
     .where(and(eq(orderItems.orderId, orderId), eq(orderItems.itemId, itemId)));
 };
 
-export const pay = async (id: string) => {
-  try {
-    // TODO: do something ALL about this crap...
-    return { id };
-    // const orderId = await db.query.orders.findFirst({
-    //   where: eq(orders.id, id),
-    //   columns: { id: true },
-    // });
-
-    // if (!orderId) throw new Error("Order not found");
-
-    // const totalAmoutPaid = await db.query.orderItems.findMany({
-    //   where: eq(orderItems.orderId, id),
-    //   with: {
-    //     items: {
-    //       columns: {
-    //         price: true,
-    //       },
-    //     },
-    //   },
-    // });
-    // const totalPrice = totalAmoutPaid?.reduce((cur, item) => cur + item.quantity * Number(item.items.price), 0);
-
-    // await db.update(orders).set({ totalPrice: totalPrice.toString() }).where(eq(orders.id, id));
-
-    // const result = await db.update(orders).set({ isPaid: true }).where(eq(orders.id, orderId.id));
-    // return result;
-  } catch (error) {
-    console.log(error);
-    return { error: "[db:payOrder] Went wrong.." };
-  }
-};
-
 export const complete = async (id: string) => {
   const result = await db
     .update(orders)

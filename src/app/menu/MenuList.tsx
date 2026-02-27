@@ -21,7 +21,7 @@ export function MenuList() {
 
   const getByCategory = (categoryId: string) => {
     if (!items) return;
-    return items.filter((item) => item.categoryId == categoryId);
+    return items.filter((item) => item.categoryId === categoryId);
   };
 
   if (isCategoryLoading || isItemsLoading) return <Loading />;

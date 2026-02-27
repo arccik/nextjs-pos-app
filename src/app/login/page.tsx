@@ -1,6 +1,6 @@
 "use client";
 
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { UtensilsIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -44,7 +44,6 @@ export default function Authentication() {
       ...values,
       redirect: false,
     });
-    console.log("On Submit : /.", res);
     if (res && "error" in res && res.error) {
       form.setError("email", { message: "Invalid credentials" });
     } else {
@@ -56,7 +55,7 @@ export default function Authentication() {
     <section>
       <div className="mx-auto flex flex-col items-center justify-center px-6 py-8">
         <p className="mb-6 flex items-center text-2xl font-semibold text-gray-900 ">
-          <ExclamationTriangleIcon className="mr-2 h-8 w-8" />
+          <UtensilsIcon className="mr-2 h-8 w-8" />
           {settings?.name}
         </p>
       </div>

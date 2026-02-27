@@ -1,4 +1,10 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import type {
+  DefaultPostgresUsersTable,
+  DefaultPostgresAccountsTable,
+  DefaultPostgresSessionsTable,
+  DefaultPostgresVerificationTokenTable,
+} from "@auth/drizzle-adapter/lib/pg";
 import {
   getServerSession,
   type DefaultSession,
@@ -55,11 +61,15 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   },
+  // drizzle-orm@0.30.x column types don't include the metadata fields that @auth/drizzle-adapter@1.1.0
+  // requires (isAutoincrement, isPrimaryKey, hasRuntimeDefault, generated). Cast via unknown to bridge
+  // the version gap while keeping type intent explicit.
   adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
+    usersTable: users as unknown as DefaultPostgresUsersTable,
+    accountsTable: accounts as unknown as DefaultPostgresAccountsTable,
+    sessionsTable: sessions as unknown as DefaultPostgresSessionsTable,
+    verificationTokensTable:
+      verificationTokens as unknown as DefaultPostgresVerificationTokenTable,
   }) as Adapter,
 
   providers: [

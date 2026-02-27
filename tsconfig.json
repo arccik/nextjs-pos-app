@@ -29,7 +29,8 @@
     /* Path Aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@auth/drizzle-adapter/lib/*": ["./node_modules/@auth/drizzle-adapter/lib/*"]
     }
   },
   "include": [

@@ -174,7 +174,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 10,
-        categoryId: categoryMap.Appetizers,
+        categoryId: categoryMap.Appetizers!,
         isAvailable: true,
       },
       {
@@ -188,7 +188,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 20,
-        categoryId: categoryMap.Appetizers,
+        categoryId: categoryMap.Appetizers!,
         isAvailable: true,
       },
       {
@@ -202,7 +202,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryMap.Salad,
+        categoryId: categoryMap.Salad!,
         isAvailable: true,
       },
       {
@@ -216,7 +216,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 25,
-        categoryId: categoryMap["Main Course"],
+        categoryId: categoryMap["Main Course"]!,
         isAvailable: true,
       },
       {
@@ -230,7 +230,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 30,
-        categoryId: categoryMap["Main Course"],
+        categoryId: categoryMap["Main Course"]!,
         isAvailable: true,
       },
       {
@@ -244,7 +244,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: false,
         preparationTime: 25,
-        categoryId: categoryMap["Main Course"],
+        categoryId: categoryMap["Main Course"]!,
         isAvailable: true,
       },
       {
@@ -258,7 +258,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryMap.Beverages,
+        categoryId: categoryMap.Beverages!,
         isAvailable: true,
       },
       {
@@ -272,7 +272,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 20,
-        categoryId: categoryMap.Beverages,
+        categoryId: categoryMap.Beverages!,
         isAvailable: true,
       },
       {
@@ -286,7 +286,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: false,
         preparationTime: 35,
-        categoryId: categoryMap.Desserts,
+        categoryId: categoryMap.Desserts!,
         isAvailable: true,
       },
       {
@@ -300,7 +300,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryMap.Desserts,
+        categoryId: categoryMap.Desserts!,
         isAvailable: true,
       },
     ]);
