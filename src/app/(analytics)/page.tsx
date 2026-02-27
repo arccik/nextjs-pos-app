@@ -39,7 +39,7 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <div className="flex items-center justify-between space-y-2">
+        <div className="flex items-center justify-between space-y-2 flex-col md:flex-row">
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <div className="flex items-center space-x-2">
             <CalendarDateRangePicker />
@@ -47,7 +47,7 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-3 grid-cols-2 lg:grid-cols-5">
             {monthlySales !== undefined && (
               <ScoreCard
                 title="Monthly Revenue"
@@ -75,13 +75,14 @@ export default function DashboardPage() {
             {!!activeOrders?.length && (
               <ScoreCard
                 title="Active Now"
+
                 change={activeOrderUsers}
                 value={activeOrders.length + ""}
                 icon={<PanelsTopLeft />}
               />
             )}
           </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+          <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-7">
             <Card className="col-span-4">
               <CardHeader>
                 <CardTitle>Overview</CardTitle>
@@ -90,7 +91,7 @@ export default function DashboardPage() {
                 <Overview />
               </CardContent>
             </Card>
-            <Card className="col-span-3">
+            <Card className="col-span-8 md:col-span-3">
               <CardHeader>
                 <CardTitle>Most Sold Items</CardTitle>
                 <CardDescription>
