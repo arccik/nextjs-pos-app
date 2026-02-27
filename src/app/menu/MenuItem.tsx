@@ -10,33 +10,41 @@ type MenuItemProps = {
 
 export default function MenuItem({ item }: MenuItemProps) {
   return (
-    <div className="relative mb-8 grid grid-cols-4 gap-4">
+    <div className="flex gap-3">
       {item.imageUrl && (
-        <div className="col-span-1">
+        <div className="shrink-0">
           <Image
-            width="128"
-            height="128"
+            width={80}
+            height={80}
             alt={item.name ?? "Item Image"}
-            className="aspect-[2/4] rounded-lg object-cover"
+            className="h-20 w-20 rounded-lg object-cover"
             src={item.imageUrl}
           />
         </div>
       )}
-      <div className="col-span-3 ">
+
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
+        {/* Name */}
         <h3
           className={cn(
-            "flex gap-2 text-xl font-semibold",
-            !item.isAvailable && " text-red-400",
+            "flex items-center gap-1.5 text-base font-semibold leading-snug",
+            !item.isAvailable && "text-red-400",
           )}
         >
-          {!item.isAvailable && <ExclamationTriangleIcon className="size-6" />}
+          {!item.isAvailable && <ExclamationTriangleIcon className="size-4 shrink-0" />}
           {item.name}
         </h3>
-        <p className="text-sm leading-none text-gray-500">{item.description}</p>
-        <div className="absolute bottom-0 right-0">
+
+        {/* Description — capped at 2 lines so it never bleeds into the action row */}
+        {item.description && (
+          <p className="line-clamp-2 text-sm text-muted-foreground">{item.description}</p>
+        )}
+
+        {/* Price + add button always below the description */}
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-1">
+          <span className="font-semibold">{formatCurrency(item.price)}</span>
           <AddItemToOrderButton item={item} />
         </div>
-        <span className="font-semibold">{formatCurrency(item.price)}</span>
       </div>
     </div>
   );
