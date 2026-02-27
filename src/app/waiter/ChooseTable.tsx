@@ -1,13 +1,13 @@
 "use client";
 
-import type { TableStatus } from "@/server/db/schemas/table";
 import { Button } from "@/components/ui/button";
-import { BrushIcon, Check, XIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import { cn } from "@/lib/utils";
 import useOrder from "@/hooks/useOrder";
+import TableButton from "../tables/TableButton";
 
 type ChooseTableProps = {
   close: () => void;
@@ -22,8 +22,7 @@ export default function ChooseTable({ close }: ChooseTableProps) {
   const router = useRouter();
 
   const { selectedOrder, unselectTable, selectTable } = useOrder();
-  const { data: tables, isLoading: isTablesLoading } =
-    api.table.getAll.useQuery();
+  const { data: tables, isLoading: isTablesLoading } = api.table.getAll.useQuery();
 
   const handleTableSelect = (tableId: string) => {
     selectTable(tableId);
@@ -31,57 +30,45 @@ export default function ChooseTable({ close }: ChooseTableProps) {
     close();
   };
 
-  const handleTableDiselect = () => {
+  const handleTableDeselect = () => {
     unselectTable();
-    // close();
-  };
-
-  const statusIcon: Record<TableStatus, React.ReactNode> = {
-    available: <Check />,
-    occupied: <XIcon />,
-    closed: <BrushIcon />,
-    reserved: "🔒",
   };
 
   if (selectedOrder && selectedOrder?.table) {
     return (
-      <div className="flex items-center justify-center gap-4">
-        <p>You Have selected table number {selectedOrder?.table.number}</p>
-        <Button size="icon" onClick={() => handleTableDiselect()}>
-          <XIcon />
+      <div className="flex items-center justify-between rounded-xl border px-4 py-3">
+        <div>
+          <p className="text-xs text-muted-foreground">Currently selected</p>
+          <p className="text-lg font-bold">Table #{selectedOrder.table.number}</p>
+        </div>
+        <Button size="sm" variant="outline" onClick={handleTableDeselect}>
+          <XIcon size={14} className="mr-1" />
+          Remove
         </Button>
       </div>
     );
   }
 
+  if (isTablesLoading) return <Loading />;
+
   return (
-    <section className="mx-auto">
-      <div className="flex flex-wrap place-content-between gap-4">
-        {isTablesLoading && <Loading />}
-        {tables?.map((table) => (
-          <Button
-            variant="outline"
-            disabled={table.status !== "available" || !!table.selectedBy}
-            onClick={() => handleTableSelect(table.id)}
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {tables?.map((table) => {
+        const isDisabled = table.status !== "available" || !!table.selectedBy;
+        return (
+          <button
             key={table.id}
+            disabled={isDisabled}
+            onClick={() => handleTableSelect(table.id)}
             className={cn(
-              "grid size-32 cursor-pointer place-content-center gap-2 rounded-xl border-2 p-2",
-              {
-                "border-4 border-slate-500": !!table.selectedBy,
-              },
+              "block w-full text-left transition-opacity",
+              isDisabled && "cursor-not-allowed opacity-40",
             )}
           >
-            <p className="text-2xl">{table.number}</p>
-            <p className="flex items-center gap-2 capitalize">
-              {statusIcon[table.status]} {table.status}
-            </p>
-            <p>
-              {table.seats}
-              {table.seats === 1 ? " Seat" : " Seats"}
-            </p>
-          </Button>
-        ))}
-      </div>
-    </section>
+            <TableButton tableData={table} />
+          </button>
+        );
+      })}
+    </div>
   );
 }

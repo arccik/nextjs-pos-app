@@ -1,85 +1,111 @@
 "use client";
 import { useState } from "react";
 import { api } from "@/trpc/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-
 import { cn } from "@/lib/utils";
 import TableCard from "./TableCard";
 import AddTable from "./AddTable";
-import type { TableStatus } from "@/server/db/schemas/table";
+type FilterStatus = "available" | "occupied" | "reserved";
 import Loading from "@/components/Loading";
-
 import AddReservation from "@/components/reservations/AddReservation/AddReservation";
-import { Button } from "@/components/ui/button";
-// import { getUnAssignedReservations } from "@/server/models/reservation";
+import { UtensilsCrossed } from "lucide-react";
 
-type TabelsGridProps = {
+type TableGridProps = {
   standalone?: boolean;
 };
 
-export default function TableCards({ standalone }: TabelsGridProps) {
-  const [status, setStatus] = useState<TableStatus | undefined>();
+const filterOptions: { label: string; value: FilterStatus | undefined }[] = [
+  { label: "All", value: undefined },
+  { label: "Available", value: "available" },
+  { label: "Occupied", value: "occupied" },
+  { label: "Reserved", value: "reserved" },
+];
 
-  const {
-    data: tables,
-    refetch,
-    isLoading,
-  } = api.table.getAll.useQuery(status);
+export default function TableCards({ standalone }: TableGridProps) {
+  const [status, setStatus] = useState<FilterStatus | undefined>();
 
-  // const { data: reservations } =
-  //   api.reservation.getUnAssignedReservations.useQuery();
+  const { data: allTables, refetch, isLoading } = api.table.getAll.useQuery(undefined);
+
+  const tables = status ? allTables?.filter((t) => t.status === status) : allTables;
+
+  const counts = {
+    available: allTables?.filter((t) => t.status === "available").length ?? 0,
+    occupied: allTables?.filter((t) => t.status === "occupied").length ?? 0,
+    reserved: allTables?.filter((t) => t.status === "reserved").length ?? 0,
+  };
 
   return (
-    <Card>
-      <ToggleGroup
-        className="text-sm text-gray-500"
-        type="single"
-        value={status}
-        onValueChange={(e: TableStatus) => setStatus(e)}
-      >
-        <Button onClick={() => setStatus(undefined)} variant="ghost">
-          All
-        </Button>
-        <ToggleGroupItem value="available">Available</ToggleGroupItem>
-        <ToggleGroupItem value="occupied"> Occupied</ToggleGroupItem>
-        <ToggleGroupItem value="reserved"> Reserved</ToggleGroupItem>
-      </ToggleGroup>
-      {/* {!!reservations?.length &&
-        reservations.map((reservation) => (
-          <p key={reservation.id}>{reservation.expireAt}</p>
-        ))} */}
-      <CardHeader className="flex flex-col items-center justify-between sm:flex-row">
-        <CardTitle className="text-xl font-semibold">Tables</CardTitle>
-        <div className="flex flex-row gap-3 ">
+    <div className="px-3 py-3 sm:px-4 sm:py-4">
+      {/* Header */}
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <h2 className="text-2xl font-bold">Tables</h2>
+          <span className="rounded-full bg-muted px-2 py-0.5 text-sm text-muted-foreground">
+            {allTables?.length ?? 0}
+          </span>
+        </div>
+        <div className="flex gap-2">
           <AddReservation />
           <AddTable onComplete={refetch} />
         </div>
-      </CardHeader>
+      </div>
 
-      <CardContent>
-        {!!tables?.length ? (
-          <div
-            className={cn(
-              "grid grid-flow-row grid-cols-1 gap-3 sm:grid-cols-2",
-              {
-                "gird-flow-col justify-center md:grid-cols-3 xl:grid-cols-4":
-                  standalone,
-              },
-            )}
-          >
-            {tables.map((table) => (
-              <TableCard key={table.id} tableData={table} />
-            ))}
-          </div>
-        ) : isLoading ? (
-          <Loading />
-        ) : (
-          <p className="my-10 text-center font-sans text-gray-600">
-            No {status} tables found
-          </p>
-        )}
-      </CardContent>
-    </Card>
+      {/* Stats line */}
+      {allTables && (
+        <p className="mb-3 text-sm text-muted-foreground">
+          {counts.available} available · {counts.occupied} occupied · {counts.reserved} reserved
+        </p>
+      )}
+
+      {/* Filter chips */}
+      <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
+        {filterOptions.map((f) => {
+          const count =
+            f.value !== undefined ? (counts[f.value] ?? 0) : (allTables?.length ?? 0);
+          const isActive = status === f.value;
+          return (
+            <button
+              key={f.label}
+              onClick={() => setStatus(f.value)}
+              className={cn(
+                "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80",
+              )}
+            >
+              {f.label}
+              <span
+                className={cn(
+                  "min-w-[1.25rem] rounded-full px-1 py-0.5 text-center text-xs",
+                  isActive
+                    ? "bg-primary-foreground/20 text-primary-foreground"
+                    : "bg-background text-foreground",
+                )}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Grid */}
+      {!!tables?.length ? (
+        <div
+          className={cn("grid grid-cols-2 gap-3", standalone && "sm:grid-cols-3 lg:grid-cols-4")}
+        >
+          {tables.map((table) => (
+            <TableCard key={table.id} tableData={table} />
+          ))}
+        </div>
+      ) : isLoading ? (
+        <Loading />
+      ) : (
+        <div className="my-16 flex flex-col items-center gap-2 text-muted-foreground">
+          <UtensilsCrossed size={32} className="opacity-40" />
+          <p>No {status ?? ""} tables found</p>
+        </div>
+      )}
+    </div>
   );
 }

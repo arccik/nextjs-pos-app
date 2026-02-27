@@ -1,22 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
-// import {
-//   Drawer,
-//   DrawerClose,
-//   DrawerContent,
-//   DrawerFooter,
-//   DrawerTrigger,
-// } from "@/components/ui/drawer";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
-  DialogDescription,
-  // DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { X, PoundSterling } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import TableDetails from "./TableDetails";
 import TableButton from "./TableButton";
@@ -29,8 +21,8 @@ import Loading from "@/components/Loading";
 import useOrder from "@/hooks/useOrder";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { formatId } from "@/lib/utils";
-// import { EllipsisVertical } from "lucide-react";
 import { AdminMenu } from "./AdminMenu";
+import { statusConfig } from "./TableButton";
 
 type TableCardProps = {
   tableData: TableWithReservation;
@@ -46,101 +38,104 @@ export default function TableCard({ tableData }: TableCardProps) {
   const { unselectTable, selectedTable } = useOrder();
 
   const DeselectButton = () => {
-    if (selectedTable && selectedTable?.id === tableData.id)
+    if (selectedTable && selectedTable.id === tableData.id)
       return (
         <Button size="sm" variant="ghost" onClick={unselectTable}>
           <Cross1Icon className="text-red-500" />
           Deselect
         </Button>
       );
+    return null;
   };
 
-  if (isLoading) return <Loading />;
+  const hasOrder = !isLoading && !!orderData && orderData !== "null";
+  const hStyle = statusConfig[tableData.status] ?? statusConfig.closed;
+
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger className="block w-full text-left">
         <TableButton tableData={tableData} />
       </DialogTrigger>
-      <DialogContent title={`Table #${tableData.number}`}>
-        <DialogHeader>
-          <DialogTitle className="flex items-center">
-            <div>
-              Table #{tableData.prefix}
-              {tableData.number}
-            </div>
-            <div className="ml-2">
-              <DeselectButton />
-              <AdminMenu tableId={tableId} />
-            </div>
-          </DialogTitle>
-          <DialogDescription className="flex justify-between">
-            {tableData.description}
-          </DialogDescription>
-          {orderData !== "null" && orderData?.userId && (
-            <>
-              <span>
-                Order {formatId(orderData.id)} placed by:{" "}
-                <strong>{orderData?.creator.name}</strong>
-              </span>
-              <span>{format(tableData.createdAt, "dd MMM yyyy HH:mm")}</span>
-            </>
-          )}
-        </DialogHeader>
-        {tableData.status === "occupied" ? (
-          orderData && orderData !== "null" && <TableDetails data={orderData} />
-        ) : (
-          <EmptyTable
-            tableId={tableData.id}
-            tableNumber={tableData.number}
-            clean={!tableData.requireCleaning}
-          />
-        )}
 
-        <DialogFooter className="flex justify-between">
-          {orderData &&
-            orderData !== "null" &&
-            tableData.status === "occupied" && (
+      <DialogContent className="overflow-hidden !p-0 sm:max-w-[480px] [&>button:last-child]:hidden">
+        <div className="flex max-h-[90dvh] flex-col">
+          {/* Header — tinted to match the table card's status colour */}
+          <div className={cn("shrink-0 border-b border-l-4 px-5 py-4", hStyle.accent, hStyle.bg)}>
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="text-lg font-semibold">
+                    Table{" "}
+                    {tableData.prefix ? `${tableData.prefix}-` : "#"}
+                    {tableData.number}
+                  </h2>
+                  <DeselectButton />
+                  <AdminMenu tableId={tableId} />
+                </div>
+
+                {tableData.description && (
+                  <p className="mt-0.5 text-sm text-muted-foreground">
+                    {tableData.description}
+                  </p>
+                )}
+
+                {hasOrder && orderData.userId && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Order {formatId(orderData.id)} · {orderData.creator.name} ·{" "}
+                    {format(tableData.createdAt, "dd MMM yyyy HH:mm")}
+                  </p>
+                )}
+
+                {hasOrder && (
+                  <div className="mt-2 flex gap-2">
+                    <Badge className="border border-green-500 text-xs">
+                      {orderData.status}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      <PoundSterling size={10} className="mr-1" />
+                      {orderData.isPaid ? "Paid" : "Not paid"}
+                    </Badge>
+                  </div>
+                )}
+              </div>
+
+              <DialogClose asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                  <X size={16} />
+                </Button>
+              </DialogClose>
+            </div>
+          </div>
+
+          {/* Body */}
+          <div className="flex-1 overflow-y-auto px-5 py-4">
+            {isLoading ? (
+              <Loading />
+            ) : tableData.status === "occupied" ? (
+              hasOrder ? (
+                <TableDetails data={orderData} />
+              ) : null
+            ) : (
+              <EmptyTable
+                tableId={tableData.id}
+                tableNumber={tableData.number}
+                clean={!tableData.requireCleaning}
+              />
+            )}
+          </div>
+
+          {/* Footer */}
+          {hasOrder && tableData.status === "occupied" && (
+            <div className="shrink-0 border-t px-5 py-3">
               <ActionButtons
                 isPaid={orderData.isPaid}
                 orderId={orderData.id}
                 status={orderData.status}
               />
-            )}
-        </DialogFooter>
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
 }
-// return (
-//   <Drawer>
-//     <DrawerTrigger>
-//       {/* <TableButton tableData={tableData} /> */}
-//     </DrawerTrigger>
-//     <DrawerContent>
-//       {tableData.status === "occupied" ? (
-//         data && <TableDetails data={data} />
-//       ) : (
-//         <EmptyTable
-//           tableId={tableData.id}
-//           clean={!tableData.requireCleaning}
-//           tableNumber={tableData.number}
-//         />
-//       )}
-//       <DrawerFooter>
-//         {/* {orderData?.id && (
-//           <ActionButtons
-//             isPaid={orderData?.isPaid}
-//             orderId={orderData?.id}
-//             status={orderData?.status}
-//             totalAmount={totalAmount}
-//           />
-//         )} */}
-//         <DrawerClose asChild>
-//           <Button variant="outline" className="border/40">
-//             Close
-//           </Button>
-//         </DrawerClose>
-//       </DrawerFooter>
-//     </DrawerContent>
-//   </Drawer>
-// );
