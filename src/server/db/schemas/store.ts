@@ -39,11 +39,16 @@ export const storeRegularSchedule = pgTable("store_regular_working_times", {
 });
 
 export const storeCustomSchedule = pgTable("store_custom_working_times", {
-  date: timestamp("created_at").defaultNow().notNull(),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  date: timestamp("date").notNull(),
   name: text("name").notNull(),
   openTime: text("open_time"),
   closeTime: text("close_time"),
   isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type StoreSettings = typeof storeSettings.$inferSelect;

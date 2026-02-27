@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { type Item, itemsSchema } from "@/server/db/schemas";
+import { type NewItemSchemaType, newItemSchema } from "@/server/db/schemas";
 
 import { Button } from "@/components/ui/button";
 import { ItemFields } from "./ItemFields";
@@ -13,7 +13,7 @@ import { defaultValues } from "./defaultValues";
 import { api } from "@/trpc/react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 
 export default function EditItem() {
@@ -35,8 +35,8 @@ export default function EditItem() {
       console.error("error Updating item: ", error);
     },
   });
-  const form = useForm<Item>({
-    resolver: zodResolver(itemsSchema),
+  const form = useForm<NewItemSchemaType>({
+    resolver: zodResolver(newItemSchema),
     defaultValues,
   });
   useEffect(() => {
@@ -45,9 +45,9 @@ export default function EditItem() {
     }
   }, [data]);
 
-  const onSubmit = (values: Item) => {
-    update(values);
-    console.log("SUBMITTING");
+  const onSubmit = (values: NewItemSchemaType) => {
+    if (!id) return;
+    update({ ...values, id });
   };
 
   if (isItemLoading) return <Loading />;

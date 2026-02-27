@@ -17,7 +17,6 @@ export const cookedItems = pgTable("cooked_items", {
     .notNull()
     .references(() => orders.id, { onDelete: "cascade" }),
   userId: varchar("user_id", { length: 255 })
-    .notNull()
     .references(() => users.id, { onDelete: "set null" }),
   quantity: integer("quantity").notNull().default(1),
   createdAt: timestamp("created_at").defaultNow().notNull(),

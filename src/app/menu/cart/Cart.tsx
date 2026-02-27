@@ -48,9 +48,9 @@ export default function Cart() {
                 <p className="font-semibold">Table #{selectedTable?.number}</p>
                 <SelectTable buttonTrigger={<Edit2 size="1rem" />} />
               </div>
-              {true && (
+              {selectedOrder.specialRequest && (
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Special requests: {true}
+                  Special requests: {selectedOrder.specialRequest}
                 </p>
               )}
             </div>

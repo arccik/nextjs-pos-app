@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { type UseFormReturn } from "react-hook-form";
-import { type Item } from "@/server/db/schemas";
+import { type NewItemSchemaType } from "@/server/db/schemas";
 import { useEffect, useState } from "react";
 
 import { TrashIcon } from "@radix-ui/react-icons";
@@ -17,7 +17,7 @@ import Image from "next/image";
 // const API_URL = "http://localhost:3000/api";
 
 type UploadFileProps = {
-  form: UseFormReturn<Item>;
+  form: UseFormReturn<NewItemSchemaType>;
 };
 
 export default function UploadFile({ form }: UploadFileProps) {

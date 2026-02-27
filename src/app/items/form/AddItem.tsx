@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type NewItem, newItemSchema } from "@/server/db/schemas";
+import { type NewItemSchemaType, newItemSchema } from "@/server/db/schemas";
 
 import { ItemFields } from "./ItemFields";
 import { Form } from "@/components/ui/form";
@@ -15,7 +15,7 @@ type AddItemProps = {
 };
 
 export default function AddItem({ onClose }: AddItemProps) {
-  const form = useForm<NewItem>({
+  const form = useForm<NewItemSchemaType>({
     resolver: zodResolver(newItemSchema),
     defaultValues,
   });
@@ -36,7 +36,7 @@ export default function AddItem({ onClose }: AddItemProps) {
     },
   });
 
-  const onSubmit = (values: NewItem) => {
+  const onSubmit = (values: NewItemSchemaType) => {
     saveItem.mutate(values);
   };
 

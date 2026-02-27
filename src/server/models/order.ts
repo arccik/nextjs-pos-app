@@ -373,15 +373,18 @@ export const pay = async (id: string) => {
 };
 
 export const complete = async (id: string) => {
-  const result = await db
+  const [updated] = await db
     .update(orders)
     .set({ status: "Completed" })
-    .where(eq(orders.id, id));
-  await db
-    .update(tables)
-    .set({ requireCleaning: true })
-    .where(eq(tables.id, orders.tableId));
-  return result;
+    .where(eq(orders.id, id))
+    .returning({ tableId: orders.tableId });
+  if (updated?.tableId) {
+    await db
+      .update(tables)
+      .set({ requireCleaning: true })
+      .where(eq(tables.id, updated.tableId));
+  }
+  return updated;
 };
 export const cancelOrder = async (id: string) => {
   const result = await db

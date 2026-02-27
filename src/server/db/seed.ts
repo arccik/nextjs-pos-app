@@ -161,6 +161,8 @@ async function seedDatabase() {
     if (!categoryIds.some((category) => category.id)) {
       return console.log("Category Ids not created ");
     }
+    const getCategoryId = (index: number): string =>
+      categoryIds[index]?.id ?? "";
     await db.insert(schema.items).values([
       {
         imageUrl: "/img/food.jpg",
@@ -172,7 +174,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 10,
-        categoryId: categoryIds[0].id,
+        categoryId: getCategoryId(0),
         isAvailable: true,
       },
       {
@@ -186,7 +188,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 20,
-        categoryId: categoryIds[1]?.id,
+        categoryId: getCategoryId(1),
         isAvailable: true,
       },
       {
@@ -200,7 +202,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryIds[2]?.id,
+        categoryId: getCategoryId(2),
         isAvailable: true,
       },
       {
@@ -214,7 +216,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 25,
-        categoryId: categoryIds[2]?.id,
+        categoryId: getCategoryId(2),
         isAvailable: true,
       },
       {
@@ -228,7 +230,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 30,
-        categoryId: categoryIds[3]?.id,
+        categoryId: getCategoryId(3),
         isAvailable: true,
       },
       {
@@ -242,7 +244,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: false,
         preparationTime: 25,
-        categoryId: categoryIds[3]?.id,
+        categoryId: getCategoryId(3),
         isAvailable: true,
       },
       {
@@ -256,7 +258,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryIds[4]?.id,
+        categoryId: getCategoryId(4),
         isAvailable: true,
       },
       {
@@ -270,7 +272,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: true,
         preparationTime: 20,
-        categoryId: categoryIds[4]?.id,
+        categoryId: getCategoryId(4),
         isAvailable: true,
       },
       {
@@ -284,7 +286,7 @@ async function seedDatabase() {
         isGlutenFree: true,
         isSpicy: false,
         preparationTime: 35,
-        categoryId: categoryIds[4]?.id,
+        categoryId: getCategoryId(4),
         isAvailable: true,
       },
       {
@@ -298,7 +300,7 @@ async function seedDatabase() {
         isGlutenFree: false,
         isSpicy: false,
         preparationTime: 15,
-        categoryId: categoryIds[4]?.id,
+        categoryId: getCategoryId(4),
         isAvailable: true,
       },
     ]);
@@ -314,7 +316,7 @@ async function seedDatabase() {
       amenities: "Pool",
       capacity: 100,
       description: "This is a default venue",
-      updatedBy: user?.id,
+      updatedBy: user?.id ?? "",
     });
   } catch (error) {
     console.error("Error seeding database:", error);

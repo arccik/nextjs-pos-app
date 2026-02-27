@@ -50,7 +50,7 @@ export const tablesRelations = relations(tables, ({ many }) => ({
 
 export const reservationsRelations = relations(reservations, ({ one }) => ({
   table: one(tables, {
-    fields: [reservations.id],
+    fields: [reservations.tableId],
     references: [tables.id],
   }),
   user: one(users, {
