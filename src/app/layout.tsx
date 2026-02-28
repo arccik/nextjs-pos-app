@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 
 import { Toaster } from "@/components/ui/toaster";
-import SideBar from "@/components/navbar/SideBar";
+import NavModeWrapper from "@/components/navbar/NavModeWrapper";
 import { Providers } from "./providers";
 import AlertMessages from "@/components/AlertMessages";
 import OfflineBanner from "@/components/OfflineBanner";
@@ -33,13 +33,14 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="POS" />
       </head>
-      <body className="ml-0 sm:ml-20">
+      <body>
         <Providers>
-          <SideBar />
-          <AlertMessages />
-          {children}
-          <Toaster />
-          <OfflineBanner />
+          <NavModeWrapper>
+            <AlertMessages />
+            {children}
+            <Toaster />
+            <OfflineBanner />
+          </NavModeWrapper>
         </Providers>
       </body>
     </html>

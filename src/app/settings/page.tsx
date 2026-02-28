@@ -25,6 +25,68 @@ import { useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/trpc/react";
 import Loading from "@/components/Loading";
+import { useNavModeCtx } from "@/components/navbar/NavModeWrapper";
+import { cn } from "@/lib/utils";
+import { type NavMode } from "@/hooks/useNavMode";
+
+function InterfacePreferences() {
+  const { mode, setMode } = useNavModeCtx();
+
+  const options: { value: NavMode; label: string; sub: string; desc: string }[] = [
+    {
+      value: "sidebar",
+      label: "Standard",
+      sub: "Sidebar",
+      desc: "Best for desktop & mouse users",
+    },
+    {
+      value: "touch",
+      label: "Touch Bottom Bar",
+      sub: "",
+      desc: "Best for tablets & touch screens",
+    },
+  ];
+
+  return (
+    <section className="mb-8 rounded-lg bg-white p-6 shadow-sm dark:bg-transparent">
+      <h2 className="mb-4 text-xl font-semibold">Interface Preferences</h2>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {options.map((opt) => {
+          const active = mode === opt.value;
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setMode(opt.value)}
+              className={cn(
+                "flex flex-col gap-2 rounded-xl border-2 p-5 text-left transition-colors",
+                active
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/40",
+              )}
+            >
+              <span className="text-base font-semibold">{opt.label}</span>
+              {opt.sub && (
+                <span className="text-sm text-muted-foreground">{opt.sub}</span>
+              )}
+              <span className="text-sm text-muted-foreground">{opt.desc}</span>
+              <span
+                className={cn(
+                  "mt-1 self-start rounded-full px-3 py-0.5 text-xs font-medium",
+                  active
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground",
+                )}
+              >
+                {active ? "Active" : "Switch to this"}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
 
 export default function SettingsPage() {
   //   const { data, isLoading, isError } = useQuery({
@@ -67,6 +129,7 @@ export default function SettingsPage() {
   return (
     <main className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
       <h1 className="mb-6 text-3xl font-bold text-slate-400">Settings</h1>
+      <InterfacePreferences />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
