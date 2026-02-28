@@ -50,7 +50,7 @@ export const tablesRelations = relations(tables, ({ many }) => ({
 
 export const reservationsRelations = relations(reservations, ({ one }) => ({
   table: one(tables, {
-    fields: [reservations.id],
+    fields: [reservations.tableId],
     references: [tables.id],
   }),
   user: one(users, {
@@ -87,6 +87,7 @@ export const newReservationSchema = createInsertSchema(reservations, {
     .max(255)
     .optional()
     .or(z.literal("").transform(() => undefined)),
+  expireAt: z.string().optional(),
 });
 
 export const getTimeSlotSchema = z.object({

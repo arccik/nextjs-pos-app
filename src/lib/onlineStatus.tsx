@@ -5,11 +5,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 const OnlineStatusContext = createContext(true);
 
 export function OnlineStatusProvider({ children }: { children: React.ReactNode }) {
-  const [isOnline, setIsOnline] = useState(() =>
-    typeof navigator !== "undefined" ? navigator.onLine : true,
-  );
+  // Start with true on both server and client to avoid hydration mismatch.
+  // Sync the actual value from navigator.onLine after mount.
+  const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
+    setIsOnline(navigator.onLine);
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
     window.addEventListener("online", handleOnline);

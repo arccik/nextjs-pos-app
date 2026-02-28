@@ -9,7 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { XIcon } from "lucide-react";
+import { XIcon, ClockIcon } from "lucide-react";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
@@ -28,45 +28,38 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-// import { type ReservationTimeSlot } from "@/server/db/utils";
-// import { fetchTimeSlots } from "@/api/reservation";
-// import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-// import { getAll } from "@/server/models/table";
-// import { timeSlots } from "@/server/models/reservation";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { api } from "@/trpc/react";
-// import Loading from "@/components/layout/Loading";
-// import Error from "@/components/layout/Error";
-// import { useVenueSettings } from "@/hooks/useVenueSettings";
 
 export default function ReservationInfo({ form }: ReservationStepsProps) {
-  //   const { venueTables } = useVenueSettings();
   const { data: tables } = api.table.getAll.useQuery();
-  // const tables = await getAll();
-  // const date = form?.getValues("scheduledAt");
-  // const tableId = form?.getValues("tableId");
-  // const slots = await timeSlots({ date, tableId });
-  //   const { isLoading, data, isError } = useQuery<ReservationTimeSlot[]>({
-  //     queryKey: ["timeSlots"],
-  //     queryFn: () =>
-  //       fetchTimeSlots(
-  //         form?.getValues("scheduledAt"),
-  //         form?.getValues("tableId"),
-  //       ),
-  //     enabled: !!form?.getFieldState("scheduledAt").isDirty,
-  //   });
+
+  const scheduledAt = form.watch("scheduledAt");
+  const tableId = form.watch("tableId");
+
+  const { data: slots, isLoading: slotsLoading } =
+    api.reservation.timeSlots.useQuery(
+      { tableId: tableId ?? undefined, date: scheduledAt },
+      { enabled: !!scheduledAt },
+    );
+
   return (
     <div className="mb-10 space-y-4">
+      {/* Table selection */}
       <FormField
         control={form.control}
         name="tableId"
         render={({ field }) => (
           <FormItem>
-            <FormLabel> Table</FormLabel>
+            <FormLabel>Table</FormLabel>
             <FormControl>
               <div className="flex items-center gap-2">
                 <Select
-                  value={field.value?.toString()}
-                  onValueChange={(v) => field?.onChange(Number(v))}
+                  value={field.value ?? ""}
+                  onValueChange={(v) => {
+                    field.onChange(v || undefined);
+                    form.setValue("expireAt", undefined);
+                  }}
                 >
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select a table" />
@@ -74,8 +67,9 @@ export default function ReservationInfo({ form }: ReservationStepsProps) {
                   <SelectContent>
                     <SelectGroup>
                       {tables?.map((table) => (
-                        <SelectItem key={table.id} value={table.id.toString()}>
-                          {table.number}
+                        <SelectItem key={table.id} value={table.id}>
+                          Table {table.number}
+                          {table.prefix ? ` (${table.prefix})` : ""}
                         </SelectItem>
                       ))}
                     </SelectGroup>
@@ -83,7 +77,10 @@ export default function ReservationInfo({ form }: ReservationStepsProps) {
                 </Select>
                 {field.value && (
                   <Button
-                    onClick={() => field.onChange("")}
+                    onClick={() => {
+                      field.onChange(undefined);
+                      form.setValue("expireAt", undefined);
+                    }}
                     size="icon"
                     variant="outline"
                     type="button"
@@ -93,12 +90,13 @@ export default function ReservationInfo({ form }: ReservationStepsProps) {
                 )}
               </div>
             </FormControl>
-            <FormDescription>Reserve specific table</FormDescription>
+            <FormDescription>Reserve a specific table (optional)</FormDescription>
             <FormMessage />
           </FormItem>
         )}
       />
 
+      {/* Date picker */}
       <FormField
         control={form.control}
         name="scheduledAt"
@@ -116,7 +114,7 @@ export default function ReservationInfo({ form }: ReservationStepsProps) {
                     )}
                   >
                     {field.value ? (
-                      format(field.value, "do MMM yyyy")
+                      format(new Date(field.value), "do MMM yyyy")
                     ) : (
                       <span>Pick a date</span>
                     )}
@@ -127,14 +125,17 @@ export default function ReservationInfo({ form }: ReservationStepsProps) {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={new Date(field.value)}
+                  selected={field.value ? new Date(field.value) : undefined}
                   onSelect={(v) => {
-                    field.onChange(v && format(v, "P"));
+                    field.onChange(v ? format(v, "P") : undefined);
+                    form.setValue("expireAt", undefined);
                     form.clearErrors("scheduledAt");
                   }}
-                  disabled={(date) =>
-                    new Date(date.setDate(date.getDate() + 1)) > date
-                  }
+                  disabled={(date) => {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    return date < today;
+                  }}
                   initialFocus
                 />
               </PopoverContent>
@@ -143,43 +144,60 @@ export default function ReservationInfo({ form }: ReservationStepsProps) {
           </FormItem>
         )}
       />
-      {/* {isError && <Error message="Fail to fetch time slots" />}
-      {isLoading && <Loading />} */}
-      {/* <FormField
-        control={form.control}
-        name="expireAt"
-        render={({ field }) => (
-          <FormItem className="flex flex-col">
-            <FormLabel>Time slot</FormLabel>
-            {slots && (
-              <ToggleGroup
-                type="single"
-                onValueChange={(v) => {
-                  form.clearErrors("expireAt");
-                  field.onChange(v);
-                }}
-                defaultValue={field.value}
-                variant="outline"
-                size="sm"
-                className="grid grid-cols-3  gap-2"
-              >
-                {slots?.map((slot, index) => (
-                  <ToggleGroupItem
-                    key={slot.startTime + index}
-                    className="flex gap-2 text-xs"
-                    disabled={!slot.isAvailable}
-                    value={slot.finishTime}
-                  >
-                    <ClockIcon />
-                    {`${slot.startTime} - ${slot.finishTime}`}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-            )}
-            <FormMessage />
-          </FormItem>
-        )}
-      /> */}
+
+      {/* Time slot selection — shown when a date is selected and store settings exist */}
+      {scheduledAt && (
+        <FormField
+          control={form.control}
+          name="expireAt"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Time slot</FormLabel>
+              {slotsLoading && (
+                <p className="text-sm text-muted-foreground">
+                  Loading available slots…
+                </p>
+              )}
+              {!slotsLoading && !slots && (
+                <p className="text-sm text-muted-foreground">
+                  No time slots available. Store schedule may not be configured.
+                </p>
+              )}
+              {slots && slots.length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  No available slots for this date.
+                </p>
+              )}
+              {slots && slots.length > 0 && (
+                <ToggleGroup
+                  type="single"
+                  value={field.value ?? ""}
+                  onValueChange={(v) => {
+                    form.clearErrors("expireAt");
+                    field.onChange(v || undefined);
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="grid grid-cols-3 gap-2"
+                >
+                  {slots.map((slot, index) => (
+                    <ToggleGroupItem
+                      key={slot.startTime + index}
+                      className="flex gap-1 text-xs"
+                      disabled={!slot.isAvailable}
+                      value={slot.finishTime}
+                    >
+                      <ClockIcon className="h-3 w-3" />
+                      {`${slot.startTime} – ${slot.finishTime}`}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              )}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
     </div>
   );
 }

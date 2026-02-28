@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
-import { type NewReservation } from "@/server/db/schemas";
+import { type ReservationFormValues } from "../ReservationForm";
 import { type UseFormReturn } from "react-hook-form";
 
 type StageButtonsProps = {
   setSelectedTab: (value: string) => void;
   selectedTab: string;
-  form: UseFormReturn<NewReservation>;
+  form: UseFormReturn<ReservationFormValues>;
 };
 export default function StageButtons({
   selectedTab,
@@ -17,7 +17,7 @@ export default function StageButtons({
     const nextTab = (Number(selectedTab) + 1)?.toString();
 
     if (selectedTab === "1") {
-      const isFieldsValid = await form.trigger(["scheduledAt", "expireAt"]);
+      const isFieldsValid = await form.trigger(["scheduledAt"]);
       if (isFieldsValid) {
         setSelectedTab(nextTab);
       }

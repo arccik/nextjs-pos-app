@@ -1,17 +1,19 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function useLocalStorage<T>(key: string, initialValue: T) {
-  // Retrieve the value from localStorage or use the initial value
-  const [storedValue, setStoredValue] = useState<T>(() => {
+  // Start with initialValue on both server and client to avoid hydration mismatch.
+  // Sync from localStorage after mount (client only).
+  const [storedValue, setStoredValue] = useState<T>(initialValue);
+
+  useEffect(() => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? (JSON.parse(item) as T) : initialValue;
+      if (item) setStoredValue(JSON.parse(item) as T);
     } catch (error) {
       console.warn(`Error reading localStorage key "${key}":`, error);
-      return initialValue;
     }
-  });
+  }, [key]);
 
   // Function to update the value both in state and localStorage
   const setValue = (value: T | ((val: T) => T)) => {

@@ -22,6 +22,16 @@ const withPWA = withPWAInit({
 /** @type {import("next").NextConfig} */
 const config = {
   swcMinify: true,
+  async headers() {
+    return [
+      {
+        source: "/manifest.json",
+        headers: [
+          { key: "Cache-Control", value: "no-store" },
+        ],
+      },
+    ];
+  },
 };
 
 export default withPWA(config);

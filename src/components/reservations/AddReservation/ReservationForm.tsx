@@ -1,37 +1,45 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type NewReservation, newReservationSchema } from "@/server/db/schemas";
-// import { create } from "@/api/reservation";
+import { z } from "zod";
+import { newReservationSchema } from "@/server/db/schemas";
 import { Form } from "@/components/ui/form";
-
+import { api } from "@/trpc/react";
+import { useToast } from "@/components/ui/use-toast";
 import ReservationSteps from "./ReservationSteps";
+
+export type ReservationFormValues = z.infer<typeof newReservationSchema>;
 
 type NewReservationProps = {
   onComplete: () => void;
 };
 
-export default function NewResetvation({ onComplete: _onComplete }: NewReservationProps) {
-  // const queryClient = useQueryClient();
+export default function NewReservation({ onComplete }: NewReservationProps) {
+  const { toast } = useToast();
+  const utils = api.useUtils();
 
-  // const addNewReservation = useMutation({
-  //   mutationFn: create,
-  //   onSuccess: (data) => {
-  //     const reservationId = data[0].id;
-  //     queryClient.invalidateQueries({ queryKey: ["reservations"] });
-  //     toast({
-  //       title: "Reservation has been created",
-  //       description: `Reservation Number is: ${reservationId}`,
-  //     });
-  //     onComplete();
-  //   },
-  // });
-  const onSubmit = (values: NewReservation) => {
-    // addNewReservation.mutate(values);
-    console.log("New Reservation: ", values);
-    throw new Error("Not implemented");
-  };
-  const form = useForm<NewReservation>({
+  const createReservation = api.reservation.create.useMutation({
+    onSuccess: (data) => {
+      const reservationId = data?.[0]?.id;
+      void utils.reservation.getAll.invalidate();
+      toast({
+        title: "Reservation created",
+        description: reservationId
+          ? `Reservation ID: ${reservationId.slice(0, 8)}...`
+          : "Reservation has been created successfully.",
+      });
+      onComplete();
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to create reservation",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const form = useForm<ReservationFormValues>({
     resolver: zodResolver(newReservationSchema),
     defaultValues: {
       tableId: undefined,
@@ -41,14 +49,19 @@ export default function NewResetvation({ onComplete: _onComplete }: NewReservati
       guestsPredictedNumber: 1,
       specialRequests: "",
       notes: "",
-      scheduledAt: undefined,
+      scheduledAt: "",
       expireAt: undefined,
     },
   });
+
+  const onSubmit = (values: ReservationFormValues) => {
+    createReservation.mutate(values);
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <ReservationSteps form={form} />
+        <ReservationSteps form={form} isPending={createReservation.isPending} />
       </form>
     </Form>
   );

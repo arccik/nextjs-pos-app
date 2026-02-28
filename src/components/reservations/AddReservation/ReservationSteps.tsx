@@ -6,13 +6,17 @@ import ReservationInfo from "./stages/ReservationInfo";
 import CustomerInfo from "./stages/CustomerInfo";
 import Confirmation from "./stages/Confirmation";
 import StageButtons from "./stages/StageButtons";
-import type { NewReservation } from "@/server/db/schemas";
+import { type ReservationFormValues } from "./ReservationForm";
 
 export type ReservationStepsProps = {
-  form: UseFormReturn<NewReservation>;
+  form: UseFormReturn<ReservationFormValues>;
+  isPending?: boolean;
 };
 
-export default function ReservationSteps({ form }: ReservationStepsProps) {
+export default function ReservationSteps({
+  form,
+  isPending,
+}: ReservationStepsProps) {
   const [selectedTab, setSelectedTab] = useState("1");
   return (
     <Tabs value={selectedTab} onValueChange={setSelectedTab}>
@@ -34,7 +38,7 @@ export default function ReservationSteps({ form }: ReservationStepsProps) {
         <CustomerInfo form={form} />
       </TabsContent>
       <TabsContent value="3">
-        <Confirmation form={form} />
+        <Confirmation form={form} isPending={isPending} />
       </TabsContent>
       <StageButtons
         setSelectedTab={setSelectedTab}
