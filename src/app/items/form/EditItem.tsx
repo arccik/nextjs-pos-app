@@ -13,7 +13,7 @@ import { defaultValues } from "./defaultValues";
 import { api } from "@/trpc/react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 
 export default function EditItem() {

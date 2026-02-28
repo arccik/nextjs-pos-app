@@ -80,7 +80,13 @@ export default function UploadFile({ form }: UploadFileProps) {
             onClick={handleImageDelete}
           />
         </div>
-        <Image src={URL.createObjectURL(file)} alt="uploaded image" />
+        <Image
+          src={URL.createObjectURL(file)}
+          alt="uploaded image"
+          width={300}
+          height={300}
+          className="rounded object-cover"
+        />
       </div>
     );
   }

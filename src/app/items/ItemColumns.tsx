@@ -74,16 +74,21 @@ export const columns: ColumnDef<Item>[] = [
   {
     accessorKey: "imageUrl",
     header: "Image",
-    cell: ({ row }) => (
-      <div className="ml-4 lowercase">
-        <Image
-          width="128"
-          height="128"
-          alt={row.getValue("name")}
-          src={row.getValue("imageUrl")}
-        />
-      </div>
-    ),
+    cell: ({ row }) => {
+      const src: string | null = row.getValue("imageUrl");
+      if (!src) return <div className="ml-4 text-xs text-gray-400">—</div>;
+      return (
+        <div className="ml-4">
+          <Image
+            width={64}
+            height={64}
+            className="rounded object-cover"
+            alt={row.getValue("name")}
+            src={src}
+          />
+        </div>
+      );
+    },
   },
   {
     accessorKey: "categoryId",
@@ -98,12 +103,9 @@ export const columns: ColumnDef<Item>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => {
-
-      return (
-        <div className="ml-4 lowercase">data?.name {row.getValue("name")}</div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="ml-4">{row.getValue("categoryId") ?? "—"}</div>
+    ),
   },
   {
     accessorKey: "isVegetarian",
