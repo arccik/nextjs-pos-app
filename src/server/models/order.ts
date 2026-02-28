@@ -608,3 +608,18 @@ export const selectOrder = async (orderId: string, userId: string) => {
     .where(eq(orders.id, orderId))
     .returning({ id: orders.id });
 };
+
+export const proceedCurrentOrder = async (userId: string, tableId?: string) => {
+  const selectedOrder = await getSelectedByUser(userId);
+  if (!selectedOrder || selectedOrder === "null") throw new Error("No selected order found");
+  const [result] = await db
+    .update(orders)
+    .set({
+      status: "In Progress",
+      selectedBy: null,
+      ...(tableId ? { tableId } : {}),
+    })
+    .where(eq(orders.id, selectedOrder.id))
+    .returning({ id: orders.id });
+  return result;
+};

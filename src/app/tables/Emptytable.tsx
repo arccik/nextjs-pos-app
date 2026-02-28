@@ -4,14 +4,18 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import useOrder from "@/hooks/useOrder";
 import { useRouter } from "next/navigation";
+import { api } from "@/trpc/react";
 
 type EmptytableProps = { tableId: string; clean: boolean; tableNumber: number };
 
 export default function EmptyTable({ tableId, clean }: EmptytableProps) {
   const { selectTable } = useOrder();
   const router = useRouter();
+  const utils = api.useUtils();
 
   const handleAddNewOrder = async () => {
+    void utils.category.getAll.prefetch();
+    void utils.item.getAll.prefetch();
     selectTable(tableId);
     router.push("/menu");
   };

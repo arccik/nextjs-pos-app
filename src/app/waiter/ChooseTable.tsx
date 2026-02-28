@@ -22,9 +22,12 @@ export default function ChooseTable({ close }: ChooseTableProps) {
   const router = useRouter();
 
   const { selectedOrder, unselectTable, selectTable } = useOrder();
+  const utils = api.useUtils();
   const { data: tables, isLoading: isTablesLoading } = api.table.getAll.useQuery();
 
   const handleTableSelect = (tableId: string) => {
+    void utils.category.getAll.prefetch();
+    void utils.item.getAll.prefetch();
     selectTable(tableId);
     router.push("/menu");
     close();

@@ -86,6 +86,22 @@ export function useLocalCategories() {
   return localCategories ?? [];
 }
 
+export function useLocalSelectedTable(userId: string | undefined) {
+  const isOnline = useOnlineStatus();
+  const serverQuery = api.table.getSelectedTable.useQuery(undefined, { enabled: isOnline });
+
+  const localTable = useLiveQuery<LocalRestaurantTable | undefined>(
+    () => {
+      if (isOnline || !userId) return Promise.resolve(undefined);
+      return db.restaurantTables.filter((t) => t.selectedBy === userId).first();
+    },
+    [isOnline, userId],
+  );
+
+  if (isOnline) return serverQuery.data;
+  return localTable ?? undefined;
+}
+
 // Hook to check pending sync count for UI indicator
 export function usePendingSyncCount(): number {
   const [count, setCount] = useState(0);

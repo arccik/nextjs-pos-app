@@ -30,6 +30,7 @@ import {
   unselectOrder,
   selectOrder,
   getAllByToday,
+  proceedCurrentOrder,
 } from "@/server/models/order";
 
 export const orderRouter = createTRPCRouter({
@@ -163,5 +164,12 @@ export const orderRouter = createTRPCRouter({
     .input(z.object({ orderId: z.string() }))
     .mutation(async ({ input, ctx }) => {
       return await selectOrder(input.orderId, ctx.session.user.id);
+    }),
+  proceedCurrentOrder: protectedProcedure
+    .input(z.object({ tableId: z.string().optional() }))
+    .mutation(async ({ input, ctx }) => {
+      const result = await proceedCurrentOrder(ctx.session.user.id, input.tableId);
+      if (result?.id) emitOrderUpdate(result.id, { action: "updated" });
+      return result;
     }),
 });

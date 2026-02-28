@@ -16,8 +16,11 @@ export function MenuList() {
   // const categories = await api.category.getAll();
   // const items = await api.item.getAll();
   const { data: categories, isLoading: isCategoryLoading } =
-    api.category.getAll.useQuery();
-  const { data: items, isLoading: isItemsLoading } = api.item.getAll.useQuery();
+    api.category.getAll.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
+  const { data: items, isLoading: isItemsLoading } = api.item.getAll.useQuery(
+    undefined,
+    { staleTime: 5 * 60 * 1000 },
+  );
 
   const getByCategory = (categoryId: string) => {
     if (!items) return;

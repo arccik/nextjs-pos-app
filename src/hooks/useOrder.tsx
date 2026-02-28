@@ -4,9 +4,11 @@ import type { Order, OrderStatus } from "@/server/db/schemas";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useOnlineStatus } from "@/lib/onlineStatus";
 import { db } from "@/lib/db/localDb";
 import { enqueue } from "@/lib/syncQueue";
+import { useLocalSelectedTable } from "@/hooks/useLocalData";
 
 type AddToOrderProps = {
   itemId: string;
@@ -19,6 +21,7 @@ export default function useOrder() {
   const utils = api.useUtils();
   const router = useRouter();
   const isOnline = useOnlineStatus();
+  const { data: session } = useSession();
   const { data: selectedOrder } = api.order.getSelectedByUser.useQuery();
 
   const selectOrder = api.order.selectOrder.useMutation({
@@ -31,7 +34,7 @@ export default function useOrder() {
       await utils.order.getSelectedByUser.invalidate();
     },
   });
-  const { data: selectedTable } = api.table.getSelectedTable.useQuery();
+  const selectedTable = useLocalSelectedTable(session?.user.id);
   const orderId = selectedOrder !== "null" && selectedOrder?.id;
 
   const handleSuccess = useCallback(
@@ -83,9 +86,32 @@ export default function useOrder() {
 
   const add = ({ itemId, quantity, id }: AddToOrderProps) => {
     if (!isOnline) {
-      const targetOrderId = id ?? (orderId !== false ? orderId : undefined);
-      if (!targetOrderId) return;
       void (async () => {
+        let targetOrderId = id ?? (orderId !== false ? orderId : undefined);
+
+        if (!targetOrderId) {
+          // Offline with no existing order — create one locally in Dexie
+          const userId = session?.user.id;
+          if (!userId) return;
+          const newOrderId = crypto.randomUUID();
+          const selectedTableId =
+            selectedTable && selectedTable !== "null" ? selectedTable.id : null;
+          await db.orders.add({
+            id: newOrderId,
+            userId,
+            selectedBy: userId,
+            tableId: selectedTableId,
+            status: "Pending",
+            isPaid: false,
+            guestLeft: false,
+            specialRequest: null,
+            billId: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+          targetOrderId = newOrderId;
+        }
+
         const existing = await db.orderItems
           .where("[orderId+itemId]")
           .equals([targetOrderId, itemId])
@@ -103,7 +129,8 @@ export default function useOrder() {
             updatedAt: new Date(),
           });
         }
-        await enqueue("order.addItems", { itemId, orderId: targetOrderId, quantity });
+        // Enqueue WITHOUT orderId so server uses findOrCreateOrder → getSelectedByUser
+        await enqueue("order.addItems", { itemId, quantity });
         toast({ title: "Item saved offline" });
         await utils.order.invalidate();
       })();
@@ -131,6 +158,22 @@ export default function useOrder() {
   };
 
   const selectTable = (tableId: string) => {
+    if (!isOnline) {
+      void (async () => {
+        const userId = session?.user.id;
+        if (!userId) return;
+        await db.restaurantTables.update(tableId, {
+          selectedBy: userId,
+          updatedAt: new Date(),
+        });
+        const localTable = await db.restaurantTables.get(tableId);
+        if (localTable) utils.table.getSelectedTable.setData(undefined, localTable as never);
+        await enqueue("table.setSelectedTable", tableId);
+        toast({ title: "Table selected offline" });
+        await utils.table.invalidate();
+      })();
+      return;
+    }
     setSelectedTable.mutate(tableId);
     if (orderId) {
       updateOrder.mutate({ id: orderId, body: { tableId } });
@@ -145,21 +188,28 @@ export default function useOrder() {
   };
 
   const proceedOrder = async () => {
-    const tableId = selectedTable !== "null" ? selectedTable?.id : undefined;
-    if (!orderId) return;
+    const tableId = selectedTable && selectedTable !== "null" ? selectedTable.id : undefined;
 
     if (!isOnline) {
-      // Offline path: update local DB and queue mutations
-      await db.orders.update(orderId, {
+      // Resolve local order ID: prefer cached server orderId, fall back to Dexie
+      let localOrderId = orderId !== false ? orderId : undefined;
+      const userId = session?.user.id;
+      if (!localOrderId && userId) {
+        const localOrder = await db.orders
+          .filter((o) => o.selectedBy === userId)
+          .first();
+        localOrderId = localOrder?.id;
+      }
+      if (!localOrderId) return;
+
+      await db.orders.update(localOrderId, {
         status: "In Progress",
         selectedBy: null,
         tableId: tableId ?? null,
         updatedAt: new Date(),
       });
-      await enqueue("order.updateOrder", {
-        id: orderId,
-        body: { status: "In Progress", selectedBy: null, tableId },
-      });
+      // Use proceedCurrentOrder so replay works without needing the local UUID server-side
+      await enqueue("order.proceedCurrentOrder", { tableId });
 
       if (tableId) {
         await db.restaurantTables.update(tableId, {
@@ -172,9 +222,11 @@ export default function useOrder() {
 
       toast({ title: "Order saved offline — will sync on reconnect" });
       await utils.invalidate();
-      router.push(`/orders/${orderId}`);
+      router.push(`/orders/${localOrderId}`);
       return;
     }
+
+    if (!orderId) return;
 
     updateOrder.mutate({
       id: orderId,
