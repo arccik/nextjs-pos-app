@@ -77,8 +77,8 @@ cd /home/deploy
 git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git pos-app
 cd pos-app
 
-bun install
-bun run build
+bun install         # installs runtime node_modules (fast, low memory)
+# No build step needed — .next/ is pre-built and committed to git
 ```
 
 ---
@@ -112,40 +112,10 @@ chmod 600 .env
 
 ---
 
-## 7. Fix Socket.IO CORS Before Deploying
+## 7. Socket.IO CORS
 
-In `server.ts`, change the CORS origin from the wildcard to your actual domain.
-This prevents any website from connecting to your socket server.
-
-Open the file:
-
-```bash
-nano server.ts
-```
-
-Find this block:
-
-```ts
-const io = new Server(httpServer, {
-  cors: {
-    origin: "*",
-    credentials: true,
-  },
-});
-```
-
-Change it to:
-
-```ts
-const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.NEXTAUTH_URL ?? "http://localhost:3000",
-    credentials: true,
-  },
-});
-```
-
-Save and exit.
+The CORS origin in `server.ts` is already set to `process.env.NEXTAUTH_URL ?? "http://localhost:3000"`.
+As long as `NEXTAUTH_URL` in your `.env` matches your domain (set in step 6), no manual edit is needed.
 
 ---
 
@@ -268,8 +238,7 @@ Each time you push new code to the server:
 ```bash
 cd /home/deploy/pos-app
 git pull
-bun install          # in case dependencies changed
-bun run build
+bun install          # only if package.json changed
 pm2 restart pos-app
 ```
 

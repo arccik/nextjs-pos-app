@@ -14,7 +14,7 @@
 /drizzle
 
 # next.js
-/.next/
+/.next/cache/
 /out/
 next-env.d.ts
 
