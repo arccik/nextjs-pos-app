@@ -90,26 +90,34 @@ export default function useOrder() {
         let targetOrderId = id ?? (orderId !== false ? orderId : undefined);
 
         if (!targetOrderId) {
-          // Offline with no existing order — create one locally in Dexie
           const userId = session?.user.id;
           if (!userId) return;
-          const newOrderId = crypto.randomUUID();
-          const selectedTableId =
-            selectedTable && selectedTable !== "null" ? selectedTable.id : null;
-          await db.orders.add({
-            id: newOrderId,
-            userId,
-            selectedBy: userId,
-            tableId: selectedTableId,
-            status: "Pending",
-            isPaid: false,
-            guestLeft: false,
-            specialRequest: null,
-            billId: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          });
-          targetOrderId = newOrderId;
+          // Reuse an existing local order if one was already created this session
+          const existingLocal = await db.orders
+            .filter((o) => o.selectedBy === userId)
+            .first();
+          if (existingLocal) {
+            targetOrderId = existingLocal.id;
+          } else {
+            // First item offline — create a local order in Dexie
+            const newOrderId = crypto.randomUUID();
+            const selectedTableId =
+              selectedTable && selectedTable !== "null" ? selectedTable.id : null;
+            await db.orders.add({
+              id: newOrderId,
+              userId,
+              selectedBy: userId,
+              tableId: selectedTableId,
+              status: "Pending",
+              isPaid: false,
+              guestLeft: false,
+              specialRequest: null,
+              billId: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+            targetOrderId = newOrderId;
+          }
         }
 
         const existing = await db.orderItems
